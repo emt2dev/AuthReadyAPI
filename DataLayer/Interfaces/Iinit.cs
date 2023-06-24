@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface IStart
+    public interface Iinit
     {
         Task<string> INIT__START(Full__APIUser initObj);
     }

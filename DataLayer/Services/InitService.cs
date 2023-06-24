@@ -7,13 +7,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace AuthReadyAPI.DataLayer.Services
 {
-    public class StartService : IStart
+    public class InitService : Iinit
     {
         private APIUser _user;
         private UserManager<APIUser> _UM;
         private IMapper _mapper;
 
-        public StartService(UserManager<APIUser> userManager, IMapper mapper)
+        public InitService(UserManager<APIUser> userManager, IMapper mapper)
         {
             this._UM = userManager;
             this._mapper = mapper;

@@ -2,6 +2,8 @@
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -12,15 +14,67 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private IStart _start;
+
+        private IMapper _mapper;
+        private IAuthManager _IAM;
+        private Iinit _start;
         private readonly ILogger<AuthController> _LOGS;
 
-        public AuthController(IStart start, ILogger<AuthController> LOGS)
+        private APIUser _user;
+
+        public AuthController(Iinit start, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper)
         {
             this._start = start;
             this._LOGS = LOGS;
+            this._IAM = IAM;
+            this._mapper = mapper;
         }
 
+        /* api/auth/register */
+        [HttpPost]
+        [Route("register")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> Register([FromBody] Full__APIUser DTO)
+        {
+            var errors = await _IAM.USER__REGISTER(DTO);
+
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+
+                _LOGS.LogInformation($"Failed Register Attempt for {DTO.Email}");
+
+                return BadRequest(ModelState);
+            }
+
+            return Ok();
+        }
+
+        /* api/auth/login */
+        [HttpPost]
+        [Route("login")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> Login([FromBody] Base__APIUser DTO)
+        {
+            var authenticatedUser = await _IAM.USER__LOGIN(DTO);
+
+            if (authenticatedUser == null)
+            {
+                _LOGS.LogInformation($"Failed Login Attempt for {DTO.Email}");
+                return Unauthorized();
+            }
+            
+            return Ok(authenticatedUser);
+        }
+
+        /* call this route first, this allows to seed the db with users. */
         [HttpGet]
         public async Task<string> Init()
         {

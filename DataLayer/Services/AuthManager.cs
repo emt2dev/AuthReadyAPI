@@ -19,8 +19,8 @@ namespace AuthReadyAPI.DataLayer.Services
         private APIUser _user;
         private UserManager<APIUser> _UM;
 
-        private string _tokenProvider;
-        private string _refreshToken;
+        private string _tokenProvider = "AuthReadyAPI";
+        private string _refreshToken = "MadeByDavidDuron";
 
         public AuthManager(IMapper mapper, UserManager<APIUser> userManager, IConfiguration configuration)
         {
@@ -43,9 +43,10 @@ namespace AuthReadyAPI.DataLayer.Services
         public async Task<Full__AuthResponseDTO> USER__LOGIN(Base__APIUser DTO)
         {
             _user = await _UM.FindByEmailAsync(DTO.Email);
+
             bool IsPasswordValid = await _UM.CheckPasswordAsync(_user, DTO.Password);
 
-            if (_user is null || IsPasswordValid) return default;
+            if (_user is null || !IsPasswordValid) return default;
 
             var giveToken = await CreateJwt();
             return new Full__AuthResponseDTO
@@ -54,10 +55,9 @@ namespace AuthReadyAPI.DataLayer.Services
 
         public async Task<string> CreateRefreshToken()
         {
-            await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
+            var removeCurrent = await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
             var newToken = await _UM.GenerateUserTokenAsync(_user, _tokenProvider, _refreshToken);
-
-            await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
+            var setToken = await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
 
             return newToken;
         }

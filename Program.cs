@@ -114,7 +114,7 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 /* IStart (allows to seed the db) */
-builder.Services.AddScoped<IStart, StartService>();
+builder.Services.AddScoped<Iinit, InitService>();
 
 /* Authentication plus JWT Bearer */
 builder.Services.AddAuthentication(options =>
