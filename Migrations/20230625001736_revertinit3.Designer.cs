@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230623033738_init")]
-    partial class init
+    [Migration("20230625001736_revertinit3")]
+    partial class revertinit3
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,9 @@ namespace AuthReadyAPI.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -42,6 +45,9 @@ namespace AuthReadyAPI.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsStaff")
                         .HasColumnType("bit");
 
                     b.Property<bool>("LockoutEnabled")
@@ -83,6 +89,8 @@ namespace AuthReadyAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CompanyId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -92,6 +100,211 @@ namespace AuthReadyAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Cart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("APIUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("Abandoned")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Customer")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Discount_Rate")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Submitted")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("Total_Amount")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Total_Discounted")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("APIUserId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Carts");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Company", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("Id_admin_one")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Id_admin_two")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Companies");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("APIUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Cart")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CurrentStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DestinationAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Destination_latitude")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Destination_longitude")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Payment_Amount")
+                        .HasColumnType("float");
+
+                    b.Property<bool>("Payment_Complete")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Purchaser")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Time__Delivered")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Time__Submitted")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("Time__Touched")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("deliveryDriver")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("APIUserId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modifiers")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Price_Current")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Normal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Sale")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -123,15 +336,21 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "5c1e4073-8f2e-4dda-8327-42e13ada80cf",
-                            Name = "Administrator",
-                            NormalizedName = "ADMINISTRATOR"
+                            Id = "b4f265d6-b418-4b52-8323-477d1b004d13",
+                            Name = "Company_Admin",
+                            NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "c614ffa2-3808-49d0-b0e3-7e183e2ca57e",
+                            Id = "4978969d-2bd9-4116-9759-430d518c1d5c",
                             Name = "User",
                             NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "421b6e1c-07c4-47cb-9943-80f8539baa79",
+                            Name = "API_Admin",
+                            NormalizedName = "API_ADMIN"
                         });
                 });
 
@@ -241,6 +460,50 @@ namespace AuthReadyAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
+                        .WithMany("Staff")
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Cart", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.APIUser", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("APIUserId");
+
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
+                        .WithMany("Carts")
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Order", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.APIUser", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("APIUserId");
+
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
+                        .WithMany("Orders")
+                        .HasForeignKey("CompanyId");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Product", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Cart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartId");
+
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CompanyId");
+
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Order", null)
+                        .WithMany("Products")
+                        .HasForeignKey("OrderId");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -290,6 +553,34 @@ namespace AuthReadyAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
+                {
+                    b.Navigation("Carts");
+
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Cart", b =>
+                {
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Company", b =>
+                {
+                    b.Navigation("Carts");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Products");
+
+                    b.Navigation("Staff");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Order", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

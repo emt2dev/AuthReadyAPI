@@ -10,6 +10,11 @@ namespace AuthReadyAPI.DataLayer
     {
         public AuthDbContext(DbContextOptions options) : base(options) { }
 
+        public DbSet<Cart> Carts { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Product> Products { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

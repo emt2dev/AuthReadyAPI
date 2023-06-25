@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AuthReadyAPI.DataLayer.Repositories;
 using AuthReadyAPI.DataLayer.Services;
+using AuthReadyAPI.DataLayer.Services.Helpers;
 using AuthReadyAPI.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -27,7 +28,7 @@ var builder = WebApplication.CreateBuilder(args);
  */
 
 // DATABASE, MSSQL
-var CONNECTION_STRING = builder.Configuration.GetConnectionString("AuthReadyAPIDbConnectionString"); // replace with your own connection string
+var CONNECTION_STRING = builder.Configuration.GetConnectionString("SASNM_ConnectionString"); // replace with your own connection string
 
 builder.Services.AddDbContext<AuthDbContext>(DbOptions =>
 {
@@ -113,8 +114,22 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 /* IAuthManager */
 builder.Services.AddScoped<IAuthManager, AuthManager>();
 
-/* IStart (allows to seed the db) */
-builder.Services.AddScoped<Iinit, InitService>();
+/* User */
+builder.Services.AddScoped<IUser, UserRepository>();
+/* API Admin */
+builder.Services.AddScoped<IApiAdmin, ApiAdminRepository>();
+/* Company*/
+builder.Services.AddScoped<ICompany, CompanyRepository>();
+/* Product */
+builder.Services.AddScoped<IProduct, ProductRepository>();
+/* Cart */
+builder.Services.AddScoped<ICart, CartRepository>();
+/* Order */
+builder.Services.AddScoped<IOrder, OrderRepository>();
+
+/* IMediaService */
+builder.Services.AddScoped<IMediaService, MediaService>();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 /* Authentication plus JWT Bearer */
 builder.Services.AddAuthentication(options =>

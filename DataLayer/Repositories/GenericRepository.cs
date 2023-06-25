@@ -19,8 +19,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<T> AddAsync(T entity)
         {
-            await _context.AddAsync(entity);
-            await _context.SaveChangesAsync();
+            _ = await _context.AddAsync(entity);
+            _ = await _context.SaveChangesAsync();
 
             return entity;
         }
@@ -28,9 +28,9 @@ namespace AuthReadyAPI.DataLayer.Repositories
         public async Task DeleteAsync(int id)
         {
             var EntitySearchingFor = await GetAsyncById(id);
-            _context.Set<T>().Remove(EntitySearchingFor);
+            _ = _context.Set<T>().Remove(EntitySearchingFor);
 
-            await _context.SaveChangesAsync();
+            _ = await _context.SaveChangesAsync();
         }
 
         public async Task<List<TResult>> GetAllAsync<TResult>()
@@ -73,8 +73,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _context.Update(entity);
-            await _context.SaveChangesAsync();
+            _ = _context.Update(entity);
+            _ = await _context.SaveChangesAsync();
         }
     }
 }
