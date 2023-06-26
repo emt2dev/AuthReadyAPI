@@ -1,5 +1,5 @@
 ﻿# AuthReadyAPI
-## Here is a ready-to-use out of the box ecommerce application.
+## Here is a ready-to-use out of the box ecommerce application. This was made by David Duron, aka emt2dev.
 # Under Maintenance
 1. Testing Controllers
 2. Testing Routes
