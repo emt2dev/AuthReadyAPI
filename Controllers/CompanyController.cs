@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.Controllers
 {
-    [Route("api/[controller]/{companyId}")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CompanyController : ControllerBase
     {
@@ -45,22 +47,25 @@ namespace AuthReadyAPI.Controllers
          * Can be add other companies to this.
          */
 
-        [HttpGet]
+        [HttpPost]
         [Route("details")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<Full__Company> GET__COMPANY__DETAILS(int? companyId)
         {
+            
             Company searchedFor = await _company.GetAsyncById(companyId);
 
             Full__Company DTO = _mapper.Map<Full__Company>(searchedFor);
 
             return DTO;
+            
         }
 
         // api/Company/new__admin/ 
         [HttpPost]
+        [Route("new__admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -99,9 +104,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Company> CREATE__COMPANY__PRODUCT(Full__Product DTO, int id)
+        public async Task<Full__Company> CREATE__COMPANY__PRODUCT(Full__Product DTO, int companyId)
         {
-            Company searchedFor = await _company.GetAsyncById(id);
+            Company searchedFor = await _company.GetAsyncById(companyId);
 
             Full__Company _DTO = _mapper.Map<Full__Company>(searchedFor);
 
@@ -109,9 +114,9 @@ namespace AuthReadyAPI.Controllers
 
         }
 
-        // api/Company/update__product/{id} 
+        // api/Company/update__product 
         [HttpPut]
-        [Route("update__product/{productId}")]
+        [Route("update__product")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -123,12 +128,11 @@ namespace AuthReadyAPI.Controllers
             Full__Product _DTO = _mapper.Map<Full__Product>(productObj);
 
             return _DTO;
-
         }
 
         // api/Company/delete__product/{productId} 
         [HttpDelete]
-        [Route("delete__product/{productId}")]
+        [Route("delete__product")]
         //[Authorize(Roles = "Company_Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -140,19 +144,21 @@ namespace AuthReadyAPI.Controllers
             return "This product has been deleted";
         }
 
-        /* api/Company
-        [HttpGet]
+        // api/Company/update__company/{companyId} 
+        [HttpPut]
+        [Route("update__company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Company> GET__COMPANY__DETAILS(int? id)
+        public async Task<Full__Product> UPDATE__COMPANY__DETAILS(Full__Product productObj)
         {
-            Company searchedFor = await _company.GetAsyncById(id);
+            Product searchedFor = _mapper.Map<Product>(productObj);
+            await _product.UpdateAsync(searchedFor);
 
-            DTO = await _mapper.Map<Full__Company>(searchedFor);
+            Full__Product _DTO = _mapper.Map<Full__Product>(productObj);
 
-            return DTO;
+            return _DTO;
+
         }
-        */
     }
 }

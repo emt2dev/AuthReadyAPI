@@ -13,5 +13,6 @@ namespace AuthReadyAPI.DataLayer.Models
         public string ImageURL { get; set; }
         public string Company { get; set; }
         public string Modifiers { get; set; }
+        public string Keyword { get; set; }
     }
 }

@@ -48,6 +48,24 @@ namespace AuthReadyAPI.DataLayer.Repositories
             };
         }
 
+        public async Task<PagedResult<Base__Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword)
+        {
+            var recordCount = await _context.Set<Product>().CountAsync();
+            var records = await _context.Set<Product>()
+                .Where(found => found.Company == companyId.ToString() && found.Keyword == keyword)
+                .Skip(QP.NextPageNumber)
+                .Take(QP.PageSize)
+                .ProjectTo<Base__Product>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return new PagedResult<Base__Product>
+            {
+                Records = records,
+                PageNumber = QP.NextPageNumber,
+                TotalCount = recordCount
+            };
+        }
+
         public async Task<Full__Product> GET__PRODUCT__ONE(int productId)
         {
 

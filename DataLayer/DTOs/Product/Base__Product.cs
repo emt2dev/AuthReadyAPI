@@ -8,5 +8,6 @@
         public double Price_Sale { get; set; }
         public string ImageURL { get; set; }
         public string CompanyId { get; set; }
+        public string Keyword { get; set; }
     }
 }
