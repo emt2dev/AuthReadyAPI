@@ -1,4 +1,4 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+﻿using AuthReadyAPI.DataLayer.DTOs.Order;
 using AuthReadyAPI.DataLayer.DTOs.Pagination;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
@@ -7,13 +7,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
+using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private readonly ICompany _company;
         private readonly IUser _user;
@@ -27,7 +27,7 @@ namespace AuthReadyAPI.Controllers
 
         private readonly UserManager<APIUser> _UM;
 
-        public ProductController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public OrderController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -38,50 +38,59 @@ namespace AuthReadyAPI.Controllers
             this._cart = cart;
             this._order = order;
             this._user = user;
-
         }
 
-        /* api/Product/all/{keyword}
- */
+        /* api/order/submit */
         [HttpPost]
-        [Route("list/category/{keyword}/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [Route("submit")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        public string ORDER__SUBMITTED(int cartId)
         {
-            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
-            return AllKeywordProducts;
+            /*
+             * 
+             * Process stripe api payment here
+             * Notify Company of new order
+             * Notify customer of payment processed
+             */
+            string result = $"cartId: {cartId}, return order";
+            return result;
         }
 
-        /* api/Product/all/{keyword}
-*/
-        [HttpGet]
-        [Route("list/all/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        /* api/order/cancel */
+        [HttpPost]
+        [Route("cancel")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+        public string ORDER__CANCEL(int cartId)
         {
-            PagedResult<Base__Product> AllCompanyProducts = await _product.GET__PRODUCT__ALL(companyId, QP);
-            return AllCompanyProducts;
+            /*
+             * 
+             * Process refund here
+             * Notify customer here
+             * 
+             */ 
+            string result = $"cartId: {cartId}, return order currentstatus == cancelled";
+            return result;
         }
 
-        /* api/Products
-         * semantics, by not needed since this is going to be used by one company.
-         * Can be add other companies to this.
-         */
-        [HttpGet]
-        [Route("details/{productId}")]
+        /* api/order/update */
+        [HttpPut]
+        [Route("update")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> PRODUCT__ONE([FromRoute] int productId)
+        public string ORDER__UPDATE(Full__Order DTO)
         {
-            Full__Product SpecificProduct = await _product.GET__PRODUCT__ONE(productId);
-            return SpecificProduct;
+            /*
+             * 
+             * Notify customer of order status change
+             * 
+             */ 
+            string result = $"order DTO, return updated order (ie: currentstatus == cooking/preparing/delivering/delivered/etc)";
+            return result;
         }
     }
 }

@@ -47,8 +47,8 @@ namespace AuthReadyAPI.Controllers
          * Can be add other companies to this.
          */
 
-        [HttpPost]
-        [Route("details")]
+        [HttpGet]
+        [Route("details/{companyId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -60,7 +60,6 @@ namespace AuthReadyAPI.Controllers
             Full__Company DTO = _mapper.Map<Full__Company>(searchedFor);
 
             return DTO;
-            
         }
 
         // api/Company/new__admin/ 
