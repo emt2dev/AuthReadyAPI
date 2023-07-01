@@ -29,6 +29,18 @@ namespace AuthReadyAPI.DataLayer.Services
             this._configs = configuration;
         }
 
+        public async Task<IEnumerable<IdentityError>> API__ADMIN__REGISTER(Base__APIUser DTO)
+        {
+            _user = _mapper.Map<APIUser>(DTO);
+            _user.UserName = DTO.Email;
+
+            var resultOfScript = await _UM.CreateAsync(_user, DTO.Password);
+            if (resultOfScript.Succeeded) await _UM.AddToRoleAsync(_user, "User");
+            await _UM.AddToRoleAsync(_user, "API_Admin");
+
+            return resultOfScript.Errors;
+        }
+
         public async Task<IEnumerable<IdentityError>> USER__REGISTER(Base__APIUser DTO)
         {
             _user = _mapper.Map<APIUser>(DTO);
@@ -40,13 +52,20 @@ namespace AuthReadyAPI.DataLayer.Services
             return resultOfScript.Errors;
         }
 
+        public async Task<APIUser> USER__DETAILS(string userId)
+        {
+            APIUser searchForUser = await _UM.FindByIdAsync(userId);
+
+            return searchForUser;
+        }
+
         public async Task<Full__AuthResponseDTO> USER__LOGIN(Base__APIUser DTO)
         {
             _user = await _UM.FindByEmailAsync(DTO.Email);
 
             bool IsPasswordValid = await _UM.CheckPasswordAsync(_user, DTO.Password);
 
-            if (_user is null || !IsPasswordValid) return default;
+            if (_user is null || !IsPasswordValid) return null;
 
             var giveToken = await CreateJwt();
             return new Full__AuthResponseDTO
@@ -55,14 +74,14 @@ namespace AuthReadyAPI.DataLayer.Services
 
         public async Task<string> CreateRefreshToken()
         {
-            var removeCurrent = await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
+            await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
             var newToken = await _UM.GenerateUserTokenAsync(_user, _tokenProvider, _refreshToken);
             var setToken = await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
 
             return newToken;
         }
 
-        public async Task<Full__AuthResponseDTO> VerifyTokens(Full__AuthResponseDTO DTO)
+        public async Task<Full__AuthResponseDTO> VerifyRefreshToken(Full__AuthResponseDTO DTO)
         {
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var tokenContent = jwtSecurityTokenHandler.ReadJwtToken(DTO.Token);
@@ -92,9 +111,6 @@ namespace AuthReadyAPI.DataLayer.Services
             return null;
         }
 
-
-
-
         private async Task<string> CreateJwt()
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configs["JwtSettings:Key"]));
@@ -119,7 +135,7 @@ namespace AuthReadyAPI.DataLayer.Services
             .Union(userRoleClaims);
 
             var newToken = new JwtSecurityToken(
-                issuer: _configs.GetValue<string>("JwtSettings:Issuer"),
+                issuer: _configs["JwtSettings:Issuer"],
                 audience: _configs["JwtSettings:Audience"],
                 claims: userClaimsList,
                 expires: DateTime.Now

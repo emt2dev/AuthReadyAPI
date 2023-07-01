@@ -40,9 +40,6 @@ namespace AuthReadyAPI.Controllers
             this._user = user;
 
         }
-
-        /* api/Product/all/{keyword}
- */
         [HttpPost]
         [Route("list/category/{keyword}/{companyId}")]
         // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
@@ -54,9 +51,45 @@ namespace AuthReadyAPI.Controllers
             PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
             return AllKeywordProducts;
         }
-
+/*
+        [HttpPost]
+        [Route("list/category/{keyword}/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        {
+            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
+            return AllKeywordProducts;
+        }
+        */
         /* api/Product/all/{keyword}
+ 
+        [HttpPost]
+        [Route("list/category/{keyword}/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        {
+            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
+            return AllKeywordProducts;
+        }
 */
+
+        [HttpGet]
+        [Route("list/all/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public string PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+        {
+            return "list of base__product received";
+        }
+/*
         [HttpGet]
         [Route("list/all/{companyId}")]
         // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
@@ -68,11 +101,32 @@ namespace AuthReadyAPI.Controllers
             PagedResult<Base__Product> AllCompanyProducts = await _product.GET__PRODUCT__ALL(companyId, QP);
             return AllCompanyProducts;
         }
+        */
 
-        /* api/Products
-         * semantics, by not needed since this is going to be used by one company.
-         * Can be add other companies to this.
-         */
+        /* api/Product/all/{keyword}
+
+        [HttpGet]
+        [Route("list/all/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<PagedResult<Base__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+        {
+            PagedResult<Base__Product> AllCompanyProducts = await _product.GET__PRODUCT__ALL(companyId, QP);
+            return AllCompanyProducts;
+        }
+*/
+        [HttpGet]
+        [Route("details/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public string PRODUCT__ONE([FromRoute] int productId)
+        {
+            return "full product details recevied";
+        }
+/*
         [HttpGet]
         [Route("details/{productId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
@@ -83,5 +137,21 @@ namespace AuthReadyAPI.Controllers
             Full__Product SpecificProduct = await _product.GET__PRODUCT__ONE(productId);
             return SpecificProduct;
         }
+        */
+        /* api/Products
+         * semantics, by not needed since this is going to be used by one company.
+         * Can be add other companies to this.
+         
+        [HttpGet]
+        [Route("details/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<Full__Product> PRODUCT__ONE([FromRoute] int productId)
+        {
+            Full__Product SpecificProduct = await _product.GET__PRODUCT__ONE(productId);
+            return SpecificProduct;
+        }
+        */
     }
 }

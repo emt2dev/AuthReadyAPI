@@ -1,0 +1,36 @@
+https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&pivots=cs1-bash
+
+sudo docker pull mcr.microsoft.com/mssql/server:2019-latest
+
+sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Tacobe11@" \
+   -p 1433:1433 --name sql1 --hostname sql1 \
+   -d \
+   mcr.microsoft.com/mssql/server:2019-latest
+
+
+docker exec -t sql1 cat /var/opt/mssql/log/errorlog | grep connection
+
+
+{
+  "email": "customer001@user.com",
+  "password": "P@ssword1"
+}
+
+{
+  "userId": "e94efd5d-32a8-4b4c-8581-f779b6014dc3",
+  "token": "
+  
+  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjdXN0b21lcjAwMUB1c2VyLmNvbSIsImp0aSI6ImY4MjlhNjI4LTdhNGMtNGIyZS04ZGU0LTNmZWUzMzA1YjU1YSIsImVtYWlsIjoiY3VzdG9tZXIwMDFAdXNlci5jb20iLCJ1aWQiOiJlOTRlZmQ1ZC0zMmE4LTRiNGMtODU4MS1mNzc5YjYwMTRkYzMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNjg3ODQyMTczLCJpc3MiOiJBdXRoUmVhZHlBUEkiLCJhdWQiOiJBdXRoUmVhZHlBUElVc2VycyJ9.MbLkbcgtKWM6FKviEoYn7fj_pfMKdG-Gnd8TE_rNmZU
+  
+  
+  ",
+  "refreshToken": "CfDJ8KEAOUBBDqtNt4HBjfGGRHvQ7FaLykVEpxEtyvaSuACr2P53QFYOj8GtRauub/CgEK6VbWFIumdzJKk6SHduKqI9KzM+tCq/mtIsJgwaappqIoqA4WPalQx3mp9ZWh5tCn8tmxwUt7Fikxht6PkY9kS9qg52KaZf1+DJrQUt1vsSp1jmIlRTPRJAPvKiNrVqXFswukhHu3oLrfQzq9rop9bu5UhEzUv/pyrH4qrclRDC"
+}
+
+{ Email: "admin1@admin.com", Password: "P@ssword1@" }
+{ Id: "1", Name: "La Imperial Bakery", Description: "A delicious puerto rican restaurant and bakery", Address: "123 E Main St", PhoneNumber: "863-500-4411" }
+
+
+
+
+*ngIf="this.authService.isUserLoggedIn" type="button" class="btn btn-danger">Logout</button>

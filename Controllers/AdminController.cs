@@ -1,8 +1,10 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
 using AuthReadyAPI.DataLayer.DTOs.Company;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +15,7 @@ namespace AuthReadyAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = ("API_Admin"))]
     public class AdminController : ControllerBase
     {
         private readonly ICompany _company;
@@ -44,58 +47,61 @@ namespace AuthReadyAPI.Controllers
 
         }
 
-        /* api/admin/admin__create */
-        [HttpGet]
+        [HttpPost]
         [Route("admin__create")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> CREATE__API__ADMIN([FromBody] Full__APIUser DTO)
+        public async Task<ActionResult> CREATE__API__ADMIN([FromBody] Base__APIUser DTO)
         {
-            var result = await _apiAdmin.API__ADMIN__CREATE(DTO);
+           var errors = await _IAM.API__ADMIN__REGISTER(DTO);
 
-            return result;
+            if (errors.Any())
+            {
+                foreach (var error in errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+
+                _LOGS.LogInformation($"Failed Register Attempt for {DTO.Email}");
+
+                return BadRequest(ModelState);
+            }
+
+            return Ok();
         }
 
-        /* api/admin/company__create */
-        [HttpGet]
+        // api/admin/company__create 
+        [HttpPost]
         [Route("company__create")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> CREATE__COMPANY([FromBody] Full__Company DTO)
+        public async Task<string> CREATE__COMPANY([FromBody] Base__Company DTO)
         {
-            Full__Company createdCompany = await _apiAdmin.COMPANY__CREATE(DTO);
+           Base__Company createdCompany = await _apiAdmin.COMPANY__CREATE(DTO);
 
             return createdCompany.Name + " was created";
         }
 
-        /* api/admin/company__admin__override */
         [HttpPost]
         [Route("company__admin__override")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> OVERRIDE__COMPANY__ADMIN([FromBody] string userEmail, int companyId)
+        public async Task<string> OVERRIDE__COMPANY__ADMIN([FromBody] overrideDTO DTO)
         {
-            if (userEmail == null) return null;
-            if (companyId < 0) return null;
+            APIUser userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
+            userGivenPrivledges.CompanyId = DTO.companyId;
+            userGivenPrivledges.IsStaff = true;
+            await _UM.AddToRoleAsync(userGivenPrivledges, "Company_Admin");
+            
+            Company companyOverriddenAdmin = await _company.GetAsyncById(DTO.companyId);
+            if(DTO.replaceAdminOneOrTwo == 1) companyOverriddenAdmin.Id_admin_one = userGivenPrivledges.Id;
+            else companyOverriddenAdmin.Id_admin_two = userGivenPrivledges.Id;
+            await _company.UpdateAsync(companyOverriddenAdmin);
 
-            Company companyGiven = await _company.GetAsyncById(companyId);
-
-            APIUser userGiven = await _user.USER__FIND__BY__EMAIL__ASYNC(userEmail);
-
-            userGiven.IsStaff = true;
-            userGiven.CompanyId = companyGiven.Id;
-
-            _ = await _UM.AddToRoleAsync(userGiven, "Company_Admin");
-            _ = _user.UpdateAsync(userGiven);
-
-            companyGiven.Id_admin_one = userGiven.Id;
-
-            _ = _company.UpdateAsync(companyGiven);            
-
-            return companyGiven.Id_admin_one + " replaced existing admin";
+            return DTO.userEmail + " replaced existing admin " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
         }
     }
 }

@@ -49,7 +49,18 @@ namespace AuthReadyAPI.Controllers
             string result = $"company: {companyId}, customer: {customerId}";
             return result;
         }
-
+        /*
+        [HttpGet]
+        [Route("existing/{companyId}/{customerId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public string CART__GET__EXISTING(int companyId, int customerId)
+        {
+            string result = $"company: {companyId}, customer: {customerId}";
+            return result;
+        }
+*/
         // api/cart/new/{companyId}/{customerId}
         [HttpPost]
         [Route("new/{companyId}/{customerId}")]
@@ -61,8 +72,39 @@ namespace AuthReadyAPI.Controllers
             string result = $"company: {companyId}, customer: {customerId}";
             return result;
         }
+        /*
+        [HttpPost]
+        [Route("new/{companyId}/{customerId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public string CART__CREATE__NEW(int companyId, int customerId)
+        {
+            string result = $"company: {companyId}, customer: {customerId}";
+            return result;
+        }
+*/
 
         // api/cart/add/{companyId}/{customerId}
+        [HttpGet]
+        [Route("add/{companyId}/{customerId}/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public string CART__ADD__PRODUCT(int companyId, int customerId, int productId)
+        {
+            
+            //  * 
+            //  *  flowchart
+            //  *  if no cart exists with customer and company ids and submitted != true, create cart, add product, return cart
+            //  *  if cart == abandoned, change that to false and use that cart
+            //  *  if cart exists add product to cart, return cart
+            //  *
+            
+            string result = $"company: {companyId}, customer: {customerId}, product: {productId}";
+            return result;
+        }
+        /*
         [HttpGet]
         [Route("add/{companyId}/{customerId}/{productId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
@@ -77,9 +119,10 @@ namespace AuthReadyAPI.Controllers
              *  if cart == abandoned, change that to false and use that cart
              *  if cart exists add product to cart, return cart
              *
-             */
+            
             string result = $"company: {companyId}, customer: {customerId}, product: {productId}";
             return result;
         }
+        */
     }
 }

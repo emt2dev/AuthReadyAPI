@@ -42,6 +42,27 @@ namespace AuthReadyAPI.Controllers
 
         }
 
+                /* api/Company/details/ 
+         * semantics, by not needed since this is going to be used by one company.
+         * Can be add other companies to this.
+         */
+
+        [HttpGet]
+        [Route("all")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IList<Base__Company>> GET__ALL__COMPANY()
+        {
+            IList<Base__Company> companies = new List<Base__Company>();
+            IList<Full__Company> companiesDTList = new List<Full__Company>();
+
+            companies = await _company.GetAllAsync<Base__Company>();
+            // companiesDTList = _mapper.Map<IList<Full__Company>>(companies);
+
+            return companies;
+        }
+
         /* api/Company/details/ 
          * semantics, by not needed since this is going to be used by one company.
          * Can be add other companies to this.
@@ -65,6 +86,7 @@ namespace AuthReadyAPI.Controllers
         // api/Company/new__admin/ 
         [HttpPost]
         [Route("new__admin")]
+        [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -100,6 +122,7 @@ namespace AuthReadyAPI.Controllers
         // api/Company/new__product/ 
         [HttpPost]
         [Route("new__product")]
+        [Authorize(Roles = ("Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -116,6 +139,7 @@ namespace AuthReadyAPI.Controllers
         // api/Company/update__product 
         [HttpPut]
         [Route("update__product")]
+        [Authorize(Roles = ("Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -132,6 +156,7 @@ namespace AuthReadyAPI.Controllers
         // api/Company/delete__product/{productId} 
         [HttpDelete]
         [Route("delete__product")]
+        [Authorize(Roles = ("Company_Admin"))]
         //[Authorize(Roles = "Company_Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -146,6 +171,7 @@ namespace AuthReadyAPI.Controllers
         // api/Company/update__company/{companyId} 
         [HttpPut]
         [Route("update__company")]
+        [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay

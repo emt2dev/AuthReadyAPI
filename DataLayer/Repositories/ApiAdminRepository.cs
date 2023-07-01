@@ -12,6 +12,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
         private readonly ICompany _company;
+        Company __sendingDTO;
 
         UserManager<APIUser> _UM;
 
@@ -23,38 +24,16 @@ namespace AuthReadyAPI.DataLayer.Repositories
             this._company = company;
         }
 
-        public async Task<Full__Company> COMPANY__CREATE(Full__Company DTO)
+        public async Task<Base__Company> COMPANY__CREATE(Base__Company DTO)
         {
-            Company newCompany = new()
-            {
-                Name = DTO.Name,
-                Description = DTO.Description,
-                PhoneNumber = DTO.PhoneNumber,
-                Address = DTO.Address,
-            };
+            DTO.Id = null;
+            __sendingDTO = _mapper.Map<Company>(DTO);
 
-            Company CompanyRow = await _company.AddAsync(newCompany);
+            Company CompanyRow = await _company.AddAsync(__sendingDTO);
 
-            Full__Company _DTO = _mapper.Map<Full__Company>(CompanyRow);
+            Base__Company _DTO = _mapper.Map<Base__Company>(CompanyRow);
 
             return _DTO;
-        }
-
-        public async Task<string> API__ADMIN__CREATE(Full__APIUser DTO)
-        {
-            APIUser newUser = new()
-            {
-                Email = DTO.Email,
-                Name = DTO.Name,
-                UserName = DTO.Email,
-                IsStaff = DTO.IsStaff,
-                PhoneNumber = DTO.PhoneNumber,
-            };
-
-            _ = await _UM.CreateAsync(newUser, DTO.Password);
-            _ = await _UM.AddToRoleAsync(newUser, "API_Admin");
-
-            return newUser.UserName + " was created";
         }
     }
 }
