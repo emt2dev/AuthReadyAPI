@@ -56,7 +56,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Register([FromBody] Base__APIUser DTO)
+        public async Task<ActionResult> Register([FromForm] Base__APIUser DTO)
         {
             var errors = await _IAM.USER__REGISTER(DTO);
 
@@ -81,7 +81,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Login([FromBody] Base__APIUser DTO)
+        public async Task<ActionResult> Login([FromForm] Base__APIUser DTO)
         {
             Full__AuthResponseDTO authenticatedUser = await _IAM.USER__LOGIN(DTO);
 

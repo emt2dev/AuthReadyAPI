@@ -2,14 +2,13 @@ https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?vi
 
 sudo docker pull mcr.microsoft.com/mssql/server:2019-latest
 
-sudo docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=Tacobe11@" \
-   -p 1433:1433 --name sql1 --hostname sql1 \
-   -d \
-   mcr.microsoft.com/mssql/server:2019-latest
+// use this command for persistence
+sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=Tacobe11@' -p 1433:1433 -v /home/candydev/data:/var/opt/mssql/data -v  /home/candydev/log:/var/opt/mssql/log -p 1433:1433 --name sasnm --hostname sasnm -d mcr.microsoft.com/mssql/server:2019-latest
 
+// to start
+docker exec -t sasnm cat /home/candydev/log:/var/opt/mssql/log | grep connection
 
-docker exec -t sql1 cat /var/opt/mssql/log/errorlog | grep connection
-
+docker system prune -a
 
 {
   "email": "customer001@user.com",

@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.Company;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
@@ -90,14 +91,14 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IList<string>> GIVE__ADMIN__PRIV(string userEmail, int companyId, int adminOneOrTwo)
+        public async Task<string> GIVE__ADMIN__PRIV([FromForm] companyAdminPriv DTO)
         {
-            if (userEmail == null) return null;
-            if (adminOneOrTwo < 1 || adminOneOrTwo > 2) return null;
+            if (DTO.userEmail == null) return null;
+            if (DTO.replaceAdminOneOrTwo < 1 || DTO.replaceAdminOneOrTwo > 2) return null;
 
-            Company companyGiven = await _company.GetAsyncById(companyId);
+            Company companyGiven = await _company.GetAsyncById(DTO.companyId);
 
-            APIUser userGiven = await _user.USER__FIND__BY__EMAIL__ASYNC(userEmail);
+            APIUser userGiven = await _user.USER__FIND__BY__EMAIL__ASYNC(DTO.userEmail);
 
             // here we assign new values to the entity
             userGiven.IsStaff = true;
@@ -106,17 +107,42 @@ namespace AuthReadyAPI.Controllers
             _ = await _UM.AddToRoleAsync(userGiven, "Company_Admin");
             _ = _user.UpdateAsync(userGiven);
 
-            if (adminOneOrTwo == 1) companyGiven.Id_admin_one = userGiven.Id;
-            if (adminOneOrTwo == 2) companyGiven.Id_admin_two = userGiven.Id;
+            if (DTO.replaceAdminOneOrTwo == 1) companyGiven.Id_admin_one = userGiven.Id;
+            if (DTO.replaceAdminOneOrTwo == 2) companyGiven.Id_admin_two = userGiven.Id;
 
             _ = _company.UpdateAsync(companyGiven);
 
-            IList<string> adminList = new List<string>();
+            return "admin added";
+        }
 
-            adminList.Add("Admin one = " + companyGiven.Id_admin_one);
-            adminList.Add("Admin two = " + companyGiven.Id_admin_two);
+                // api/Company/new__admin/ 
+        [HttpPost]
+        [Route("remove__admin")]
+        [Authorize(Roles = ("API_Admin, Company_Admin"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<string> REMOVE__ADMIN__PRIV([FromForm] companyAdminPriv DTO)
+        {
+            if (DTO.userEmail == null) return null;
 
-            return adminList;
+            Company companyGiven = await _company.GetAsyncById(DTO.companyId);
+
+            APIUser userGiven = await _user.USER__FIND__BY__EMAIL__ASYNC(DTO.userEmail);
+
+            // here we assign new values to the entity
+            userGiven.IsStaff = false;
+            userGiven.CompanyId = null;
+
+            _ = await _UM.RemoveFromRoleAsync(userGiven, "Company_Admin");
+            _ = _user.UpdateAsync(userGiven);
+
+            if (userGiven.Id == companyGiven.Id_admin_one) companyGiven.Id_admin_one = null;
+            if (userGiven.Id == companyGiven.Id_admin_two) companyGiven.Id_admin_two = null;
+
+            _ = _company.UpdateAsync(companyGiven);
+
+            return "admin removed";
         }
 
         // api/Company/new__product/ 
@@ -126,7 +152,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Company> CREATE__COMPANY__PRODUCT(Full__Product DTO, int companyId)
+        public async Task<Full__Company> CREATE__COMPANY__PRODUCT([FromForm] Full__Product DTO, int companyId)
         {
             Company searchedFor = await _company.GetAsyncById(companyId);
 
@@ -143,7 +169,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__PRODUCT(Full__Product productObj)
+        public async Task<Full__Product> UPDATE__COMPANY__PRODUCT([FromForm] Full__Product productObj)
         {
             Product searchedFor = _mapper.Map<Product>(productObj);
             await _product.UpdateAsync(searchedFor);
@@ -161,7 +187,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> DELETE__COMPANY__PRODUCT(int productId)
+        public async Task<string> DELETE__COMPANY__PRODUCT([FromForm] int productId)
         {
             await _product.DeleteAsync(productId);
 
@@ -175,7 +201,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__DETAILS(Full__Product productObj)
+        public async Task<Full__Product> UPDATE__COMPANY__DETAILS([FromForm] Full__Product productObj)
         {
             Product searchedFor = _mapper.Map<Product>(productObj);
             await _product.UpdateAsync(searchedFor);

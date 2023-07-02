@@ -8,6 +8,7 @@ using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AuthReadyAPI.DataLayer.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -47,10 +48,12 @@ namespace AuthReadyAPI.Controllers
             this._cart = cart;
             this._order = order;
             this._user = user;
-
         }
+
         [HttpPost]
+
         [Route("details/{userId}")]
+        [Authorize(Roles = ("User"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
@@ -63,6 +66,40 @@ namespace AuthReadyAPI.Controllers
             if (preparedUser == null || userFound == null) return null;
 
             return preparedUser;
+        }
+
+        [HttpPost]
+        [Route("details/{userId}")]
+        [Authorize(Roles = ("User"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<Full__APIUser> USER__UPDATE__FULL([FromForm] Full__APIUser DTO)
+        {
+            APIUser userFound = _mapper.Map<APIUser>(DTO);
+
+            await _UM.UpdateAsync(userFound);
+
+            Full__APIUser _DTO = _mapper.Map<Full__APIUser>(userFound);
+
+            return _DTO;
+        }
+
+                [HttpPost]
+        [Route("details/{userId}")]
+        [Authorize(Roles = ("User"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<Full__APIUser> USER__UPDATE__PASSWORD([FromForm] Full__APIUser DTO)
+        {
+            APIUser userFound = _mapper.Map<APIUser>(DTO);
+            
+            await _UM.UpdateAsync(userFound);
+
+            Full__APIUser _DTO = _mapper.Map<Full__APIUser>(userFound);
+
+            return _DTO;
         }
     }
 }

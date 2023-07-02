@@ -52,7 +52,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> CREATE__API__ADMIN([FromBody] Base__APIUser DTO)
+        public async Task<ActionResult> CREATE__API__ADMIN([FromForm] Base__APIUser DTO)
         {
            var errors = await _IAM.API__ADMIN__REGISTER(DTO);
 
@@ -77,7 +77,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> CREATE__COMPANY([FromBody] Base__Company DTO)
+        public async Task<string> CREATE__COMPANY([FromForm] Base__Company DTO)
         {
            Base__Company createdCompany = await _apiAdmin.COMPANY__CREATE(DTO);
 
@@ -89,7 +89,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> OVERRIDE__COMPANY__ADMIN([FromBody] overrideDTO DTO)
+        public async Task<string> OVERRIDE__COMPANY__ADMIN([FromForm] overrideDTO DTO)
         {
             APIUser userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
             userGivenPrivledges.CompanyId = DTO.companyId;
