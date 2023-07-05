@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230630060912_fixeddtoquestionmark")]
-    partial class fixeddtoquestionmark
+    [Migration("20230703043526_newdtochanges")]
+    partial class newdtochanges
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -335,19 +335,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "449e6715-3723-47f9-a895-c0cec99925b2",
+                            Id = "faee0767-0a60-4c53-a3c3-764e5a777f50",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "9adb03db-6959-4aac-bb33-9f6098ae8235",
+                            Id = "7f0bc85a-bdd4-4b0c-9fbe-deb7bce8e42b",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "c806773f-beda-4e7d-9241-91b25a8e5370",
+                            Id = "6e9d2850-cee6-4724-8ef3-04a5197b2850",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });

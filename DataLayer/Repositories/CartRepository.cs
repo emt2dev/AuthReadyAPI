@@ -1,6 +1,9 @@
-﻿using AuthReadyAPI.DataLayer.Interfaces;
+﻿using AuthReadyAPI.DataLayer.DTOs.Cart;
+using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -13,6 +16,15 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             this._context = context;
             this._mapper = mapper;
+        }
+
+        public async Task<Cart> GET__EXISTING__CART(int companyId, string userId)
+        {
+            Cart CartFound = await _context.Set<Cart>()
+                .Where(found => found.Company == companyId.ToString() && found.Customer == userId)
+                .FirstOrDefaultAsync<Cart>(found => found.Submitted == false);
+
+            return CartFound;
         }
     }
 }

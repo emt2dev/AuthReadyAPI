@@ -38,19 +38,19 @@ namespace AuthReadyAPI.Controllers
             this._cart = cart;
             this._order = order;
             this._user = user;
+        }
 
-        }
-        [HttpPost]
-        [Route("list/category/{keyword}/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
-        {
-            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
-            return AllKeywordProducts;
-        }
+        // [HttpPost]
+        // [Route("list/category/{keyword}/{companyId}")]
+        // // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        // [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        // [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        // [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        // {
+        //     PagedResult<Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
+        //     return AllKeywordProducts;
+        // }
 /*
         [HttpPost]
         [Route("list/category/{keyword}/{companyId}")]
@@ -85,9 +85,33 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public string PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+        // public async Task<IList<Full__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IList<Full__Product>> PRODUCT__ALL(int companyId)
         {
-            return "list of base__product received";
+            IList<Product> ProductsList = new List<Product>();
+            IList<Full__Product> ProductDTOs = new List<Full__Product>();
+
+            ProductsList = await _product.GET__PRODUCT__ALL(companyId);
+
+            foreach (var product in ProductsList)
+                {
+                    Full__Product mappedProduct = new Full__Product {
+                        Id = product.Id.ToString(),
+                        Name = product.Name,
+                        Description = product.Description,
+                        Price_Current = product.Price_Current,
+                        Price_Sale = product.Price_Sale,
+                        Price_Normal = product.Price_Normal,
+                        ImageURL = product.ImageURL,
+                        CompanyId = product.Company,
+                        Modifiers = product.Modifiers,
+                        Keyword = product.Keyword,
+                    };
+
+                    ProductDTOs.Add(mappedProduct);
+                }
+
+            return ProductDTOs;
         }
 /*
         [HttpGet]

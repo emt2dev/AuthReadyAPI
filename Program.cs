@@ -18,6 +18,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using System.Text.Json;
+using MySqlConnector;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,10 +31,15 @@ var builder = WebApplication.CreateBuilder(args);
 // DATABASE, MSSQL
 var CONNECTION_STRING = builder.Configuration.GetConnectionString("SASNM_ConnectionString"); // replace with your own connection string
 
+
+
 builder.Services.AddDbContext<AuthDbContext>(DbOptions =>
 {
     DbOptions.UseSqlServer(CONNECTION_STRING);
 });
+
+// add mysql
+// builder.Services.AddTransient<MySqlConnection>(_ => new MySqlConnection(CONNECTION_STRING));
 
 // asp.net controller
 builder.Services.AddControllers();
@@ -212,7 +218,7 @@ app.Use(async (context, next) =>
     context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
     {
         Public = true,
-        MaxAge = TimeSpan.FromSeconds(10) // refresh the cache every this many seconds
+        MaxAge = TimeSpan.FromSeconds(1) // refresh the cache every this many seconds
     };
 
     context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] = new string[] { "Accept-Encoding" };

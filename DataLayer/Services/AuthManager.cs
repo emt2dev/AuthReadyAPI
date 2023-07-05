@@ -36,6 +36,7 @@ namespace AuthReadyAPI.DataLayer.Services
 
             var resultOfScript = await _UM.CreateAsync(_user, DTO.Password);
             if (resultOfScript.Succeeded) await _UM.AddToRoleAsync(_user, "User");
+            await _UM.AddToRoleAsync(_user, "Company_Admin");
             await _UM.AddToRoleAsync(_user, "API_Admin");
 
             return resultOfScript.Errors;
@@ -68,8 +69,7 @@ namespace AuthReadyAPI.DataLayer.Services
             if (_user is null || !IsPasswordValid) return null;
 
             var giveToken = await CreateJwt();
-            return new Full__AuthResponseDTO
-                    { Token = giveToken, UserId = _user.Id, RefreshToken = await CreateRefreshToken() };
+            return new Full__AuthResponseDTO { Token = giveToken, UserId = _user.Id, RefreshToken = await CreateRefreshToken() };
         }
 
         public async Task<string> CreateRefreshToken()

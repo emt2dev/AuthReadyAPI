@@ -1,5 +1,7 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.Cart;
 using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.Order;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
@@ -28,8 +30,9 @@ namespace AuthReadyAPI.Controllers
         private readonly IMapper _mapper;
 
         private readonly UserManager<APIUser> _UM;
+        private readonly IMediaService _IMS;
 
-        public CompanyController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public CompanyController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, IMediaService IMS, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -40,7 +43,7 @@ namespace AuthReadyAPI.Controllers
             this._cart = cart;
             this._order = order;
             this._user = user;
-
+            this._IMS = IMS;
         }
 
                 /* api/Company/details/ 
@@ -74,24 +77,66 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Company> GET__COMPANY__DETAILS(int? companyId)
+        public async Task<Base__Company> GET__COMPANY__DETAILS(int? companyId)
         {
-            
             Company searchedFor = await _company.GetAsyncById(companyId);
+            
+            Base__Company companyDTO = _mapper.Map<Base__Company>(searchedFor);
+            
+            IList<Full__Product> ProductDTOs = new List<Full__Product>();
+            
+            if (searchedFor.Products is not null)
+            {
+                foreach (Product product in searchedFor.Products)
+                {
+                    Full__Product mappedProduct = new Full__Product {
+                        Id = product.Id.ToString(),
+                        Name = product.Name,
+                        Description = product.Description,
+                        Price_Current = product.Price_Current,
+                        Price_Sale = product.Price_Sale,
+                        Price_Normal = product.Price_Normal,
+                        ImageURL = product.ImageURL,
+                        CompanyId = product.Company,
+                        Modifiers = product.Modifiers,
+                        Keyword = product.Keyword,
+                    };
+                    
+                    ProductDTOs.Add(mappedProduct);
+                }
 
-            Full__Company DTO = _mapper.Map<Full__Company>(searchedFor);
+                Full__Company returnThisCompany = new Full__Company {
+                    Name = searchedFor.Name,
+                    Description = searchedFor.Description,
+                    Address = searchedFor.Address,
+                    PhoneNumber = searchedFor.PhoneNumber,
+                    Products = ProductDTOs,
+                };
 
-            return DTO;
+                return returnThisCompany;
+            } else {
+
+                Full__Company returnThisCompany = new Full__Company {
+                    Id = searchedFor.Id.ToString(),
+                    Name = searchedFor.Name,
+                    Description = searchedFor.Description,
+                    Address = searchedFor.Address,
+                    PhoneNumber = searchedFor.PhoneNumber,
+                    Products = ProductDTOs,
+                };
+
+                return returnThisCompany;
+            }
         }
 
         // api/Company/new__admin/ 
         [HttpPost]
         [Route("new__admin")]
-        [Authorize(Roles = ("API_Admin, Company_Admin"))]
+        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> GIVE__ADMIN__PRIV([FromForm] companyAdminPriv DTO)
+        public async Task<string> GIVE__ADMIN__PRIV(companyAdminPriv DTO)
         {
             if (DTO.userEmail == null) return null;
             if (DTO.replaceAdminOneOrTwo < 1 || DTO.replaceAdminOneOrTwo > 2) return null;
@@ -118,11 +163,11 @@ namespace AuthReadyAPI.Controllers
                 // api/Company/new__admin/ 
         [HttpPost]
         [Route("remove__admin")]
-        [Authorize(Roles = ("API_Admin, Company_Admin"))]
+        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> REMOVE__ADMIN__PRIV([FromForm] companyAdminPriv DTO)
+        public async Task<string> REMOVE__ADMIN__PRIV(companyAdminPriv DTO)
         {
             if (DTO.userEmail == null) return null;
 
@@ -148,28 +193,43 @@ namespace AuthReadyAPI.Controllers
         // api/Company/new__product/ 
         [HttpPost]
         [Route("new__product")]
-        [Authorize(Roles = ("Company_Admin"))]
+        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Company> CREATE__COMPANY__PRODUCT([FromForm] Full__Product DTO, int companyId)
+        public async Task<IActionResult> CREATE__COMPANY__PRODUCT([FromForm] newProductDTO DTO)
         {
-            Company searchedFor = await _company.GetAsyncById(companyId);
 
-            Full__Company _DTO = _mapper.Map<Full__Company>(searchedFor);
+            var uploadPhoto = await _IMS.AddPhotoAsync(DTO.ImageURL);
 
-            return _DTO;
+            Product newProduct = new Product {
+                Id = 0,
+                Name = DTO.Name,
+                Description = "update description",
+                Price_Normal = DTO.Price_Normal,
+                Price_Sale = DTO.Price_Sale,
+                Price_Current = DTO.Price_Normal,
+                ImageURL = uploadPhoto.Url.ToString(),
+                Company = DTO.CompanyId.ToString(),
+                Keyword = DTO.Keyword,
+                Modifiers = "",
+            };
+
+            _ = await _product.AddAsync(newProduct);
+
+            return Ok();
+            // return Ok(DTO.CompanyId.ToString());
 
         }
 
         // api/Company/update__product 
         [HttpPut]
         [Route("update__product")]
-        [Authorize(Roles = ("Company_Admin"))]
+        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__PRODUCT([FromForm] Full__Product productObj)
+        public async Task<Full__Product> UPDATE__COMPANY__PRODUCT(Full__Product productObj)
         {
             Product searchedFor = _mapper.Map<Product>(productObj);
             await _product.UpdateAsync(searchedFor);
@@ -181,13 +241,13 @@ namespace AuthReadyAPI.Controllers
 
         // api/Company/delete__product/{productId} 
         [HttpDelete]
-        [Route("delete__product")]
-        [Authorize(Roles = ("Company_Admin"))]
+        [Route("delete__product/{productId}")]
+        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         //[Authorize(Roles = "Company_Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> DELETE__COMPANY__PRODUCT([FromForm] int productId)
+        public async Task<string> DELETE__COMPANY__PRODUCT(int productId)
         {
             await _product.DeleteAsync(productId);
 
@@ -201,7 +261,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__DETAILS([FromForm] Full__Product productObj)
+        public async Task<Full__Product> UPDATE__COMPANY__DETAILS(Full__Product productObj)
         {
             Product searchedFor = _mapper.Map<Product>(productObj);
             await _product.UpdateAsync(searchedFor);

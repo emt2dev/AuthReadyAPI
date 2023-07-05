@@ -2,16 +2,23 @@ https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?vi
 
 sudo docker pull mcr.microsoft.com/mssql/server:2019-latest
 
-// use this command for persistence
-sudo docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=Tacobe11@' -p 1433:1433 -v /home/candydev/data:/var/opt/mssql/data -v  /home/candydev/log:/var/opt/mssql/log -p 1433:1433 --name sasnm --hostname sasnm -d mcr.microsoft.com/mssql/server:2019-latest
+sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Tacobe11@" -p 1433:1433 --name sql1 --hostname sql1 -d mcr.microsoft.com/mssql/server:2019-latest
 
-// to start
-docker exec -t sasnm cat /home/candydev/log:/var/opt/mssql/log | grep connection
+sudo docker exec -it sql1 "bash"
+
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "Tacobe11@"
+
+https://www.makeuseof.com/set-up-microsoft-sql-server-on-docker-linux/
 
 docker system prune -a
 
 {
-  "email": "customer001@user.com",
+  "email": "customer1@user.com",
+  "password": "P@ssword1"
+}
+
+{
+  "email": "admin1@admin.com",
   "password": "P@ssword1"
 }
 
@@ -26,10 +33,44 @@ docker system prune -a
   "refreshToken": "CfDJ8KEAOUBBDqtNt4HBjfGGRHvQ7FaLykVEpxEtyvaSuACr2P53QFYOj8GtRauub/CgEK6VbWFIumdzJKk6SHduKqI9KzM+tCq/mtIsJgwaappqIoqA4WPalQx3mp9ZWh5tCn8tmxwUt7Fikxht6PkY9kS9qg52KaZf1+DJrQUt1vsSp1jmIlRTPRJAPvKiNrVqXFswukhHu3oLrfQzq9rop9bu5UhEzUv/pyrH4qrclRDC"
 }
 
-{ Email: "admin1@admin.com", Password: "P@ssword1@" }
+{
+  "email": "admin200@admin.com",
+  "password": "P@ssword1"
+}
+
 { Id: "1", Name: "La Imperial Bakery", Description: "A delicious puerto rican restaurant and bakery", Address: "123 E Main St", PhoneNumber: "863-500-4411" }
 
 
 
 
 *ngIf="this.authService.isUserLoggedIn" type="button" class="btn btn-danger">Logout</button>
+
+
+
+tar -xvf azuredatastudio-linux-1.44.1.tar.gz
+echo 'export PATH="$PATH:~/azuredatastudio-linux-x64"' >> ~/.bashrc
+source ~/.bashrc
+
+
+
+<ng-container *ngIf="(this.ROLES?.includes('User'))">
+
+          this.FORM__COMPANY__CREATE__PRODUCT = this.formBuilder.group({
+            id: ['',],
+            name: ['',],
+            price_Normal: [0.00,],
+            price_Sale: [0.00,],
+            imageURL: ['',],
+            companyId: ['',],
+            keyword: ['',]
+          });
+
+{
+  "id": "",
+  "name": "Cafe Con Leche",
+  "price_Normal": 3.59,
+  "price_Sale": 0,
+  "imageURL": "string",
+  "companyId": "1",
+  "keyword": "drink"
+}

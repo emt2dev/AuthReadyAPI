@@ -5,5 +5,6 @@
         public string Description { get; set; }
         public double Price_Current { get; set; }
         public string Modifiers { get; set; }
+        public int Quantity { get; set; }
     }
 }

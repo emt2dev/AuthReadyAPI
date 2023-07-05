@@ -6,7 +6,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Order
     public class Base__Order
     {
         public string? Id { get; set; }
-        public int? deliveryDriver_Id { get; set; }
+        public string? deliveryDriver_Id { get; set; }
         public string? Customer_Id { get; set; }
         public string? CompanyId { get; set; }
         public string? CartId { get; set; }

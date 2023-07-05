@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230705015407_possibleCartFix")]
+    partial class possibleCartFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -335,19 +338,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8685b498-cc3d-4519-b1eb-31b74554d022",
+                            Id = "84a6f9c7-052d-41c6-928b-110650a8551b",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "35e044ef-a918-4c78-b306-2ee7f0a7788f",
+                            Id = "f26ffd06-5079-43af-8668-5b60277841cc",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "eb37e9da-5c3d-49c7-bbef-94e9e797ee4b",
+                            Id = "c00adac9-3e1d-4fc3-8ef2-0d5e1aa679e6",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });

@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230703012813_hopefulfix2")]
+    partial class hopefulfix2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -292,9 +295,6 @@ namespace AuthReadyAPI.Migrations
                     b.Property<double>("Price_Sale")
                         .HasColumnType("float");
 
-                    b.Property<int>("Quanity")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
@@ -335,19 +335,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8685b498-cc3d-4519-b1eb-31b74554d022",
+                            Id = "228653b0-ca76-434b-9a11-977539a55be0",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "35e044ef-a918-4c78-b306-2ee7f0a7788f",
+                            Id = "ddef58d1-86ad-4b99-8906-2fe0fc9e34fe",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "eb37e9da-5c3d-49c7-bbef-94e9e797ee4b",
+                            Id = "8ad25f28-f028-4c50-96a0-a0f6bf8c776d",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });

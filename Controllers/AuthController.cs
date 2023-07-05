@@ -12,6 +12,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using MySqlConnector;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Windows.Input;
@@ -31,7 +32,6 @@ namespace AuthReadyAPI.Controllers
         private readonly ILogger<AuthController> _LOGS;
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
-
         private readonly UserManager<APIUser> _UM;
 
 
@@ -48,7 +48,6 @@ namespace AuthReadyAPI.Controllers
             this._cart = cart;
             this._order = order;
             this._user = user;
-
         }
 
         [HttpPost]
@@ -56,7 +55,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Register([FromForm] Base__APIUser DTO)
+        public async Task<ActionResult> Register(Base__APIUser DTO)
         {
             var errors = await _IAM.USER__REGISTER(DTO);
 
@@ -81,7 +80,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Login([FromForm] Base__APIUser DTO)
+        public async Task<ActionResult> Login(Base__APIUser DTO)
         {
             Full__AuthResponseDTO authenticatedUser = await _IAM.USER__LOGIN(DTO);
 

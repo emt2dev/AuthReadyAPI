@@ -6,9 +6,8 @@ namespace AuthReadyAPI.DataLayer.Interfaces
 {
     public interface IProduct : IGenericRepository<Product>
     {
-        public Task<Full__Product> CREATE__PRODUCT(Full__Product DTO);
-        public Task<PagedResult<Base__Product>> GET__PRODUCT__ALL(int companyId, QueryParameters QP);
-        public Task<PagedResult<Base__Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword);
-        public Task<Full__Product> GET__PRODUCT__ONE(int productId);
+        Task<IList<Product>> GET__PRODUCT__ALL(int companyId);
+        public Task<PagedResult<Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword);
+        public Task<Product> GET__PRODUCT__ONE(int productId);
     }
 }

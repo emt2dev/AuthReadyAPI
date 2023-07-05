@@ -1,6 +1,9 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
+using AuthReadyAPI.DataLayer.DTOs.Cart;
 using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.Order;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
@@ -15,7 +18,7 @@ namespace AuthReadyAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = ("API_Admin"))]
+    // [Authorize(Roles = ("API_Admin"))]
     public class AdminController : ControllerBase
     {
         private readonly ICompany _company;
@@ -52,7 +55,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> CREATE__API__ADMIN([FromForm] Base__APIUser DTO)
+        public async Task<ActionResult> CREATE__API__ADMIN(Base__APIUser DTO)
         {
            var errors = await _IAM.API__ADMIN__REGISTER(DTO);
 
@@ -77,7 +80,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> CREATE__COMPANY([FromForm] Base__Company DTO)
+        public async Task<string> CREATE__COMPANY(Base__Company DTO)
         {
            Base__Company createdCompany = await _apiAdmin.COMPANY__CREATE(DTO);
 
@@ -89,7 +92,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> OVERRIDE__COMPANY__ADMIN([FromForm] overrideDTO DTO)
+        public async Task<string> OVERRIDE__COMPANY__ADMIN(overrideDTO DTO)
         {
             APIUser userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
             userGivenPrivledges.CompanyId = DTO.companyId;
@@ -103,5 +106,40 @@ namespace AuthReadyAPI.Controllers
 
             return DTO.userEmail + " replaced existing admin " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
         }
+
+        [HttpGet]
+        [Route("init")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<string> init()
+        {
+            Base__APIUser newCustomer = new Base__APIUser {
+                Email = "customer1@customer.com",
+                Password = "P@ssword1",
+            };
+
+            _ = await _IAM.USER__REGISTER(newCustomer);
+
+            Base__APIUser newAdmin = new Base__APIUser {
+                Email = "admin100@admin.com",
+                Password = "P@ssword1",
+            };
+
+            _ = await _IAM.API__ADMIN__REGISTER(newAdmin);
+
+            Base__Company newCompany = new Base__Company {
+                Id = "0",
+                Name = "La Imperial Bakery",
+                Description = "A Puerto Rican Bakery",
+                Address = "123 E Main St, Lakeland, FL 33801",
+                PhoneNumber = "863-500-4411",
+            };
+
+            newCompany = await _apiAdmin.COMPANY__CREATE(newCompany);
+
+            return newCompany.Id;
+        }
+
     }
 }

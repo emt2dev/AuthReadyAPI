@@ -7,7 +7,7 @@
 namespace AuthReadyAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class fixeddtoquestionmark : Migration
+    public partial class possibleCartFix : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,26 +15,26 @@ namespace AuthReadyAPI.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "98161368-528a-4c53-9026-fae6bbd7c90c");
+                keyValue: "8a36330a-8b4b-43eb-985c-27522dccad83");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "bcdde897-ddd4-49c4-bc56-8829ee1e663e");
+                keyValue: "8c697457-cad0-4aae-bf6d-688d63084849");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "f48badf0-5760-4a98-b5c7-4cc2dcd92522");
+                keyValue: "b9a5c567-d05f-4007-b71c-995faade7ced");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "449e6715-3723-47f9-a895-c0cec99925b2", null, "Company_Admin", "COMPANY_ADMIN" },
-                    { "9adb03db-6959-4aac-bb33-9f6098ae8235", null, "User", "USER" },
-                    { "c806773f-beda-4e7d-9241-91b25a8e5370", null, "API_Admin", "API_ADMIN" }
+                    { "84a6f9c7-052d-41c6-928b-110650a8551b", null, "Company_Admin", "COMPANY_ADMIN" },
+                    { "c00adac9-3e1d-4fc3-8ef2-0d5e1aa679e6", null, "API_Admin", "API_ADMIN" },
+                    { "f26ffd06-5079-43af-8668-5b60277841cc", null, "User", "USER" }
                 });
         }
 
@@ -44,26 +44,26 @@ namespace AuthReadyAPI.Migrations
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "449e6715-3723-47f9-a895-c0cec99925b2");
+                keyValue: "84a6f9c7-052d-41c6-928b-110650a8551b");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "9adb03db-6959-4aac-bb33-9f6098ae8235");
+                keyValue: "c00adac9-3e1d-4fc3-8ef2-0d5e1aa679e6");
 
             migrationBuilder.DeleteData(
                 table: "AspNetRoles",
                 keyColumn: "Id",
-                keyValue: "c806773f-beda-4e7d-9241-91b25a8e5370");
+                keyValue: "f26ffd06-5079-43af-8668-5b60277841cc");
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "98161368-528a-4c53-9026-fae6bbd7c90c", null, "API_Admin", "API_ADMIN" },
-                    { "bcdde897-ddd4-49c4-bc56-8829ee1e663e", null, "User", "USER" },
-                    { "f48badf0-5760-4a98-b5c7-4cc2dcd92522", null, "Company_Admin", "COMPANY_ADMIN" }
+                    { "8a36330a-8b4b-43eb-985c-27522dccad83", null, "User", "USER" },
+                    { "8c697457-cad0-4aae-bf6d-688d63084849", null, "Company_Admin", "COMPANY_ADMIN" },
+                    { "b9a5c567-d05f-4007-b71c-995faade7ced", null, "API_Admin", "API_ADMIN" }
                 });
         }
     }

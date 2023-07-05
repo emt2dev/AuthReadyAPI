@@ -20,45 +20,40 @@ namespace AuthReadyAPI.DataLayer.Repositories
             this._context = context;
         }
 
-        public async Task<Full__Product> CREATE__PRODUCT(Full__Product DTO)
+        // public async Task<PagedResult<Product>> GET__PRODUCT__ALL(int companyId, QueryParameters QP)
+        public async Task<IList<Product>> GET__PRODUCT__ALL(int companyId)
         {
-            Product newProduct = _mapper.Map<Product>(DTO);
-            Product result = await this.AddAsync(newProduct);
+            // var recordCount = await _context.Set<Product>().CountAsync();
+            // var records = await _context.Set<Product>()
+            //     .Where(found => found.Company == companyId.ToString())
+            //     .Skip(QP.NextPageNumber)
+            //     .Take(QP.PageSize)
+            //     .ToListAsync();
 
-            Full__Product _DTO = _mapper.Map<Full__Product>(result);
+            // return new PagedResult<Product>
+            // {
+            //     Records = records,
+            //     PageNumber = QP.NextPageNumber,
+            //     TotalCount = recordCount
+            // };
 
-            return _DTO;
-        }
-
-        public async Task<PagedResult<Base__Product>> GET__PRODUCT__ALL(int companyId, QueryParameters QP)
-        {
-            var recordCount = await _context.Set<Product>().CountAsync();
-            var records = await _context.Set<Product>()
+            var matchingProducts = await _context.Set<Product>()
                 .Where(found => found.Company == companyId.ToString())
-                .Skip(QP.NextPageNumber)
-                .Take(QP.PageSize)
-                .ProjectTo<Base__Product>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new PagedResult<Base__Product>
-            {
-                Records = records,
-                PageNumber = QP.NextPageNumber,
-                TotalCount = recordCount
-            };
+            return matchingProducts;
         }
 
-        public async Task<PagedResult<Base__Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword)
+        public async Task<PagedResult<Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword)
         {
             var recordCount = await _context.Set<Product>().CountAsync();
             var records = await _context.Set<Product>()
                 .Where(found => found.Company == companyId.ToString() && found.Keyword == keyword)
                 .Skip(QP.NextPageNumber)
                 .Take(QP.PageSize)
-                .ProjectTo<Base__Product>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new PagedResult<Base__Product>
+            return new PagedResult<Product>
             {
                 Records = records,
                 PageNumber = QP.NextPageNumber,
@@ -66,14 +61,12 @@ namespace AuthReadyAPI.DataLayer.Repositories
             };
         }
 
-        public async Task<Full__Product> GET__PRODUCT__ONE(int productId)
+        public async Task<Product> GET__PRODUCT__ONE(int productId)
         {
 
             Product productFound = await this.GetAsyncById(productId);
 
-            Full__Product _DTO = _mapper.Map<Full__Product>(productFound);
-
-            return _DTO;
+            return productFound;
         }
     }
 }
