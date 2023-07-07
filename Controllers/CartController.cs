@@ -40,40 +40,57 @@ namespace AuthReadyAPI.Controllers
 
         // api/cart/existing/{companyId}/{customerId}
         [HttpPost]
-        [Route("existing/{companyId}")]
+        [Route("existing/{companyId}/{userId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Cart> CART__GET__EXISTING(int companyId, string userEmail)
+        public async Task<Cart> CART__GET__EXISTING([FromRoute] int companyId, [FromRoute] string userId)
         {
-            APIUser usersGiven = await _UM.FindByEmailAsync(userEmail);
-
+            APIUser usersGiven = await _UM.FindByIdAsync(userId);
             Cart cartSearchingFor = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
-            IList<Full__Product> ProductDTOs = new List<Full__Product>();
 
-            return cartSearchingFor;
+            Full__Product productToAdd = new Full__Product {
+                Name = "PlaceHolder",
+                Description = "PlaceHolder",
+                Price_Current = 0.00,
+                CompanyId = companyId.ToString(),
+                Price_Normal = 0.00,
+                Price_Sale = 0.00,
+                ImageURL = "https://placehold.it/150x80?text=IMAGE",
+                Modifiers = "none",
+                Keyword = "none",
+                Quantity = 1,
+            };
+            
+            cartSearchingFor.Products.Add(productToAdd);
+            await _cart.UpdateAsync(cartSearchingFor);
 
-            // foreach (var product in cartSearchingFor.Products)
-            // {
-            //     Full__Product mappedProduct = _mapper.Map<Full__Product>(product);
-            //     ProductDTOs.Add(mappedProduct);
-            // }
+            Cart cartSearchingFor2 = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
 
-            // if (cartSearchingFor is not null)
-            // {
-            //     Full__Cart mappedCart = new Full__Cart {
-            //         Id = cartSearchingFor.Id.ToString(),
-            //         Customer_Id = cartSearchingFor.Customer,
-            //         CompanyId = cartSearchingFor.Company,
-            //         Products = ProductDTOs,
-            //         Total_Amount = cartSearchingFor.Total_Amount,
-            //         Abandoned = cartSearchingFor.Abandoned,
-            //         Submitted = cartSearchingFor.Submitted,
-            //         Total_Discounted = cartSearchingFor.Total_Discounted,
-            //         Discount_Rate = cartSearchingFor.Discount_Rate,
-            //     };
-            //     return mappedCart;
+            return cartSearchingFor2;
+            // Full__Product productToAdd = new Full__Product {
+            //     Name = "PlaceHolder",
+            //     Description = "PlaceHolder",
+            //     Price_Current = 0.00,
+            //     CompanyId = companyId.ToString(),
+            //     Price_Normal = 0.00,
+            //     Price_Sale = 0.00,
+            //     ImageURL = "https://placehold.it/150x80?text=IMAGE",
+            //     Modifiers = "none",
+            //     Keyword = "none",
+            //     Quantity = 1,
+            // };
 
+            // if(cartSearchingFor is not null && cartSearchingFor.Products is not null) {
+            //     return cartSearchingFor;
+            // } else if(cartSearchingFor.Products is null) {
+
+            //     cartSearchingFor.Products.Add(productToAdd);
+            //     cartSearchingFor.Total_Amount =  cartSearchingFor.Total_Amount + productToAdd.Price_Current;
+
+            //     await _cart.UpdateAsync(cartSearchingFor);
+
+            //     return cartSearchingFor;
             // } else {
             //     Cart newCart = new Cart {
             //         Customer = usersGiven.Id,
@@ -82,23 +99,13 @@ namespace AuthReadyAPI.Controllers
             //         Submitted = false,
             //     };
 
-            //     newCart = await _cart.AddAsync(newCart);
+            //     newCart.Products.Add(productToAdd);
 
-            //     Full__Cart mappedCart = new Full__Cart {
-            //         Id = newCart.Id.ToString(),
-            //         Customer_Id = newCart.Customer,
-            //         CompanyId = newCart.Company,
-            //         Products = null,
-            //         Total_Amount = newCart.Total_Amount,
-            //         Abandoned = newCart.Abandoned,
-            //         Submitted = newCart.Submitted,
-            //         Total_Discounted = newCart.Total_Discounted,
-            //         Discount_Rate = newCart.Discount_Rate,
-            //     };
-
-            //     return mappedCart;
+            //     return newCart;
             // }
         }
+
+
         /*
         [HttpGet]
         [Route("existing/{companyId}/{customerId}")]
@@ -126,33 +133,122 @@ namespace AuthReadyAPI.Controllers
 
         // api/cart/add/{companyId}/{customerId}
         [HttpPost]
-        [Route("add/{companyId}/{productId}")]
+        [Route("add/{companyId}/{productId}/{userId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Cart> CART__ADD__PRODUCT(int companyId, int productId, [FromForm] string userEmail)
+        public async Task<Full__Cart> CART__ADD__PRODUCT([FromRoute] int companyId, [FromRoute] int productId, [FromRoute] string userId)
         {
-            
             //  * 
             //  *  flowchart
             //  *  if no cart exists with customer and company ids and submitted != true, create cart, add product, return cart
             //  *  if cart == abandoned, change that to false and use that cart
             //  *  if cart exists add product to cart, return cart
             //  *
-            APIUser usersGiven = await _UM.FindByEmailAsync(userEmail);
-            var productToAdd = await _product.GetAsyncById(productId);
+            APIUser usersGiven = await _UM.FindByIdAsync(userId);
+            Product ProductToAdd = await _product.GetAsyncById(productId);
+            Full__Product mappedProduct = _mapper.Map<Full__Product>(ProductToAdd);
+            mappedProduct.Quantity = 1;
 
-            var cartSearchingFor = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
-            Product newQuantity = cartSearchingFor.Products.FirstOrDefault<Product>(productToAdd);
-            newQuantity.Quanity += 1;
+            Cart cartSearchingFor = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
+            // return cartSearchingFor;
 
+            if(cartSearchingFor is not null && cartSearchingFor.Products is not null) {
+                if (cartSearchingFor.Products.IndexOf(mappedProduct) > -1)
+                {
+                    var i = cartSearchingFor.Products.IndexOf(mappedProduct);
+                    cartSearchingFor.Products[i].Quantity ++;
+                    cartSearchingFor.Total_Amount = cartSearchingFor.Total_Amount + cartSearchingFor.Products[i].Price_Current;
+                    _cart.UpdateAsync(cartSearchingFor);
+                } else {
+                    cartSearchingFor.Products.Add(mappedProduct);
+                    cartSearchingFor.Total_Amount = cartSearchingFor.Total_Amount + mappedProduct.Price_Current;
+                    _cart.UpdateAsync(cartSearchingFor);
+                }
+
+                Full__Cart CartDTO = new Full__Cart {
+                    Id = cartSearchingFor.Id.ToString(),
+                    Customer_Id = cartSearchingFor.Customer,
+                    CompanyId = cartSearchingFor.Company,
+                    Total_Amount = cartSearchingFor.Total_Amount,
+                    Total_Discounted = cartSearchingFor.Total_Discounted,
+                    Discount_Rate = cartSearchingFor.Discount_Rate,
+                    Products = cartSearchingFor.Products,
+                    Submitted = cartSearchingFor.Submitted,
+                    Abandoned = cartSearchingFor.Abandoned,
+                };
+
+                return CartDTO;
+            } else if(cartSearchingFor is not null && cartSearchingFor.Products is null) {
+                cartSearchingFor.Products.Add(mappedProduct);
+                cartSearchingFor.Total_Amount = cartSearchingFor.Total_Amount + mappedProduct.Price_Current;
+
+                _cart.UpdateAsync(cartSearchingFor);
+
+                Full__Cart CartDTO = new Full__Cart {
+                    Id = cartSearchingFor.Id.ToString(),
+                    Customer_Id = cartSearchingFor.Customer,
+                    CompanyId = cartSearchingFor.Company,
+                    Total_Amount = cartSearchingFor.Total_Amount,
+                    Total_Discounted = cartSearchingFor.Total_Discounted,
+                    Discount_Rate = cartSearchingFor.Discount_Rate,
+                    Products = cartSearchingFor.Products,
+                    Submitted = cartSearchingFor.Submitted,
+                    Abandoned = cartSearchingFor.Abandoned,
+                };
+
+                return CartDTO;
+            }
             
-            cartSearchingFor.Products.Remove(productToAdd);
-            cartSearchingFor.Products.Add(newQuantity);
             
-            await _cart.UpdateAsync(cartSearchingFor);
+            else {
+                Full__Cart CartDTO = new Full__Cart {
+                    Id = "0",
+                    Customer_Id = "0",
+                    CompanyId = "0",
+                    Total_Amount = 0,
+                    Total_Discounted = 0,
+                    Discount_Rate = 0,
+                    Submitted = false,
+                    Abandoned = false,
+                };
 
-            return cartSearchingFor;
+                CartDTO.Products.Add(mappedProduct);
+
+                return CartDTO;
+            }
+            // } else {
+            //     productList.Add(mappedProduct);
+
+            //     Cart newCart = new Cart {
+            //         Customer = usersGiven.Id,
+            //         Company = companyId.ToString(),
+            //         Total_Amount = mappedProduct.Price_Current,
+            //         Total_Discounted = 0.00,
+            //         Discount_Rate = 0,
+            //         Abandoned = false,
+            //         Submitted = false,
+            //         Products = productList,
+            //     };
+
+            //     if(newCart.Products.Contains(mappedProduct) is false) newCart.Products.Add(mappedProduct);
+
+            //     newCart = await _cart.AddAsync(newCart);
+
+            //     Full__Cart CartDTO = new Full__Cart {
+            //         Id = newCart.Id.ToString(),
+            //         Customer_Id = newCart.Customer,
+            //         CompanyId = newCart.Company,
+            //         Total_Amount = newCart.Total_Amount,
+            //         Total_Discounted = newCart.Total_Discounted,
+            //         Discount_Rate = newCart.Discount_Rate,
+            //         Products = newCart.Products,
+            //         Submitted = newCart.Submitted,
+            //         Abandoned = newCart.Abandoned,
+            //     };
+
+            //     return CartDTO;
+            // }
         }
 
         [HttpPost]
@@ -170,21 +266,26 @@ namespace AuthReadyAPI.Controllers
             //  *  if cart exists add product to cart, return cart
             //  *
             Cart cartSearchingFor = await _cart.GetAsyncById(cartId);
-            // IList<Product> newList = new List<Product>();
+
+            if(cartSearchingFor is not null)
+            {
+                cartSearchingFor.Abandoned = true;
             
-            // Cart newCart = new Cart {
-            //     Customer = cartSearchingFor.Customer,
-            //     Company = cartSearchingFor.Company,
-            //     Total_Amount = 0.00,
-            //     Total_Discounted = 0.00,
-            //     Abandoned = false,
-            //     Submitted = false,
-            //     Products = newList,
-            // };
+                IList<Product> newList = new List<Product>();
+                
+                Cart newCart = new Cart {
+                    Customer = cartSearchingFor.Customer,
+                    Company = cartSearchingFor.Company,
+                    Total_Amount = 0.00,
+                    Total_Discounted = 0.00,
+                    Abandoned = false,
+                    Submitted = false,
+                    // Products = newList,
+                };
 
-            await _cart.DeleteAsync(cartId);
-
-            // await _cart.AddAsync(newCart);
+                await _cart.UpdateAsync(cartSearchingFor);
+                await _cart.AddAsync(newCart);
+            }
 
             return Ok("Cart has been deleted");
         }

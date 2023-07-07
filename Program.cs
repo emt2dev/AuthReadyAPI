@@ -130,6 +130,8 @@ builder.Services.AddScoped<ICompany, CompanyRepository>();
 builder.Services.AddScoped<IProduct, ProductRepository>();
 /* Cart */
 builder.Services.AddScoped<ICart, CartRepository>();
+/* shoppingCart */
+builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>();
 /* Order */
 builder.Services.AddScoped<IOrder, OrderRepository>();
 

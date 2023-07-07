@@ -1,19 +1,28 @@
+stripe payment link https://buy.stripe.com/bIY7sJ62O7wz1dmfZ1
+
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&pivots=cs1-bash
 
 sudo docker pull mcr.microsoft.com/mssql/server:2019-latest
 
 sudo docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=Tacobe11@" -p 1433:1433 --name sql1 --hostname sql1 -d mcr.microsoft.com/mssql/server:2019-latest
 
-sudo docker exec -it sql1 "bash"
+sudo docker exec -it sql1 bash /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "Tacobe11@"
 
-/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "Tacobe11@"
+
+**if new boot
+sudo docker start sql1
+
+sudo docker exec -it sql1
+***
 
 https://www.makeuseof.com/set-up-microsoft-sql-server-on-docker-linux/
 
-docker system prune -a
+sudo systemctl restart docker
+
+sudo docker system prune -a
 
 {
-  "email": "customer1@user.com",
+  "email": "customer1@customer.com",
   "password": "P@ssword1"
 }
 
@@ -38,9 +47,13 @@ docker system prune -a
   "password": "P@ssword1"
 }
 
-{ Id: "1", Name: "La Imperial Bakery", Description: "A delicious puerto rican restaurant and bakery", Address: "123 E Main St", PhoneNumber: "863-500-4411" }
-
-
+{
+  "id": "0",
+  "name": "La Imperial Bakery",
+  "description": "A bakery that specializes in cooking all of the best foods found in Puerto Rico, just the way our grandma's used to make.",
+  "address": "123 E Main Street, Lakeland, FL 33801",
+  "phoneNumber": "863-500-4411"
+}
 
 
 *ngIf="this.authService.isUserLoggedIn" type="button" class="btn btn-danger">Logout</button>

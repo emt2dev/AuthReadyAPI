@@ -73,8 +73,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task UpdateAsync(T entity)
         {
-            _ = _context.Update(entity);
-            _ = await _context.SaveChangesAsync();
+            _context.Update(entity);
+           await _context.SaveChangesAsync();
         }
     }
 }

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AuthReadyAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class init3 : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,12 +33,12 @@ namespace AuthReadyAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Id_admin_one = table.Column<int>(type: "int", nullable: true),
-                    Id_admin_two = table.Column<int>(type: "int", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id_admin_one = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Id_admin_two = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,10 +71,9 @@ namespace AuthReadyAPI.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Company = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsStaff = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CompanyId = table.Column<int>(type: "int", nullable: true),
+                    IsStaff = table.Column<bool>(type: "bit", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -254,6 +253,33 @@ namespace AuthReadyAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Full__Product",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price_Current = table.Column<double>(type: "float", nullable: false),
+                    Modifiers = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CartId = table.Column<int>(type: "int", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price_Normal = table.Column<double>(type: "float", nullable: false),
+                    Price_Sale = table.Column<double>(type: "float", nullable: false),
+                    ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Keyword = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Full__Product", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Full__Product_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -265,23 +291,19 @@ namespace AuthReadyAPI.Migrations
                     Price_Sale = table.Column<double>(type: "float", nullable: false),
                     Price_Current = table.Column<double>(type: "float", nullable: false),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Company = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CompanyId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Modifiers = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CartId = table.Column<int>(type: "int", nullable: true),
-                    CompanyId = table.Column<int>(type: "int", nullable: true),
+                    Keyword = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    CompanyId1 = table.Column<int>(type: "int", nullable: true),
                     OrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Products_Companies_CompanyId",
-                        column: x => x.CompanyId,
+                        name: "FK_Products_Companies_CompanyId1",
+                        column: x => x.CompanyId1,
                         principalTable: "Companies",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -296,9 +318,9 @@ namespace AuthReadyAPI.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "8c3a2248-38a0-48d5-a8c8-6801b1dddae6", null, "API_Admin", "API_ADMIN" },
-                    { "9b937c3e-5894-48e7-a1a4-df20c23e0674", null, "Company_Admin", "COMPANY_ADMIN" },
-                    { "de990989-4ec4-44db-b937-a288bb6e9361", null, "User", "USER" }
+                    { "b6b3a915-3ebc-44d4-acd5-08537e2944dd", null, "User", "USER" },
+                    { "d8e33eaa-5f05-4efd-8f1c-df8ac98f6777", null, "API_Admin", "API_ADMIN" },
+                    { "fc532878-d4d3-485c-a92b-641cea3763a7", null, "Company_Admin", "COMPANY_ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -356,6 +378,11 @@ namespace AuthReadyAPI.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Full__Product_CartId",
+                table: "Full__Product",
+                column: "CartId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_APIUserId",
                 table: "Orders",
                 column: "APIUserId");
@@ -366,14 +393,9 @@ namespace AuthReadyAPI.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_CartId",
+                name: "IX_Products_CompanyId1",
                 table: "Products",
-                column: "CartId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_CompanyId",
-                table: "Products",
-                column: "CompanyId");
+                column: "CompanyId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_OrderId",
@@ -398,6 +420,9 @@ namespace AuthReadyAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Full__Product");
 
             migrationBuilder.DropTable(
                 name: "Products");

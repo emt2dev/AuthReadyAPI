@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230626182939_fixed-bugs-duplicate-fkey-companyid-companyid1")]
-    partial class fixedbugsduplicatefkeycompanyidcompanyid1
+    [Migration("20230706004315_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,57 @@ namespace AuthReadyAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.Full__Product", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Keyword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modifiers")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price_Current")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Normal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Sale")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("Full__Product");
+                });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
                 {
@@ -253,14 +304,11 @@ namespace AuthReadyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Company")
+                    b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int?>("CompanyId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -295,11 +343,12 @@ namespace AuthReadyAPI.Migrations
                     b.Property<double>("Price_Sale")
                         .HasColumnType("float");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyId1");
 
                     b.HasIndex("OrderId");
 
@@ -335,19 +384,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f4a42998-c2d0-440f-a7ab-8722babdb91d",
+                            Id = "fc532878-d4d3-485c-a92b-641cea3763a7",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "7e860b0c-aef9-4482-81f1-309d24583fa1",
+                            Id = "b6b3a915-3ebc-44d4-acd5-08537e2944dd",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "aa9e7d11-eb82-4c8e-bc37-3dec94db9a3b",
+                            Id = "d8e33eaa-5f05-4efd-8f1c-df8ac98f6777",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });
@@ -459,6 +508,13 @@ namespace AuthReadyAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.Full__Product", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Cart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartId");
+                });
+
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
                 {
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
@@ -490,13 +546,9 @@ namespace AuthReadyAPI.Migrations
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Product", b =>
                 {
-                    b.HasOne("AuthReadyAPI.DataLayer.Models.Cart", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
                         .WithMany("Products")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId1");
 
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Order", null)
                         .WithMany("Products")

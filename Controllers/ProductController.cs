@@ -103,7 +103,7 @@ namespace AuthReadyAPI.Controllers
                         Price_Sale = product.Price_Sale,
                         Price_Normal = product.Price_Normal,
                         ImageURL = product.ImageURL,
-                        CompanyId = product.Company,
+                        CompanyId = product.CompanyId,
                         Modifiers = product.Modifiers,
                         Keyword = product.Keyword,
                     };

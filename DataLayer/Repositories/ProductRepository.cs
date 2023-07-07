@@ -38,7 +38,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             // };
 
             var matchingProducts = await _context.Set<Product>()
-                .Where(found => found.Company == companyId.ToString())
+                .Where(found => found.CompanyId == companyId.ToString())
                 .ToListAsync();
 
             return matchingProducts;
@@ -48,7 +48,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             var recordCount = await _context.Set<Product>().CountAsync();
             var records = await _context.Set<Product>()
-                .Where(found => found.Company == companyId.ToString() && found.Keyword == keyword)
+                .Where(found => found.CompanyId == companyId.ToString() && found.Keyword == keyword)
                 .Skip(QP.NextPageNumber)
                 .Take(QP.PageSize)
                 .ToListAsync();

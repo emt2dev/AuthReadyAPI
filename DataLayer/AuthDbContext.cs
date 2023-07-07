@@ -14,6 +14,7 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<Company> Companies { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<shoppingCart> shoppingCarts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

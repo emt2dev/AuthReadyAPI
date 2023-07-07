@@ -20,9 +20,13 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<Cart> GET__EXISTING__CART(int companyId, string userId)
         {
+            // Cart CartFound = await _context.Set<Cart>()
+            //     .Where(found => found.Company == companyId.ToString() && found.Customer == userId && found.Submitted == false && found.Abandoned == false)
+            //     .FirstOrDefaultAsync<Cart>(found => found.Submitted == false && found.Abandoned == false);
+
             Cart CartFound = await _context.Set<Cart>()
                 .Where(found => found.Company == companyId.ToString() && found.Customer == userId)
-                .FirstOrDefaultAsync<Cart>(found => found.Submitted == false);
+                .FirstOrDefaultAsync<Cart>(found => found.Submitted == false && found.Abandoned == false);
 
             return CartFound;
         }

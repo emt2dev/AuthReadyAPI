@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230703043526_newdtochanges")]
-    partial class newdtochanges
+    [Migration("20230706050239_shoppingCart")]
+    partial class shoppingCart
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,97 @@ namespace AuthReadyAPI.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.CartItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("count")
+                        .HasColumnType("int");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("productId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("shoppingCartId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("shoppingCartId");
+
+                    b.ToTable("CartItem");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.Full__Product", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CartId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Keyword")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Modifiers")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price_Current")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Normal")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price_Sale")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CartId");
+
+                    b.ToTable("Full__Product");
+                });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
                 {
@@ -253,14 +344,11 @@ namespace AuthReadyAPI.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("CartId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Company")
+                    b.Property<string>("CompanyId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("CompanyId")
+                    b.Property<int?>("CompanyId1")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -295,15 +383,46 @@ namespace AuthReadyAPI.Migrations
                     b.Property<double>("Price_Sale")
                         .HasColumnType("float");
 
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CartId");
-
-                    b.HasIndex("CompanyId");
+                    b.HasIndex("CompanyId1");
 
                     b.HasIndex("OrderId");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.shoppingCart", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("abandoned")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("companyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("cost")
+                        .HasColumnType("float");
+
+                    b.Property<string>("customerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("submitted")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("shoppingCarts");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -335,19 +454,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "faee0767-0a60-4c53-a3c3-764e5a777f50",
+                            Id = "6ce41915-202d-4329-b862-a6f0829484aa",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "7f0bc85a-bdd4-4b0c-9fbe-deb7bce8e42b",
+                            Id = "466cce3c-3d5a-433f-ac0c-3726aece746f",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "6e9d2850-cee6-4724-8ef3-04a5197b2850",
+                            Id = "3bc39908-0c50-48dd-a163-86d5b6319916",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });
@@ -459,6 +578,20 @@ namespace AuthReadyAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.CartItem", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.shoppingCart", null)
+                        .WithMany("Items")
+                        .HasForeignKey("shoppingCartId");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.DTOs.Product.Full__Product", b =>
+                {
+                    b.HasOne("AuthReadyAPI.DataLayer.Models.Cart", null)
+                        .WithMany("Products")
+                        .HasForeignKey("CartId");
+                });
+
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.APIUser", b =>
                 {
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
@@ -490,13 +623,9 @@ namespace AuthReadyAPI.Migrations
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Product", b =>
                 {
-                    b.HasOne("AuthReadyAPI.DataLayer.Models.Cart", null)
-                        .WithMany("Products")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Company", null)
                         .WithMany("Products")
-                        .HasForeignKey("CompanyId");
+                        .HasForeignKey("CompanyId1");
 
                     b.HasOne("AuthReadyAPI.DataLayer.Models.Order", null)
                         .WithMany("Products")
@@ -580,6 +709,11 @@ namespace AuthReadyAPI.Migrations
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Order", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.shoppingCart", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

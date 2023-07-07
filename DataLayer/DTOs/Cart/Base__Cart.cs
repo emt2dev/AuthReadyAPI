@@ -9,7 +9,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Cart
         public string Customer_Id { get; set; }
 
         public string CompanyId { get; set; }
-        public virtual IList<Full__Product>? Products { get; set; }
+        public virtual IList<Full__Product> Products { get; set; }
         public double Total_Amount { get; set; }
         public Boolean Abandoned { get; set; }
         public Boolean Submitted { get; set; }
