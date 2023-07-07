@@ -202,26 +202,11 @@ namespace AuthReadyAPI.Controllers
 
             var uploadPhoto = await _IMS.AddPhotoAsync(DTO.ImageURL);
 
-// Below is production
-            // Product newProduct = new Product {
-            //     Id = 0,
-            //     Name = DTO.Name,
-            //     Description = "update description",
-            //     Price_Normal = DTO.Price_Normal,
-            //     Price_Sale = DTO.Price_Sale,
-            //     Price_Current = DTO.Price_Normal,
-            //     ImageURL = uploadPhoto.Url.ToString(),
-            //     CompanyId = DTO.CompanyId.ToString(),
-            //     Keyword = DTO.Keyword,
-            //     Modifiers = "",
-            // };
-
-// Below is dev
             Product newProduct = new Product {
                 Id = 0,
                 Name = DTO.Name,
                 Description = "update description",
-                Price_Normal = 3.99,
+                Price_Normal = DTO.Price_Normal,
                 Price_Sale = DTO.Price_Sale,
                 Price_Current = DTO.Price_Normal,
                 ImageURL = uploadPhoto.Url.ToString(),
