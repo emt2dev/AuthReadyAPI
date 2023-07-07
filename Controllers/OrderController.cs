@@ -46,7 +46,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public string ORDER__SUBMITTED(int cartId)
+        public string ORDER__SUBMITTED([FromBody] int shoppingCartId)
         {
             /*
              * 
@@ -54,7 +54,7 @@ namespace AuthReadyAPI.Controllers
              * Notify Company of new order
              * Notify customer of payment processed
              */
-            string result = $"cartId: {cartId}, return order";
+            string result = $"shoppingCartId: {shoppingCartId}, return order";
             return result;
         }
 
