@@ -68,9 +68,10 @@ namespace AuthReadyAPI.Controllers
                     LineItems = new List<SessionLineItemOptions>(),
                     Currency = "usd",
                     Mode = "payment",
-                    SuccessUrl = "http://localhost:4200/",
-                    CancelUrl = "http://localhost:4200/",
+                    SuccessUrl = "http://localhost:4200/success.html",
+                    CancelUrl = "http://localhost:4200/cancel.html",
                     CustomerEmail = customerFound.Email,
+                    ClientReferenceId = cartSubmitted.Id.ToString()+1,
             };
 
             // Populate LineItems with detail from each ShoppingCart
@@ -106,7 +107,9 @@ namespace AuthReadyAPI.Controllers
             // Use the session service to create a Stripe API session
             
             Session session = service.Create(options);
-            return Ok(session);
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+            // return Ok(session);
            
 
             // return Ok("reached");
