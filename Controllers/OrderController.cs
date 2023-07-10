@@ -44,96 +44,72 @@ namespace AuthReadyAPI.Controllers
 
         /* api/order/submit/pickup */
         [HttpPost]
-        [Route("submit/pickup")]
+        [Route("submit/pickup/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> ORDER__SUBMITTED([FromBody] int shoppingCartId)
+        public async Task<IActionResult> ORDER__SUBMITTED([FromRoute] int companyId, string customerId)
         {
             /* 
                 * Process stripe api payment here
                 * Notify Company of new order
                 * Notify customer of payment processed
             */
-            shoppingCart cartSubmitted = await _cart.GetAsyncById(shoppingCartId);
-            List<SessionLineItemOptions> listTransfer = new List<SessionLineItemOptions>();
-
-            // Populate LineItems with detail from each ShoppingCart
-            foreach (var item in cartSubmitted.Items)
-            {
-                var sessionLineItem = new SessionLineItemOptions
-                {
-                    PriceData = new SessionLineItemPriceDataOptions
-                    {
-                        UnitAmount = (long)(item.price * 100),//20.00 -> 2000
-                        Currency = "usd",
-                        ProductData = new SessionLineItemPriceDataProductDataOptions
-                        {
-                            Name = item.name
-                        },
-                    },
-                    Quantity = item.count,
-                };
-                listTransfer.Add(sessionLineItem);
-            }
+            // shoppingCart cartSubmitted = await _cart.GetAsyncById(shoppingCartId);
+            shoppingCart cartSubmitted = await _cart.GET__EXISTING__CART(companyId, customerId);
+            APIUser customerFound = await _IAM.USER__DETAILS(customerId);
 
             var options = new SessionCreateOptions {
                 PaymentMethodTypes = new List<string>
                     {
                         "card",
                     },
-                    LineItems = listTransfer,
+                    AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
+                    LineItems = new List<SessionLineItemOptions>(),
                     Currency = "usd",
                     Mode = "payment",
-                    SuccessUrl = "order received",
-                    CancelUrl = "payment failed",
+                    SuccessUrl = "http://localhost:4200/",
+                    CancelUrl = "http://localhost:4200/",
+                    CustomerEmail = customerFound.Email,
             };
 
             // Populate LineItems with detail from each ShoppingCart
-            // foreach (var item in cartSubmitted.Items)
-            // {
-            //     var sessionLineItem = new SessionLineItemOptions
-            //     {
-            //         PriceData = new SessionLineItemPriceDataOptions
-            //         {
-            //             UnitAmount = (long)(item.price * 100),//20.00 -> 2000
-            //             Currency = "usd",
-            //             ProductData = new SessionLineItemPriceDataProductDataOptions
-            //             {
-            //                 Name = item.name
-            //             },
-            //         },
-            //         Quantity = item.count,
-            //     };
-            //     options.LineItems.Add(sessionLineItem);
-            // }
+            foreach (CartItem item in cartSubmitted.Items)
+            {
+                SessionLineItemOptions sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
 
-            return Ok(options);
-
-            // // Create a Stripe API session service
-            // var service = new SessionService();
+                        TaxBehavior = "inclusive",
+                        UnitAmount = (long)(item.price * 100),//20.00 -> 2000
+                        Currency = "usd",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Description = item.description,
+                            Name = item.name,
+                            TaxCode = "txcd_40060003",
+                        },
+                    },
+                    
+                    Quantity = Convert.ToInt64(item.count),
+                };
+                options.LineItems.Add(sessionLineItem);
+            }
             
-            // // Use the session service to create a Stripe API session
-            // Session session = service.Create(options);
+            //  return Ok(options.LineItems);
 
+            // Create a Stripe API session service
+            var service = new SessionService();
+
+            // return Ok(service);
+            // Use the session service to create a Stripe API session
             
+            Session session = service.Create(options);
+            return Ok(session);
+           
 
-            // if(session.Url == "order received") {
-            //     Order newOrder = new Order {
-            //         shoppingCartId = shoppingCartId.ToString(),
-            //         CurrentStatus = "Order recevied",
-            //         Payment_Complete = true,
-            //         delivery = false,
-            //         Payment_Amount = cartSubmitted.cost,
-            //         Time__Submitted = DateTime.Now
-            //     };
-            // } else {
-            //     return Ok(options);
-            //     // return "payment failed";
-            // }
-
-            // string result = $"shoppingCartId: {shoppingCartId}, return order";
-            // return Ok(result);
+            // return Ok("reached");
         }
 
         /* api/order/cancel */
