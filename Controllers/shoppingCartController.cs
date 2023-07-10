@@ -55,13 +55,14 @@ namespace AuthReadyAPI.Controllers
                     cost = 0.00,
                     submitted = false,
                     abandoned = false,
+                    costInString = "",
                 };
 
                 newCart = await _cart.AddAsync(newCart);
 
                 return Ok(newCart);
             } else if (findShoppingCart is not null) {
-                
+                findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
                 return Ok(findShoppingCart);
             }           
 
@@ -78,6 +79,7 @@ namespace AuthReadyAPI.Controllers
             var findProduct = await _product.GetAsyncById(productId);
             var companyId = int.Parse(findProduct.CompanyId);
             var findShoppingCart = await _cart.GET__EXISTING__CART(companyId, customerId);
+            findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
             double startPoint = findShoppingCart.cost;
 
             if(findProduct is not null && findShoppingCart is not null) {
@@ -99,6 +101,7 @@ namespace AuthReadyAPI.Controllers
                         if (item.productId == addItemToCart.productId) {
                             item.count++;
                             findShoppingCart.cost = findShoppingCart.cost + addItemToCart.price;
+                            findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
 
                             await _cart.UpdateAsync(findShoppingCart);
 
@@ -113,6 +116,8 @@ namespace AuthReadyAPI.Controllers
                         
                         findShoppingCart.cost = findShoppingCart.cost + addItemToCart.price;
 
+                        findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
+
                         await _cart.UpdateAsync(findShoppingCart);
 
                         return Ok("Item Added to Cart landmark");
@@ -120,6 +125,8 @@ namespace AuthReadyAPI.Controllers
                 } else {
                         findShoppingCart.Items.Add(addItemToCart);
                         findShoppingCart.cost = findShoppingCart.cost + addItemToCart.price;
+
+                        findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
 
                         await _cart.UpdateAsync(findShoppingCart);
                         return Ok("Item Added to Cart else landmark");
@@ -131,6 +138,7 @@ namespace AuthReadyAPI.Controllers
                     cost = 0.00,
                     submitted = false,
                     abandoned = false,
+                    costInString = "",
                 };
 
                 CartItem addItemToCart = new CartItem {
@@ -144,6 +152,7 @@ namespace AuthReadyAPI.Controllers
 
                 newCart.Items.Add(addItemToCart);
                 newCart.cost = newCart.cost + addItemToCart.price;
+                newCart.costInString = newCart.cost.ToString("0.####");
 
                 newCart = await _cart.AddAsync(newCart);
 
@@ -175,6 +184,7 @@ namespace AuthReadyAPI.Controllers
                     cost = 0.00,
                     submitted = false,
                     abandoned = false,
+                    costInString = cartSearchingFor.cost.ToString("0.##")
                 };
 
                 await _cart.UpdateAsync(cartSearchingFor);
@@ -214,6 +224,9 @@ namespace AuthReadyAPI.Controllers
                     else item.count = item.count - 1;
                 }
             }
+
+
+            cartSearchingFor.costInString = cartSearchingFor.cost.ToString("0.####");
 
             await _cart.UpdateAsync(cartSearchingFor);
             return Ok("Cart has been updated");

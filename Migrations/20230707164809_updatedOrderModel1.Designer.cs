@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230707164809_updatedOrderModel1")]
+    partial class updatedOrderModel1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -405,10 +408,6 @@ namespace AuthReadyAPI.Migrations
                     b.Property<double>("cost")
                         .HasColumnType("float");
 
-                    b.Property<string>("costInString")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("customerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -450,19 +449,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2f703993-6d59-460d-8808-c72d700d17f2",
+                            Id = "ddba3923-af40-4543-8bf8-9bee2f56b502",
                             Name = "Company_Admin",
                             NormalizedName = "COMPANY_ADMIN"
                         },
                         new
                         {
-                            Id = "21f2ce8e-21ad-4f71-8316-3432e59c58f8",
+                            Id = "daf30339-f51b-4a64-b7b2-6b43224d5297",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "d5f5e2d4-88aa-4f77-bf32-e580d7f3957d",
+                            Id = "7e1bf9e7-4fa3-45dd-90f5-3e1a6ab4f571",
                             Name = "API_Admin",
                             NormalizedName = "API_ADMIN"
                         });

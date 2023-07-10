@@ -48,26 +48,7 @@ namespace AuthReadyAPI.Controllers
         {
             APIUser usersGiven = await _UM.FindByIdAsync(userId);
             Cart cartSearchingFor = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
-
-            Full__Product productToAdd = new Full__Product {
-                Name = "PlaceHolder",
-                Description = "PlaceHolder",
-                Price_Current = 0.00,
-                CompanyId = companyId.ToString(),
-                Price_Normal = 0.00,
-                Price_Sale = 0.00,
-                ImageURL = "https://placehold.it/150x80?text=IMAGE",
-                Modifiers = "none",
-                Keyword = "none",
-                Quantity = 1,
-            };
-            
-            cartSearchingFor.Products.Add(productToAdd);
-            await _cart.UpdateAsync(cartSearchingFor);
-
-            Cart cartSearchingFor2 = await _cart.GET__EXISTING__CART(companyId, usersGiven.Id);
-
-            return cartSearchingFor2;
+            return cartSearchingFor;
             // Full__Product productToAdd = new Full__Product {
             //     Name = "PlaceHolder",
             //     Description = "PlaceHolder",
@@ -154,17 +135,18 @@ namespace AuthReadyAPI.Controllers
             // return cartSearchingFor;
 
             if(cartSearchingFor is not null && cartSearchingFor.Products is not null) {
-                if (cartSearchingFor.Products.IndexOf(mappedProduct) > -1)
+                var j = cartSearchingFor.Products.IndexOf(mappedProduct);
+                if (j > -1)
                 {
                     var i = cartSearchingFor.Products.IndexOf(mappedProduct);
-                    cartSearchingFor.Products[i].Quantity ++;
+                    cartSearchingFor.Products[i].Quantity = cartSearchingFor.Products[i].Quantity++;
                     cartSearchingFor.Total_Amount = cartSearchingFor.Total_Amount + cartSearchingFor.Products[i].Price_Current;
-                    _cart.UpdateAsync(cartSearchingFor);
                 } else {
                     cartSearchingFor.Products.Add(mappedProduct);
                     cartSearchingFor.Total_Amount = cartSearchingFor.Total_Amount + mappedProduct.Price_Current;
-                    _cart.UpdateAsync(cartSearchingFor);
                 }
+
+                await _cart.UpdateAsync(cartSearchingFor);
 
                 Full__Cart CartDTO = new Full__Cart {
                     Id = cartSearchingFor.Id.ToString(),

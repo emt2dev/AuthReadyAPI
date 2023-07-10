@@ -12,7 +12,7 @@ sudo docker exec -it sql1 bash /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P
 **if new boot
 sudo docker start sql1
 
-sudo docker exec -it sql1
+sudo docker exec -it sql1 bash
 ***
 
 https://www.makeuseof.com/set-up-microsoft-sql-server-on-docker-linux/
@@ -20,6 +20,27 @@ https://www.makeuseof.com/set-up-microsoft-sql-server-on-docker-linux/
 sudo systemctl restart docker
 
 sudo docker system prune -a
+18
+{
+  "id": 18,
+  "customerId": "697295b4-08ab-48b2-91ef-7f1fdffb29b7",
+  "companyId": "1",
+  "items": [
+    {
+      "id": 1,
+      "productId": "1",
+      "name": "test product one",
+      "price": 5.99,
+      "imageURL": "http://res.cloudinary.com/dkagjfqlz/image/upload/v1688604365/k3peuslbgkdg83rcky7w.jpg",
+      "count": 7,
+      "description": "update description"
+    }
+  ],
+  "cost": 41.93000000000001,
+  "submitted": false,
+  "abandoned": false,
+  "costInString": "41.93"
+}
 
 {
   "email": "customer1@customer.com",
@@ -32,7 +53,7 @@ sudo docker system prune -a
 }
 
 {
-  "userId": "e94efd5d-32a8-4b4c-8581-f779b6014dc3",
+  "userId": "697295b4-08ab-48b2-91ef-7f1fdffb29b7",
   "token": "
   
   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjdXN0b21lcjAwMUB1c2VyLmNvbSIsImp0aSI6ImY4MjlhNjI4LTdhNGMtNGIyZS04ZGU0LTNmZWUzMzA1YjU1YSIsImVtYWlsIjoiY3VzdG9tZXIwMDFAdXNlci5jb20iLCJ1aWQiOiJlOTRlZmQ1ZC0zMmE4LTRiNGMtODU4MS1mNzc5YjYwMTRkYzMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNjg3ODQyMTczLCJpc3MiOiJBdXRoUmVhZHlBUEkiLCJhdWQiOiJBdXRoUmVhZHlBUElVc2VycyJ9.MbLkbcgtKWM6FKviEoYn7fj_pfMKdG-Gnd8TE_rNmZU
@@ -46,6 +67,48 @@ sudo docker system prune -a
   "email": "admin200@admin.com",
   "password": "P@ssword1"
 }
+
+
+  "afterExpiration": null,
+  "allowPromotionCodes": null,
+  "automaticTax": null,
+  "billingAddressCollection": null,
+  "cancelUrl": "payment failed",
+  "clientReferenceId": null,
+  "consentCollection": null,
+  "currency": null,
+  "customFields": null,
+  "customText": null,
+  "customer": null,
+  "customerCreation": null,
+  "customerEmail": null,
+  "customerUpdate": null,
+  "discounts": null,
+  "expiresAt": null,
+  "invoiceCreation": null,
+  "lineItems": [],
+  "locale": null,
+  "metadata": null,
+  "mode": "payment",
+  "paymentIntentData": null,
+  "paymentMethodCollection": null,
+  "paymentMethodOptions": null,
+  "paymentMethodTypes": [
+    "card"
+  ],
+  "phoneNumberCollection": null,
+  "setupIntentData": null,
+  "shippingAddressCollection": null,
+  "shippingOptions": null,
+  "shippingRates": null,
+  "submitType": null,
+  "subscriptionData": null,
+  "successUrl": "order received",
+  "taxIdCollection": null,
+  "expand": null,
+  "extraParams": {}
+}
+
 
 {
   "id": "0",

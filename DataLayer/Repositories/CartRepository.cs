@@ -25,6 +25,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             //     .FirstOrDefaultAsync<Cart>(found => found.Submitted == false && found.Abandoned == false);
 
             Cart CartFound = await _context.Set<Cart>()
+            .Include(x => x.Products)
                 .Where(found => found.Company == companyId.ToString() && found.Customer == userId)
                 .FirstOrDefaultAsync<Cart>(found => found.Submitted == false && found.Abandoned == false);
 

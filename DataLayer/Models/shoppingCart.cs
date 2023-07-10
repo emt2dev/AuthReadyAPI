@@ -12,5 +12,6 @@ namespace AuthReadyAPI.DataLayer.Models
         public double cost {get;set;}
         public Boolean submitted {get;set;}
         public Boolean abandoned {get;set;}
+        public string costInString { get; set; }
     }
 }

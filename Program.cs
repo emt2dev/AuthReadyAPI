@@ -18,8 +18,7 @@ using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 using System.Text.Json;
-using MySqlConnector;
-
+using Stripe;
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -31,7 +30,7 @@ var builder = WebApplication.CreateBuilder(args);
 // DATABASE, MSSQL
 var CONNECTION_STRING = builder.Configuration.GetConnectionString("SASNM_ConnectionString"); // replace with your own connection string
 
-
+StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddDbContext<AuthDbContext>(DbOptions =>
 {
