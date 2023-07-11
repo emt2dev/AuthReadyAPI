@@ -115,6 +115,21 @@ builder.Services.AddIdentityCore<APIUser>()
 
 /* Generic Interface and Repository */
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); // uses these interfaces/classes
+builder.Services.AddScoped(typeof(IV2_GenericRepository<>), typeof(v2_GenericRepository<>)); // uses these interfaces/classes
+
+/* v2 */
+/* shoppingCart */
+builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>(); // Designed for stripe checkout
+
+/* v2_Product */
+builder.Services.AddScoped<IV2_Product, v2_ProductRepository>(); // Designed to be stripe products
+
+/* v2_Product */
+builder.Services.AddScoped<IV2_Product, v2_ProductRepository>(); // Designed to be stripe products
+
+
+
+
 
 /* IAuthManager */
 builder.Services.AddScoped<IAuthManager, AuthManager>();
@@ -129,8 +144,7 @@ builder.Services.AddScoped<ICompany, CompanyRepository>();
 builder.Services.AddScoped<IProduct, ProductRepository>();
 /* Cart */
 builder.Services.AddScoped<ICart, CartRepository>();
-/* shoppingCart */
-builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>();
+
 /* Order */
 builder.Services.AddScoped<IOrder, OrderRepository>();
 

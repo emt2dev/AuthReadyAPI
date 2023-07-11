@@ -27,6 +27,14 @@ namespace AuthReadyAPI.Configurations
 
             CreateMap<Order, Full__Order>().ReverseMap();
             CreateMap<Order, Base__Order>().ReverseMap();
+
+
+            // V2 Product
+            CreateMap<v2_ProductStripe, v2_ProductDTO>().ReverseMap();
+            // V2 Customer
+            CreateMap<v2_CustomerStripe, v2_CustomerDTO>().ReverseMap();
+            // V2 Company
+            CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();
         }
         
     }

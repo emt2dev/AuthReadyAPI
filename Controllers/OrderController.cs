@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Stripe.Checkout;
 using System.ComponentModel.Design;
 
@@ -59,6 +60,15 @@ namespace AuthReadyAPI.Controllers
             shoppingCart cartSubmitted = await _cart.GET__EXISTING__CART(companyId, customerId);
             APIUser customerFound = await _IAM.USER__DETAILS(customerId);
 
+            var intent = new PaymentIntentCreateOptions
+                {
+                    Amount = 1099,
+                    Currency = "usd",
+                    PaymentMethodTypes = new List<string> { "card" },
+                };
+            var intentService = new PaymentIntentService();
+            intentService.Create(intent);
+
             var options = new SessionCreateOptions {
                 PaymentMethodTypes = new List<string>
                     {
@@ -71,7 +81,7 @@ namespace AuthReadyAPI.Controllers
                     SuccessUrl = "http://localhost:4200/success.html",
                     CancelUrl = "http://localhost:4200/cancel.html",
                     CustomerEmail = customerFound.Email,
-                    ClientReferenceId = cartSubmitted.Id.ToString()+1,
+                    ClientReferenceId = cartSubmitted.customerId.ToString(),
             };
 
             // Populate LineItems with detail from each ShoppingCart
@@ -107,7 +117,7 @@ namespace AuthReadyAPI.Controllers
             // Use the session service to create a Stripe API session
             
             Session session = service.Create(options);
-            Response.Headers.Add("Location", session.Url);
+            Response.Headers.Add("Location", "/"+session.Url);
             return new StatusCodeResult(303);
             // return Ok(session);
            
