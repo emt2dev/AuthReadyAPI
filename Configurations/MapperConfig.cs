@@ -31,10 +31,21 @@ namespace AuthReadyAPI.Configurations
 
             // V2 Product
             CreateMap<v2_ProductStripe, v2_ProductDTO>().ReverseMap();
+
             // V2 Customer
             CreateMap<v2_CustomerStripe, v2_CustomerDTO>().ReverseMap();
+
             // V2 Company
             CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();
+
+            // V2 scart
+            CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();
+
+            // V2 order
+            CreateMap<v2_Order, v2_OrderDTO>().ReverseMap();
+
+            // V2 order
+            CreateMap<v2_Staff, v2_StaffDTO>().ReverseMap();
         }
         
     }

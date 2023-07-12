@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.Checkout;
 using System.ComponentModel.Design;
+using System.Text.Json;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -21,15 +22,15 @@ namespace AuthReadyAPI.Controllers
         private readonly IUser _user;
         private readonly IProduct _product;
         private readonly IShoppingCart _cart;
-        private readonly IOrder _order;
-
-        private readonly ILogger<AuthController> _LOGS;
+        private readonly IV2_Order _order;
+        private readonly ILogger<OrderController> _LOGS;
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configs;
         private readonly UserManager<APIUser> _UM;
+        private readonly IStripeService _ss;
 
-        public OrderController(IConfiguration configs, ICompany company, IUser user, IProduct product, IShoppingCart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public OrderController(IStripeService ss, IConfiguration configs, ICompany company, IUser user, IProduct product, IShoppingCart cart, IV2_Order order, ILogger<OrderController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -41,6 +42,28 @@ namespace AuthReadyAPI.Controllers
             this._order = order;
             this._user = user;
             this._configs = configs;
+            this._ss = ss;
+        }
+
+/* api/order/submit/pickup */
+        [HttpPost]
+        [Route("submit/test/{companyId}/{customerId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<JsonResult> testOrder([FromRoute] int companyId, string customerId)
+        {
+            shoppingCart cartSubmitted = await _cart.GET__EXISTING__CART(companyId, customerId);
+            APIUser customerFound = await _IAM.USER__DETAILS(customerId);
+            var sessionId = await _ss.CheckOut(cartSubmitted, customerFound);
+
+            // v2_Order newOrder = new v2_Order {
+            //     cart = cartSubmitted,
+            // };
+            
+            var i = new JsonResult(sessionId, new JsonSerializerOptions { PropertyNamingPolicy = null});
+            // Response.Headers.Add("Location", "/"+session.Url);
+            return i;
         }
 
         /* api/order/submit/pickup */

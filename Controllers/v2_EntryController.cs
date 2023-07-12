@@ -1,7 +1,5 @@
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
-using AuthReadyAPI.DataLayer.DTOs.Pagination;
-using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;

@@ -31,6 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 var CONNECTION_STRING = builder.Configuration.GetConnectionString("SASNM_ConnectionString"); // replace with your own connection string
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
+builder.Services.AddHttpContextAccessor(); // obtain the base URL of my http server
 
 builder.Services.AddDbContext<AuthDbContext>(DbOptions =>
 {
@@ -118,18 +119,27 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped(typeof(IV2_GenericRepository<>), typeof(v2_GenericRepository<>)); // uses these interfaces/classes
 
 /* v2 */
+/* v2_ShoppingCart */
+builder.Services.AddScoped<IV2_ShoppingCart, v2_ShoppingCartRepository>(); // Designed for stripe checkout
+
+/* v2_Products */
+builder.Services.AddScoped<IV2_Product, v2_ProductRepository>(); // Designed to be stripe products
+
+/* v2_Companies */
+builder.Services.AddScoped<IV2_Company, v2_CompanyRepository>(); // Designed to be stripe products
+
+/* v2_Product */
+builder.Services.AddScoped<IV2_Order, v2_OrderRepository>(); // Designed to be stripe products
+
+/* v2_Product */
+builder.Services.AddScoped<IV2_Customer, v2_CustomerRepository>(); // Designed to be stripe products
+
+/* v2_Product */
+builder.Services.AddScoped<IV2_Staff, v2_StaffRepository>(); // Designed to be stripe products
+
+
 /* shoppingCart */
 builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>(); // Designed for stripe checkout
-
-/* v2_Product */
-builder.Services.AddScoped<IV2_Product, v2_ProductRepository>(); // Designed to be stripe products
-
-/* v2_Product */
-builder.Services.AddScoped<IV2_Product, v2_ProductRepository>(); // Designed to be stripe products
-
-
-
-
 
 /* IAuthManager */
 builder.Services.AddScoped<IAuthManager, AuthManager>();

@@ -25,13 +25,13 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
-        [Route("all")]
+        [Route("all/{companyId}")]
         // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         // public async Task<IList<Full__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
-        public async Task<IList<v2_ProductDTO>> getAllProducts(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IList<v2_ProductDTO>> getAllProducts([FromRoute] int companyId)
         {
             IList<v2_ProductStripe> listOfAllProducts = new List<v2_ProductStripe>();
             listOfAllProducts = await _product.GetAllAsync<v2_ProductStripe>();
@@ -73,14 +73,39 @@ namespace AuthReadyAPI.Controllers
 
             v2_ProductStripe newProduct = _mapper.Map<v2_ProductStripe>(incomingDTO);
 
-            newProduct.images.Add(uploadPhoto.Url.ToString());
-            newProduct.priceInString = newProduct.default_price.ToString("0.####");
+            newProduct.image = uploadPhoto.Url.ToString();
+            var i = (double)newProduct.default_price;
+            newProduct.priceInString = i.ToString("0.####");
 
             _ = await _product.AddAsync(newProduct);
 
             return Ok();
-            // return Ok(DTO.CompanyId.ToString());
+        }
 
+        [HttpPut]
+        [Route("update")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> updateProduct([FromForm] v2_ProductDTO incomingDTO)
+        {
+            v2_ProductStripe updatedProduct = _mapper.Map<v2_ProductStripe>(incomingDTO);
+
+            await _product.UpdateAsync(updatedProduct);
+
+            return Ok();
+        }
+
+        [HttpDelete]
+        [Route("delete/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> deleteProduct([FromRoute] int productId)
+        {
+            await _product.DeleteAsync(productId);
+
+            return Ok();
         }
     }
 }

@@ -59,8 +59,8 @@ namespace AuthReadyAPI.Controllers
             return Ok("removed admin");
         }
 
-        [HttpPost]
-        [Route("update/{companyId}")]
+        [HttpPut]
+        [Route("update")]
         // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues

@@ -1,4 +1,6 @@
 using System.ComponentModel.DataAnnotations;
+using AuthReadyAPI.DataLayer.DTOs.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 
 namespace AuthReadyAPI.DataLayer.Models
 {
@@ -22,10 +24,9 @@ namespace AuthReadyAPI.DataLayer.Models
         public string? locationImageUrl { get; set; }
         public string? logoImageUrl { get; set; }
         public string? miscImageUrl { get; set; }
-        public IList<string>? seoTags { get; set; }
-        public IList<v2_ProductStripe>? listOfAllProducts { get; set; }
-        public v2_Staff? owner { get; set; }
-        public v2_Staff? administratorOne { get; set; }
-        public v2_Staff? administratorTwo { get; set; }
+        public IList<v2_ProductDTO>? listOfAllProducts { get; set; }
+        public v2_StaffDTO? owner { get; set; }
+        public v2_StaffDTO? administratorOne { get; set; }
+        public v2_StaffDTO? administratorTwo { get; set; }
     }
 }

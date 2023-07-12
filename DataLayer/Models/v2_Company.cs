@@ -22,7 +22,6 @@ namespace AuthReadyAPI.DataLayer.Models
         public string? locationImageUrl { get; set; }
         public string? logoImageUrl { get; set; }
         public string? miscImageUrl { get; set; }
-        public IList<string>? seoTags { get; set; }
         public IList<v2_ProductStripe>? listOfAllProducts { get; set; }
         public v2_Staff? owner { get; set; }
         public v2_Staff? administratorOne { get; set; }

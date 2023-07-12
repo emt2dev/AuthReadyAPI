@@ -6,6 +6,7 @@ namespace AuthReadyAPI.DataLayer.Models
     public class v2_Staff : IdentityUser
     {
         public string name { get; set; }
+        public int companyId { get; set; }
         public string? position { get; set; }
         public Boolean giveAdminPrivledges { get; set; }
         public Boolean giveDeveloperPrivledges { get; set; }

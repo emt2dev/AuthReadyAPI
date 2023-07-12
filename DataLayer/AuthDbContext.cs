@@ -17,8 +17,10 @@ namespace AuthReadyAPI.DataLayer
         
         public DbSet<v2_ProductStripe> v2_Products { get; set; }
         public DbSet<v2_Company> v2_Companies { get; set; }
+        public DbSet<v2_Order> v2_Orders { get; set; }
         public DbSet<v2_CustomerStripe> v2_Customers { get; set; }
         public DbSet<v2_Staff> v2_Staffs { get; set; }
+        public DbSet<v2_ShoppingCart> v2_ShoppingCarts { get; set; }
         public DbSet<shoppingCart> shoppingCarts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

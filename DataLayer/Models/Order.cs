@@ -1,9 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AuthReadyAPI.DataLayer.Models
 {
     public class Order
     {
+        [Key]
         public int Id { get; set; }
         public string? delivery_driver_name { get; set; }
         public string? delivery_driver_longitdte { get; set; }
