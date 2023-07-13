@@ -1,3 +1,4 @@
+using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.Order;
 using AuthReadyAPI.DataLayer.DTOs.Pagination;
 using AuthReadyAPI.DataLayer.DTOs.Product;
@@ -14,21 +15,20 @@ using System.Text.Json;
 
 namespace AuthReadyAPI.Controllers
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/orders")]
     [ApiVersion("2.0")]
-    [ApiController]
     public class v2_OrderController : ControllerBase
     {
-        private readonly ILogger<v2_EntryController> _LOGS;
+        private readonly ILogger<v2_OrderController> _LOGS;
         private readonly IMapper _mapper;
         private readonly IV2_AuthManager _IAM;
-        private readonly v2_CustomerStripe? _customer;
-        private readonly v2_Staff? _staff;
+        private readonly v2_UserStripe? _user;
         private readonly IStripeService _ss;
         private readonly IV2_ShoppingCart _cart;
         private readonly IV2_Order _order;
 
-        public v2_OrderController(ILogger<v2_EntryController> LOGS, IMapper mapper, IV2_AuthManager IAM, IV2_Order order, IStripeService ss, IV2_ShoppingCart cart)
+        public v2_OrderController(ILogger<v2_OrderController> LOGS, IMapper mapper, IV2_AuthManager IAM, IV2_Order order, IStripeService ss, IV2_ShoppingCart cart)
         {
             this._LOGS = LOGS;
             this._mapper = mapper;
@@ -47,14 +47,18 @@ namespace AuthReadyAPI.Controllers
         public async Task<JsonResult> newDeliveryOrder([FromRoute] int companyId, string customerId)
         {
             v2_ShoppingCart cartSubmitted = await _cart.getExistingShoppingCart(companyId, customerId);
-            v2_CustomerStripe customerFound = await _IAM.getCustomerDetails(customerId);
-            var sessionId = await _ss.v2_CheckOut(cartSubmitted, customerFound);
+            v2_UserStripe customerFound = await _IAM.getCustomerDetails(customerId);
+            v2_CustomerDTO outgoingDTO = _mapper.Map<v2_CustomerDTO>(customerFound);
+            var sessionId = await _ss.v2_CheckOut(cartSubmitted, outgoingDTO);
+
+            string addressBuilder = $"{customerFound.addressStreet} {customerFound.addressSuite}, {customerFound.addressCity}, {customerFound.addressState} {customerFound.addressPostal_code} {customerFound.addressCountry}";
 
             v2_Order newOrder = new v2_Order {
                 cart = cartSubmitted,
                 delivery = true,
                 pickedUpByCustomer = false,
                 orderCompleted = false,
+                deliveryAddress = addressBuilder,
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -86,8 +90,9 @@ namespace AuthReadyAPI.Controllers
         public async Task<JsonResult> newTakeoutOrder([FromRoute] int companyId, string customerId)
         {
             v2_ShoppingCart cartSubmitted = await _cart.getExistingShoppingCart(companyId, customerId);
-            v2_CustomerStripe customerFound = await _IAM.getCustomerDetails(customerId);
-            var sessionId = await _ss.v2_CheckOut(cartSubmitted, customerFound);
+            v2_UserStripe customerFound = await _IAM.getCustomerDetails(customerId);
+            v2_CustomerDTO outgoingDTO = _mapper.Map<v2_CustomerDTO>(customerFound);
+            var sessionId = await _ss.v2_CheckOut(cartSubmitted, outgoingDTO);
 
             v2_Order newOrder = new v2_Order {
                 cart = cartSubmitted,
@@ -138,6 +143,7 @@ namespace AuthReadyAPI.Controllers
         public async Task<IList<v2_Order>> getActiveCustomerOrders([FromRoute] int companyId, string customerId)
         {
             IList<v2_Order> allOrdersList = await _order.getActiveCustomerOrders(companyId, customerId);
+            IList<v2_OrderDTO> listOfDTOs = _mapper.Map<IList<v2_OrderDTO>>(allOrdersList);
             return allOrdersList;
         }
 

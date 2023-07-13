@@ -1,7 +1,4 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.Cart;
-using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.DTOs.Order;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
@@ -12,40 +9,24 @@ namespace AuthReadyAPI.Configurations
     {
         public MapperConfig()
         {
-            /* APIUser and DTO */
-            CreateMap<APIUser, Full__APIUser>().ReverseMap();
-            CreateMap<APIUser, Base__APIUser>().ReverseMap();
-
-            CreateMap<Company, Full__Company>().ReverseMap();
-            CreateMap<Company, Base__Company>().ReverseMap();
-
-            CreateMap<Product, Full__Product>().ReverseMap();
-            CreateMap<Product, Base__Product>().ReverseMap();
-
-            CreateMap<Cart, Full__Cart>().ReverseMap();
-            CreateMap<Cart, Base__Cart>().ReverseMap();
-
-            CreateMap<Order, Full__Order>().ReverseMap();
-            CreateMap<Order, Base__Order>().ReverseMap();
-
-
             // V2 Product
             CreateMap<v2_ProductStripe, v2_ProductDTO>().ReverseMap();
-
-            // V2 Customer
-            CreateMap<v2_CustomerStripe, v2_CustomerDTO>().ReverseMap();
 
             // V2 Company
             CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();
 
             // V2 scart
-            CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();
+            CreateMap<v2_ShoppingCart, v2_ShoppingCartDTO>().ReverseMap();
 
             // V2 order
             CreateMap<v2_Order, v2_OrderDTO>().ReverseMap();
 
-            // V2 order
-            CreateMap<v2_Staff, v2_StaffDTO>().ReverseMap();
+            // V2 customer
+            CreateMap<v2_UserStripe, v2_CustomerDTO>().ReverseMap();
+
+            // v2 staff
+            CreateMap<v2_UserStripe, v2_StaffDTO>().ReverseMap();
+            
         }
         
     }

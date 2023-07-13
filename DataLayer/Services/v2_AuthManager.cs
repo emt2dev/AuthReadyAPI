@@ -2,7 +2,6 @@ using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
@@ -15,153 +14,158 @@ namespace AuthReadyAPI.DataLayer.Services
     public class v2_AuthManager : IV2_AuthManager
     {
         private readonly IConfiguration _configs;
-        private v2_CustomerStripe _customer;
-        private v2_Staff _staff;
-        private UserManager<v2_Staff> _staffUM;
-        private readonly UserManager<v2_CustomerStripe> _customerUM;
+        private UserManager<v2_UserStripe> _UM;
 
         private string _tokenProvider = "AuthReadyAPI";
         private string _refreshToken = "MadeByDavidDuron";
         
 
-        public v2_AuthManager(UserManager<v2_Staff> staffUM, UserManager<v2_CustomerStripe> customerUM, IConfiguration configuration)
+        public v2_AuthManager(UserManager<v2_UserStripe> UM, IConfiguration configuration)
         {
-            this._staffUM = staffUM;
-            this._customerUM = customerUM;
+            this._UM = UM;
             this._configs = configuration;
         }
 
         //Below are the methods to register all types of users
-        public async Task<IEnumerable<IdentityError>> registerCustomer(v2_CustomerDTO incomingDTO)
+        public async Task<IEnumerable<IdentityError>> registerCustomer(Base__APIUser incomingDTO)
         {
-            _customer.Email = incomingDTO.Email;
+            v2_UserStripe _user = new v2_UserStripe {
+                Email = incomingDTO.Email,
+                UserName = incomingDTO.Email,
+            };
 
-            var resultOfScript = await _customerUM.CreateAsync(_customer, incomingDTO.Password);
-            if (resultOfScript.Succeeded) await _customerUM.AddToRoleAsync(_customer, "Customer");
+            var resultOfScript = await _UM.CreateAsync(_user, incomingDTO.Password);
+            if (resultOfScript.Succeeded) await _UM.AddToRoleAsync(_user, "Customer");
 
             return resultOfScript.Errors;
         }
 
-        public async Task<IEnumerable<IdentityError>> registerStaff(v2_StaffDTO incomingDTO)
+        public async Task<IEnumerable<IdentityError>> registerStaff(Base__APIUser incomingDTO)
         {
-            _staff.Email = incomingDTO.Email;
+            v2_UserStripe _user = new v2_UserStripe {
+                Email = incomingDTO.Email,
+                UserName = incomingDTO.Email,
+            };
 
-            var resultOfScript = await _staffUM.CreateAsync(_staff, incomingDTO.Password);
-            if (resultOfScript.Succeeded) await _staffUM.AddToRoleAsync(_staff, "Staff");
+            var resultOfScript = await _UM.CreateAsync(_user, incomingDTO.Password);
+            if (resultOfScript.Succeeded) await _UM.AddToRoleAsync(_user, "Staff");
 
             return resultOfScript.Errors;
         }
 
-        public async Task<IEnumerable<IdentityError>> registerDeveloper(v2_StaffDTO incomingDTO)
+        public async Task<IEnumerable<IdentityError>> registerDeveloper(Base__APIUser incomingDTO)
         {
-            _staff.Email = incomingDTO.Email;
-            _staff.giveDeveloperPrivledges = true;
+            v2_UserStripe _user = new v2_UserStripe {
+                Email = incomingDTO.Email,
+                UserName = incomingDTO.Email,
+                giveDeveloperPrivledges = true,
+            };
 
-            var resultOfScript = await _staffUM.CreateAsync(_staff, incomingDTO.Password);
-            if (resultOfScript.Succeeded) await _staffUM.AddToRoleAsync(_staff, "Developer");
+            var resultOfScript = await _UM.CreateAsync(_user, incomingDTO.Password);
+            if (resultOfScript.Succeeded) await _UM.AddToRoleAsync(_user, "Developer");
 
             return resultOfScript.Errors;
         }
 
-        public async Task<Full__AuthResponseDTO> loginCustomer(v2_CustomerDTO incomingDTO)
+        public async Task<Full__AuthResponseDTO> loginCustomer(Base__APIUser incomingDTO)
         {
-            _customer = await _customerUM.FindByEmailAsync(incomingDTO.Email);
+            v2_UserStripe _user = await _UM.FindByEmailAsync(incomingDTO.Email);
 
-            bool IsPasswordValid = await _customerUM.CheckPasswordAsync(_customer, incomingDTO.Password);
+            bool IsPasswordValid = await _UM.CheckPasswordAsync(_user, incomingDTO.Password);
 
-            if (_customer is null || !IsPasswordValid) return null;
+            if (_user is null || !IsPasswordValid) return null;
 
-            var giveToken = await getNewJWTForCustomers();
-            return new Full__AuthResponseDTO { Token = giveToken, UserId = _customer.Id, RefreshToken = await newRefreshTokenForCustomer() };
+            var giveToken = await getNewJWTForCustomers(_user);
+            return new Full__AuthResponseDTO { Token = giveToken, UserId = _user.Id, RefreshToken = await newRefreshTokenForCustomer(_user) };
         }
 
-        public async Task<Full__AuthResponseDTO> loginStaff(v2_StaffDTO incomingDTO)
+        public async Task<Full__AuthResponseDTO> loginStaff(Base__APIUser incomingDTO)
         {
-            _staff = await _staffUM.FindByEmailAsync(incomingDTO.Email);
+            v2_UserStripe _user = await _UM.FindByEmailAsync(incomingDTO.Email);
 
-            bool IsPasswordValid = await _staffUM.CheckPasswordAsync(_staff, incomingDTO.Password);
+            bool IsPasswordValid = await _UM.CheckPasswordAsync(_user, incomingDTO.Password);
 
-            if (_customer is null || !IsPasswordValid) return null;
+            if (_user is null || !IsPasswordValid) return null;
 
-            string giveToken = await getNewJWTForStaff();
-            string refreshToken = await newRefreshTokenForStaff();
+            string giveToken = await getNewJWTForStaff(_user);
+            string refreshToken = await newRefreshTokenForStaff(_user);
 
             Full__AuthResponseDTO outgoingDTO = new Full__AuthResponseDTO
             {
                 Token = giveToken,
-                UserId = _staff.Id,
+                UserId = _user.Id,
                 RefreshToken = refreshToken,
             };
 
             return outgoingDTO;
         }
 
-        public async Task<Full__AuthResponseDTO> loginDeveloper(v2_StaffDTO incomingDTO)
+        public async Task<Full__AuthResponseDTO> loginDeveloper(Base__APIUser incomingDTO)
         {
-            _staff = await _staffUM.FindByEmailAsync(incomingDTO.Email);
+            v2_UserStripe _user = await _UM.FindByEmailAsync(incomingDTO.Email);
 
-            bool IsPasswordValid = await _staffUM.CheckPasswordAsync(_staff, incomingDTO.Password);
+            bool IsPasswordValid = await _UM.CheckPasswordAsync(_user, incomingDTO.Password);
 
-            if (_customer is null || !IsPasswordValid) return null;
+            if (_user is null || !IsPasswordValid) return null;
 
-            string giveToken = await getNewJWTForDevelopers();
-            string refreshToken = await newRefreshTokenForDeveloper();
+            string giveToken = await getNewJWTForDevelopers(_user);
+            string refreshToken = await newRefreshTokenForDeveloper(_user);
 
             Full__AuthResponseDTO outgoingDTO = new Full__AuthResponseDTO
             {
                 Token = giveToken,
-                UserId = _staff.Id,
+                UserId = _user.Id,
                 RefreshToken = refreshToken,
             };
 
             return outgoingDTO;
         }
 
-        public async Task<string> newRefreshTokenForCustomer()
+        public async Task<string> newRefreshTokenForCustomer(v2_UserStripe _user)
         {
-            await _customerUM.RemoveAuthenticationTokenAsync(_customer, _tokenProvider, _refreshToken);
-            var newToken = await _customerUM.GenerateUserTokenAsync(_customer, _tokenProvider, _refreshToken);
-            var setToken = await _customerUM.SetAuthenticationTokenAsync(_customer, _tokenProvider, _refreshToken, newToken);
+            await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
+            var newToken = await _UM.GenerateUserTokenAsync(_user, _tokenProvider, _refreshToken);
+            var setToken = await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
 
             return newToken;
         }
 
-        public async Task<string> newRefreshTokenForDeveloper()
+        public async Task<string> newRefreshTokenForDeveloper(v2_UserStripe _user)
         {
-            await _staffUM.RemoveAuthenticationTokenAsync(_staff, _tokenProvider, _refreshToken);
-            var newToken = await _staffUM.GenerateUserTokenAsync(_staff, _tokenProvider, _refreshToken);
-            var setToken = await _staffUM.SetAuthenticationTokenAsync(_staff, _tokenProvider, _refreshToken, newToken);
+            await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
+            var newToken = await _UM.GenerateUserTokenAsync(_user, _tokenProvider, _refreshToken);
+            var setToken = await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
 
             return newToken;
         }
 
-        public async Task<string> newRefreshTokenForStaff()
+        public async Task<string> newRefreshTokenForStaff(v2_UserStripe _user)
         {
-            await _staffUM.RemoveAuthenticationTokenAsync(_staff, _tokenProvider, _refreshToken);
-            var newToken = await _staffUM.GenerateUserTokenAsync(_staff, _tokenProvider, _refreshToken);
-            var setToken = await _staffUM.SetAuthenticationTokenAsync(_staff, _tokenProvider, _refreshToken, newToken);
+            await _UM.RemoveAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken);
+            var newToken = await _UM.GenerateUserTokenAsync(_user, _tokenProvider, _refreshToken);
+            var setToken = await _UM.SetAuthenticationTokenAsync(_user, _tokenProvider, _refreshToken, newToken);
 
             return newToken;
         }
 
-        public async Task<string> getNewJWTForCustomers()
+        public async Task<string> getNewJWTForCustomers(v2_UserStripe _user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configs["JwtSettings:Key"]));
 
             var userCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var userRoles = await _customerUM.GetRolesAsync(_customer);
+            var userRoles = await _UM.GetRolesAsync(_user);
 
-            var userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+            List<Claim> userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
 
-            var userClaims = await _customerUM.GetClaimsAsync(_customer);
+            var userClaims = await _UM.GetClaimsAsync(_user);
 
             var userClaimsList = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _customer.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, _customer.Email),
-                new Claim("uid", _customer.Id), // custom claim user id
+                new Claim(JwtRegisteredClaimNames.Email, _user.Email),
+                new Claim("uid", _user.Id), // custom claim user id
             }
             .Union(userClaims)
             .Union(userRoleClaims);
@@ -181,24 +185,24 @@ namespace AuthReadyAPI.DataLayer.Services
                 .WriteToken(newToken);
         }
 
-        public async Task<string> getNewJWTForStaff()
+        public async Task<string> getNewJWTForStaff(v2_UserStripe _user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configs["JwtSettings:Key"]));
 
             var userCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var userRoles = await _staffUM.GetRolesAsync(_staff);
+            var userRoles = await _UM.GetRolesAsync(_user);
 
-            var userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+            List<Claim> userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
 
-            var userClaims = await _staffUM.GetClaimsAsync(_staff);
+            var userClaims = await _UM.GetClaimsAsync(_user);
 
             var userClaimsList = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _staff.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, _staff.Email),
-                new Claim("uid", _staff.Id), // custom claim user id
+                new Claim(JwtRegisteredClaimNames.Email, _user.Email),
+                new Claim("uid", _user.Id), // custom claim user id
             }
             .Union(userClaims)
             .Union(userRoleClaims);
@@ -218,24 +222,24 @@ namespace AuthReadyAPI.DataLayer.Services
                 .WriteToken(newToken);
         }
 
-        public async Task<string> getNewJWTForDevelopers()
+        public async Task<string> getNewJWTForDevelopers(v2_UserStripe _user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configs["JwtSettings:Key"]));
 
             var userCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
-            var userRoles = await _staffUM.GetRolesAsync(_staff);
+            var userRoles = await _UM.GetRolesAsync(_user);
 
-            var userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
+            List<Claim> userRoleClaims = userRoles.Select(role => new Claim(ClaimTypes.Role, role)).ToList();
 
-            var userClaims = await _staffUM.GetClaimsAsync(_staff);
+            var userClaims = await _UM.GetClaimsAsync(_user);
 
             var userClaimsList = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, _staff.Email),
+                new Claim(JwtRegisteredClaimNames.Sub, _user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, _staff.Email),
-                new Claim("uid", _staff.Id), // custom claim user id
+                new Claim(JwtRegisteredClaimNames.Email, _user.Email),
+                new Claim("uid", _user.Id), // custom claim user id
             }
             .Union(userClaims)
             .Union(userRoleClaims);
@@ -255,36 +259,36 @@ namespace AuthReadyAPI.DataLayer.Services
                 .WriteToken(newToken);
         }
 
-        public async Task<v2_CustomerStripe> getCustomerDetails(string customerId)
+        public async Task<v2_UserStripe> getCustomerDetails(string customerId)
         {
-            _customer = await _customerUM.FindByIdAsync(customerId.ToString());
-            if(_customer == null) return null;
-            else return _customer;
+            v2_UserStripe _user = await _UM.FindByIdAsync(customerId.ToString());
+            if(_user == null) return null;
+            else return _user;
         }
 
-        public async Task<v2_Staff> getStaffDetails(string staffId)
+        public async Task<v2_UserStripe> getStaffDetails(string staffId)
         {
-            _staff = await _staffUM.FindByIdAsync(staffId.ToString());
-            if(_staff == null) return null;
-            else return _staff;
+            v2_UserStripe _user = await _UM.FindByIdAsync(staffId.ToString());
+            if(_user == null) return null;
+            else return _user;
         }
 
-        public async Task<v2_Staff> getDeveloperDetails(string developerId)
+        public async Task<v2_UserStripe> getDeveloperDetails(string developerId)
         {
-            _staff = await _staffUM.FindByIdAsync(developerId.ToString());
-            if(_staff == null) return null;
-            else return _staff;
+            v2_UserStripe _user = await _UM.FindByIdAsync(developerId.ToString());
+            if(_user == null) return null;
+            else return _user;
         }
 
         public async Task<Stripe.Customer> addStripeCustomer(string email)
         {
-            _customer = await _customerUM.FindByEmailAsync(email);
-            if(_staff == null) return null;
+            v2_UserStripe _user = await _UM.FindByEmailAsync(email);
+            if(_user == null) return null;
 
             var options = new CustomerCreateOptions
             {
-                Name = _customer.name,
-                Email = _customer.Email,
+                Name = _user.name,
+                Email = _user.Email,
             };
 
             var service = new CustomerService();
@@ -300,37 +304,25 @@ namespace AuthReadyAPI.DataLayer.Services
 
             var email = tokenContent.Claims.ToList().FirstOrDefault(found => found.Type == JwtRegisteredClaimNames.Email)?.Value;
 
-            _customer = await _customerUM.FindByEmailAsync(email);
-            _staff = await _staffUM.FindByEmailAsync(email);
+            v2_UserStripe _user = await _UM.FindByEmailAsync(email);
 
-            var isValidCustomer = await _customerUM.VerifyUserTokenAsync(_customer, _tokenProvider, _refreshToken, DTO.RefreshToken);
-            var isValidStaff = await _staffUM.VerifyUserTokenAsync(_staff, _tokenProvider, _refreshToken, DTO.RefreshToken);
+            var isValidCustomer = await _UM.VerifyUserTokenAsync(_user, _tokenProvider, _refreshToken, DTO.RefreshToken);
+            var isValidStaff = await _UM.VerifyUserTokenAsync(_user, _tokenProvider, _refreshToken, DTO.RefreshToken);
 
             if (isValidCustomer)
             {
-                await _customerUM.UpdateSecurityStampAsync(_customer);
+                await _UM.UpdateSecurityStampAsync(_user);
 
-                var newToken = await getNewJWTForCustomers();
-
-                return new Full__AuthResponseDTO
-                {
-                    Token = newToken,
-                    UserId = _customer.Id,
-                    RefreshToken = await newRefreshTokenForCustomer()
-                };
-            } else if(isValidStaff) {
-                await _staffUM.UpdateSecurityStampAsync(_staff);
-
-                var newToken = await getNewJWTForStaff();
+                var newToken = await getNewJWTForCustomers(_user);
 
                 return new Full__AuthResponseDTO
                 {
                     Token = newToken,
-                    UserId = _customer.Id,
-                    RefreshToken = await newRefreshTokenForCustomer()
+                    UserId = _user.Id,
+                    RefreshToken = await newRefreshTokenForCustomer(_user)
                 };
             }
-            
+
             return null;
         }
     }

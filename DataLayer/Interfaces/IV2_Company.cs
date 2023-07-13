@@ -1,5 +1,3 @@
-using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.Company;
 using AuthReadyAPI.DataLayer.Models;
 
 namespace AuthReadyAPI.DataLayer.Interfaces

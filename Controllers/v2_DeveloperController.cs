@@ -16,18 +16,18 @@ using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.Controllers
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/developers")]
     [ApiVersion("2.0")]
-    [ApiController]
     public class v2_DeveloperController : ControllerBase
     {
         private readonly IV2_AuthManager _IAM;
-        private readonly IV2_Staff _staff;
+        private readonly IV2_User _staff;
         private readonly ILogger<v2_DeveloperController> _LOGS;
         private readonly IMapper _mapper;
-        private readonly UserManager<v2_Staff> _UM;
+        private readonly UserManager<v2_UserStripe> _UM;
         private readonly IV2_Company _company;
-        public v2_DeveloperController(IV2_AuthManager IAM, IV2_Company company, UserManager<v2_Staff> UM, ILogger<v2_DeveloperController> LOGS, IV2_Staff staff, IMapper mapper)
+        public v2_DeveloperController(IV2_AuthManager IAM, IV2_Company company, UserManager<v2_UserStripe> UM, ILogger<v2_DeveloperController> LOGS, IV2_User staff, IMapper mapper)
         {
             this._LOGS = LOGS;
             this._mapper = mapper;
@@ -58,7 +58,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> createNewDeveloper(v2_StaffDTO incomingDTO)
+        public async Task<string> createNewDeveloper(Base__APIUser incomingDTO)
         {
            _ = await _IAM.registerDeveloper(incomingDTO);
 
@@ -72,7 +72,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<string> updateCompanyAdmin(overrideDTO DTO)
         {
-            v2_Staff userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
+            v2_UserStripe userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
             userGivenPrivledges.companyId = DTO.companyId;
             userGivenPrivledges.giveAdminPrivledges = true;
             await _UM.AddToRoleAsync(userGivenPrivledges, "admin");
@@ -92,32 +92,33 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<string> init()
         {
-            v2_CustomerDTO newCustomer = new v2_CustomerDTO {
+            Base__APIUser newCustomer = new Base__APIUser {
                 Email = "customer1@customer.com",
                 Password = "P@ssword1",
             };
 
-            _ = await _IAM.registerCustomer(newCustomer);
+            var errors = await _IAM.registerCustomer(newCustomer);
 
-            v2_StaffDTO newDeveloper = new v2_StaffDTO {
+            Base__APIUser newDeveloper = new Base__APIUser {
                 Email = "admin1@admin.com",
                 Password = "P@ssword1",
             };
 
-            _ = await _IAM.registerDeveloper(newDeveloper);
+            errors = await _IAM.registerDeveloper(newDeveloper);
 
-            v2_StaffDTO newStaff = new v2_StaffDTO {
+            Base__APIUser newStaff = new Base__APIUser {
                 Email = "staff1@admin.com",
                 Password = "P@ssword1",
             };
 
-            v2_StaffDTO newOwner = new v2_StaffDTO {
+            Base__APIUser newOwner = new Base__APIUser {
                 Email = "staff1@admin.com",
                 Password = "P@ssword1",
             };
 
-            _ = await _IAM.registerStaff(newOwner);
-            v2_Staff findOwner = await _UM.FindByEmailAsync(newOwner.Email);
+            errors = await _IAM.registerStaff(newOwner);
+            
+            v2_UserStripe findOwner = await _UM.FindByEmailAsync(newOwner.Email);
 
             v2_Company newCompany = new v2_Company {
                 name = "La Imperial Bakery",

@@ -9,20 +9,21 @@ namespace AuthReadyAPI.DataLayer.Repositories
     public class v2_CompanyRepository : v2_GenericRepository<v2_Company>, IV2_Company
     {
         private readonly AuthDbContext _context;
-        private readonly UserManager<v2_Staff> _staffUM;
-        public v2_CompanyRepository(AuthDbContext context, UserManager<v2_Staff> staffUM) : base(context)
+        private readonly v2_UserStripe _user;
+        private readonly UserManager<v2_UserStripe> _UM;
+        public v2_CompanyRepository(AuthDbContext context, UserManager<v2_UserStripe> UM) : base(context)
         {
             this._context = context;
-            this._staffUM = staffUM;
+            this._UM = UM;
         }
 
         public async Task<string> giveAdminPrivledges(string staffEmailAddress, int companyId)
         {
-            v2_Staff staffFound = await _staffUM.FindByEmailAsync(staffEmailAddress);
+            v2_UserStripe staffFound = await _UM.FindByEmailAsync(staffEmailAddress);
 
             staffFound.giveAdminPrivledges = true;
 
-            await _staffUM.UpdateAsync(staffFound);
+            await _UM.UpdateAsync(staffFound);
 
             v2_Company companyFound = await GetAsyncById(companyId);
             if (companyFound.administratorOne == null) companyFound.administratorOne = staffFound;
@@ -35,11 +36,11 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<string> removeAdminPrivledges(string staffEmailAddress, int companyId)
         {
-            v2_Staff staffFound = await _staffUM.FindByEmailAsync(staffEmailAddress);
+            v2_UserStripe staffFound = await _UM.FindByEmailAsync(staffEmailAddress);
 
             staffFound.giveAdminPrivledges = false;
 
-            await _staffUM.UpdateAsync(staffFound);
+            await _UM.UpdateAsync(staffFound);
 
             v2_Company companyFound = await GetAsyncById(companyId);
             if (companyFound.administratorOne == staffFound) companyFound.administratorOne = null;

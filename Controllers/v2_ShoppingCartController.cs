@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthReadyAPI.Controllers
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/shoppingCart")]
     [ApiVersion("2.0")]
-    [ApiController]
     public class v2_ShoppingCartController : ControllerBase
     {
         private readonly IV2_ShoppingCart _cart;

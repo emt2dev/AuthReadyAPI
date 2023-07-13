@@ -7,24 +7,21 @@ namespace AuthReadyAPI.DataLayer.Interfaces
 {
     public interface IV2_AuthManager
     {
-
-        Task<IEnumerable<IdentityError>> registerCustomer(v2_CustomerDTO incomingDTO);
-        Task<IEnumerable<IdentityError>> registerDeveloper(v2_StaffDTO incomingDTO);
-        Task<IEnumerable<IdentityError>> registerStaff(v2_StaffDTO incomingDTO);
-
-        Task<Full__AuthResponseDTO> loginCustomer(v2_CustomerDTO incomingDTO);
-        Task<Full__AuthResponseDTO> loginDeveloper(v2_StaffDTO incomingDTO);
-        Task<Full__AuthResponseDTO> loginStaff(v2_StaffDTO incomingDTO);
-
-        Task<v2_Staff> getStaffDetails(string staffId);
-        Task<v2_Staff> getDeveloperDetails(string developerId);
-        Task<v2_CustomerStripe> getCustomerDetails(string customerId);
-        Task<string> getNewJWTForDevelopers();
-        Task<string> getNewJWTForStaff();
-        Task<string> getNewJWTForCustomers();
-        Task<string> newRefreshTokenForStaff();
-        Task<string> newRefreshTokenForDeveloper();
-        Task<string> newRefreshTokenForCustomer();
+        Task<IEnumerable<IdentityError>> registerCustomer(Base__APIUser incomingDTO);
+        Task<IEnumerable<IdentityError>> registerDeveloper(Base__APIUser incomingDTO);
+        Task<IEnumerable<IdentityError>> registerStaff(Base__APIUser incomingDTO);
+        Task<Full__AuthResponseDTO> loginCustomer(Base__APIUser incomingDTO);
+        Task<Full__AuthResponseDTO> loginDeveloper(Base__APIUser incomingDTO);
+        Task<Full__AuthResponseDTO> loginStaff(Base__APIUser incomingDTO);
+        Task<v2_UserStripe> getStaffDetails(string staffId);
+        Task<v2_UserStripe> getDeveloperDetails(string developerId);
+        Task<v2_UserStripe> getCustomerDetails(string customerId);
+        Task<string> getNewJWTForDevelopers(v2_UserStripe _user);
+        Task<string> getNewJWTForStaff(v2_UserStripe _user);
+        Task<string> getNewJWTForCustomers(v2_UserStripe _user);
+        Task<string> newRefreshTokenForStaff(v2_UserStripe _user);
+        Task<string> newRefreshTokenForDeveloper(v2_UserStripe _user);
+        Task<string> newRefreshTokenForCustomer(v2_UserStripe _user);
         Task<Stripe.Customer> addStripeCustomer(string email);
         Task<Full__AuthResponseDTO> VerifyRefreshToken(Full__AuthResponseDTO DTO);
     }

@@ -19,6 +19,8 @@ using Serilog;
 using System.Text;
 using System.Text.Json;
 using Stripe;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -48,10 +50,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new OpenApiInfo
+    options.SwaggerDoc("v2", new OpenApiInfo
     {
-        Title = "Hotel Listing API",
-        Version = "v1",
+        Title = "AuthReadyAPI",
+        Version = "v2",
     });
 
     options.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
@@ -108,14 +110,14 @@ builder.Host.UseSerilog((builderContext, loggerConfig) =>
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 /* Adds Identity Core */
-builder.Services.AddIdentityCore<APIUser>()
+builder.Services.AddIdentityCore<v2_UserStripe>()
     .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<APIUser>>("AuthReadyAPI")
+    .AddTokenProvider<DataProtectorTokenProvider<v2_UserStripe>>("AuthReadyAPI")
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
 /* Generic Interface and Repository */
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); // uses these interfaces/classes
+// builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); // uses these interfaces/classes
 builder.Services.AddScoped(typeof(IV2_GenericRepository<>), typeof(v2_GenericRepository<>)); // uses these interfaces/classes
 
 /* v2 */
@@ -132,31 +134,10 @@ builder.Services.AddScoped<IV2_Company, v2_CompanyRepository>(); // Designed to 
 builder.Services.AddScoped<IV2_Order, v2_OrderRepository>(); // Designed to be stripe products
 
 /* v2_Product */
-builder.Services.AddScoped<IV2_Customer, v2_CustomerRepository>(); // Designed to be stripe products
+builder.Services.AddScoped<IV2_User, v2_UserRepository>(); // Designed to be stripe products
 
-/* v2_Product */
-builder.Services.AddScoped<IV2_Staff, v2_StaffRepository>(); // Designed to be stripe products
-
-
-/* shoppingCart */
-builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>(); // Designed for stripe checkout
-
-/* IAuthManager */
-builder.Services.AddScoped<IAuthManager, AuthManager>();
-
-/* User */
-builder.Services.AddScoped<IUser, UserRepository>();
-/* API Admin */
-builder.Services.AddScoped<IApiAdmin, ApiAdminRepository>();
-/* Company*/
-builder.Services.AddScoped<ICompany, CompanyRepository>();
-/* Product */
-builder.Services.AddScoped<IProduct, ProductRepository>();
-/* Cart */
-builder.Services.AddScoped<ICart, CartRepository>();
-
-/* Order */
-builder.Services.AddScoped<IOrder, OrderRepository>();
+// IAM2
+builder.Services.AddScoped<IV2_AuthManager, v2_AuthManager>();
 
 /* IMediaService */
 builder.Services.AddScoped<IMediaService, MediaService>();
@@ -164,23 +145,23 @@ builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(
 
 /* Authentication plus JWT Bearer */
 builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuerSigningKey = true,
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ClockSkew = TimeSpan.Zero,
-        ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
-        ValidAudience = builder.Configuration["JwtSettings:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])),
-    };
-}
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    }).AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            ValidIssuer = builder.Configuration["JwtSettings:Issuer"],
+            ValidAudience = builder.Configuration["JwtSettings:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:Key"])),
+        };
+    }
 );
 
 /* additional API Versioning */
@@ -190,8 +171,6 @@ builder.Services.AddApiVersioning(options =>
     options.DefaultApiVersion = new Microsoft.AspNetCore.Mvc.ApiVersion(1, 0);
     options.ReportApiVersions = true;
     options.ApiVersionReader = ApiVersionReader.Combine(
-            new QueryStringApiVersionReader("api-version"),
-            new HeaderApiVersionReader("X-Version"),
             new MediaTypeApiVersionReader("ver")
         );
 });
@@ -251,11 +230,22 @@ app.Use(async (context, next) =>
     await next();
 });
 
+var apiVersionDescriptionProvider = app.Services.GetRequiredService<IApiVersionDescriptionProvider>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI
+    (options =>
+        {
+            foreach (var description in apiVersionDescriptionProvider.ApiVersionDescriptions.Reverse())
+            {
+                options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json",
+                    description.GroupName.ToUpperInvariant());
+            } 
+        }
+    );
 }
 
 

@@ -109,44 +109,96 @@ txcd_40060003
   "extraParams": {}
 }
 
-
 {
-  "id": "0",
+  "id": 0,
   "name": "La Imperial Bakery",
-  "description": "A bakery that specializes in cooking all of the best foods found in Puerto Rico, just the way our grandma's used to make.",
-  "address": "123 E Main Street, Lakeland, FL 33801",
-  "phoneNumber": "863-500-4411"
+  "description": "This is an example description of your company, and we're proud to do it in our small town. We've pulled ourselevs up by our bootstraps and offer the best bang for your buck.",
+  "phoneNumber": "863-315-1851",
+  "addressStreet": "123 East Main Street",
+  "addressSuite": "",
+  "addressCity": "Lakeland",
+  "addressState": "Florida",
+  "addressPostal_code": "33805",
+  "addressCountry": "USA",
+  "smallTagline": "Our Products are the result of our love for family and good quality which we dedicate to our customers.",
+  "menuDescription": "Comfort Food With A Puerto-Rican Twist.",
+  "headerImage": "https://via.placeholder.com/200x100?text=Header%20Placeholder",
+  "aboutUsImageUrl": "https://via.placeholder.com/150x100?text=About%20Us",
+  "locationImageUrl": "https://via.placeholder.com/150x100?text=Location",
+  "logoImageUrl": "https://via.placeholder.com/300x150?text=Logo",
+  "miscImageUrl": "https://via.placeholder.com/150x80?text=Misc%20Image",
+  "listOfAllProducts": [],
+  "owner": null,
+  "administratorOne": null,
+  "administratorTwo": null
 }
-
-
-*ngIf="this.authService.isUserLoggedIn" type="button" class="btn btn-danger">Logout</button>
-
-
-
-tar -xvf azuredatastudio-linux-1.44.1.tar.gz
-echo 'export PATH="$PATH:~/azuredatastudio-linux-x64"' >> ~/.bashrc
-source ~/.bashrc
-
-
-
-<ng-container *ngIf="(this.ROLES?.includes('User'))">
-
-          this.FORM__COMPANY__CREATE__PRODUCT = this.formBuilder.group({
-            id: ['',],
-            name: ['',],
-            price_Normal: [0.00,],
-            price_Sale: [0.00,],
-            imageURL: ['',],
-            companyId: ['',],
-            keyword: ['',]
-          });
-
+-------------
 {
-  "id": "",
-  "name": "Cafe Con Leche",
-  "price_Normal": 3.59,
-  "price_Sale": 0,
-  "imageURL": "string",
-  "companyId": "1",
-  "keyword": "drink"
+  "id": 0,
+  "name": "La Imperial Bakery",
+  "description": "This is an example description of your company, and we're proud to do it in our small town. We've pulled ourselevs up by our bootstraps and offer the best bang for your buck.",
+  "phoneNumber": "863-315-1851",
+  "addressStreet": "123 East Main Street",
+  "addressSuite": "",
+  "addressCity": "Lakeland",
+  "addressState": "Florida",
+  "addressPostal_code": "33805",
+  "addressCountry": "USA",
+  "smallTagline": "Our Products are the result of our love for family and good quality which we dedicate to our customers.",
+  "menuDescription": "Comfort Food With A Puerto-Rican Twist.",
+  "headerImage": "https://via.placeholder.com/200x100?text=Header%20Placeholder",
+  "aboutUsImageUrl": "https://via.placeholder.com/150x100?text=About%20Us",
+  "locationImageUrl": "https://via.placeholder.com/150x100?text=Location",
+  "logoImageUrl": "https://via.placeholder.com/300x150?text=Logo",
+  "miscImageUrl": "https://via.placeholder.com/150x80?text=Misc%20Image",
+  "listOfAllProducts": [
+    {
+      "id": 0,
+      "companyId": 0,
+      "stripeId": "string",
+      "name": "string",
+      "description": "string",
+      "default_price": 0,
+      "quantity": 0,
+      "package_dimensions": "string",
+      "statement_descriptor": "string",
+      "unit_label": "string",
+      "image": "string",
+      "url": "string",
+      "priceInString": "string",
+      "seo": "string",
+      "keyword": "string",
+      "imageToBeUploaded": "string"
+    }
+  ],
+  "owner": {
+    "email": "user@example.com",
+    "password": "string",
+    "name": "string",
+    "position": "string",
+    "giveAdminPrivledges": true,
+    "longitude": "string",
+    "latitude": "string",
+    "coordinates": "string"
+  },
+  "administratorOne": {
+    "email": "user@example.com",
+    "password": "string",
+    "name": "string",
+    "position": "string",
+    "giveAdminPrivledges": true,
+    "longitude": "string",
+    "latitude": "string",
+    "coordinates": "string"
+  },
+  "administratorTwo": {
+    "email": "user@example.com",
+    "password": "string",
+    "name": "string",
+    "position": "string",
+    "giveAdminPrivledges": true,
+    "longitude": "string",
+    "latitude": "string",
+    "coordinates": "string"
+  }
 }

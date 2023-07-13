@@ -6,22 +6,15 @@ using System.Diagnostics.Metrics;
 
 namespace AuthReadyAPI.DataLayer
 {
-    public class AuthDbContext : IdentityDbContext<APIUser>
+    public class AuthDbContext : IdentityDbContext<v2_UserStripe>
     {
         public AuthDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Product> Products { get; set; }
-        
         public DbSet<v2_ProductStripe> v2_Products { get; set; }
         public DbSet<v2_Company> v2_Companies { get; set; }
         public DbSet<v2_Order> v2_Orders { get; set; }
-        public DbSet<v2_CustomerStripe> v2_Customers { get; set; }
-        public DbSet<v2_Staff> v2_Staffs { get; set; }
+        public DbSet<v2_UserStripe> v2_UserStripes { get; set; }
         public DbSet<v2_ShoppingCart> v2_ShoppingCarts { get; set; }
-        public DbSet<shoppingCart> shoppingCarts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

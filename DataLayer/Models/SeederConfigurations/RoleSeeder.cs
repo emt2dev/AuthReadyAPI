@@ -11,18 +11,23 @@ namespace AuthReadyAPI.DataLayer.Models.SeederConfigurations
             builder.HasData(
                     new IdentityRole
                     {
-                        Name = "Company_Admin",
-                        NormalizedName = "COMPANY_ADMIN"
+                        Name = "Developer",
+                        NormalizedName = "DEVELOPER"
                     },
                     new IdentityRole
                     {
-                        Name = "User",
-                        NormalizedName = "USER"
+                        Name = "Customer",
+                        NormalizedName = "CUSTOMER"
                     },
                     new IdentityRole
                     {
-                        Name = "API_Admin",
-                        NormalizedName = "API_ADMIN"
+                        Name = "Owner",
+                        NormalizedName = "OWNER"
+                    },
+                    new IdentityRole
+                    {
+                        Name = "Staff",
+                        NormalizedName = "STAFF"
                     }
                 );
         }

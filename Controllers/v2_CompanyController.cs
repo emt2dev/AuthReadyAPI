@@ -5,9 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthReadyAPI.Controllers
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/company")]
     [ApiVersion("2.0")]
-    [ApiController]
+    
     public class v2_CompanyController : ControllerBase
     {
         private readonly ILogger<v2_ProductController> _LOGS;

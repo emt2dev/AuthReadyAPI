@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthReadyAPI.Controllers
 {
+    [ApiController]
     [Route("api/v{version:apiVersion}/products")]
     [ApiVersion("2.0")]
-    [ApiController]
     public class v2_ProductController : ControllerBase
     {
         private readonly IV2_Product _product;
@@ -34,7 +34,7 @@ namespace AuthReadyAPI.Controllers
         public async Task<IList<v2_ProductDTO>> getAllProducts([FromRoute] int companyId)
         {
             IList<v2_ProductStripe> listOfAllProducts = new List<v2_ProductStripe>();
-            listOfAllProducts = await _product.GetAllAsync<v2_ProductStripe>();
+            listOfAllProducts = await _product.getAllCompanyProducts(companyId);
             
             IList<v2_ProductDTO> listOfAllDTOs = new List<v2_ProductDTO>();
 
@@ -68,18 +68,15 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<IActionResult> newProduct([FromForm] v2_ProductDTO incomingDTO)
         {
-
-            var uploadPhoto = await _IMS.AddPhotoAsync(incomingDTO.imageToBeUploaded);
-
             v2_ProductStripe newProduct = _mapper.Map<v2_ProductStripe>(incomingDTO);
 
-            newProduct.image = uploadPhoto.Url.ToString();
             var i = (double)newProduct.default_price;
             newProduct.priceInString = i.ToString("0.####");
 
             _ = await _product.AddAsync(newProduct);
 
-            return Ok();
+            string message = "New product created!";
+            return Ok(message);
         }
 
         [HttpPut]
@@ -90,6 +87,24 @@ namespace AuthReadyAPI.Controllers
         public async Task<IActionResult> updateProduct([FromForm] v2_ProductDTO incomingDTO)
         {
             v2_ProductStripe updatedProduct = _mapper.Map<v2_ProductStripe>(incomingDTO);
+
+            await _product.UpdateAsync(updatedProduct);
+
+            return Ok();
+        }
+
+        [HttpPut]
+        [Route("update/image/{productId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> updateProductImage([FromRoute] int productId, [FromForm] IFormFile newImage)
+        {
+            v2_ProductStripe updatedProduct = await _product.GetAsyncById(productId);
+
+            var uploadPhoto = await _IMS.AddPhotoAsync(newImage);
+
+            updatedProduct.image = uploadPhoto.Url.ToString();
 
             await _product.UpdateAsync(updatedProduct);
 

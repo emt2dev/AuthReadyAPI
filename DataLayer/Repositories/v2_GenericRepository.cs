@@ -70,15 +70,5 @@ namespace AuthReadyAPI.DataLayer.Repositories
             _context.Update(entity);
            await _context.SaveChangesAsync();
         }
-
-        Task<List<TResult>> IV2_GenericRepository<T>.GetAllAsync<TResult>()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<PagedResult<TResult>> IV2_GenericRepository<T>.GetAllAsync<TResult>(QueryParameters queryParameters)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
