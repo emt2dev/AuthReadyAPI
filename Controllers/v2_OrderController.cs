@@ -1,16 +1,8 @@
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.Order;
-using AuthReadyAPI.DataLayer.DTOs.Pagination;
-using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
-using Stripe.Checkout;
-using System.ComponentModel.Design;
 using System.Text.Json;
 
 namespace AuthReadyAPI.Controllers
@@ -59,6 +51,9 @@ namespace AuthReadyAPI.Controllers
                 pickedUpByCustomer = false,
                 orderCompleted = false,
                 deliveryAddress = addressBuilder,
+                status = "received",
+                eta = "To be determined",
+                method = "Pick Up",
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -99,6 +94,9 @@ namespace AuthReadyAPI.Controllers
                 delivery = false,
                 pickedUpByCustomer = false,
                 orderCompleted = false,
+                status = "received",
+                eta = "To be determined",
+                method = "Pick Up",
             };
 
             _ = await _order.AddAsync(newOrder);

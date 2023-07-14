@@ -66,13 +66,22 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> newProduct([FromForm] v2_ProductDTO incomingDTO)
+        public async Task<IActionResult> newProduct([FromForm] v2_newProductDTO incomingDTO)
         {
-            v2_ProductStripe newProduct = _mapper.Map<v2_ProductStripe>(incomingDTO);
+            var builder1 = incomingDTO.dollars;
+            var builder2 = incomingDTO.cents;
 
-            var i = (double)newProduct.default_price;
-            newProduct.priceInString = i.ToString("0.####");
+            var priceInString = $"{builder1}.{builder2}";
 
+            var i = float.Parse(priceInString);
+            var j = (long)i;
+
+            v2_ProductDTO newProductBuilder = _mapper.Map<v2_ProductDTO>(incomingDTO);
+            newProductBuilder.default_price = j;
+
+            v2_ProductStripe newProduct = _mapper.Map<v2_ProductStripe>(newProductBuilder);
+            newProduct.priceInString = priceInString;
+            
             _ = await _product.AddAsync(newProduct);
 
             string message = "New product created!";

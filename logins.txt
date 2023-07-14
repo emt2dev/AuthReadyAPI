@@ -42,72 +42,90 @@ sudo docker system prune -a
   "costInString": "41.93"
 }
 txcd_40060003
+
+//v2 test registered users
+// staff owner
 {
-  "email": "customer1@customer.com",
+  "email": "staff200@staff.com",
+  "password": "P@ssword1"
+}
+
+staff adminone
+{
+  "email": "staff201@staff.com",
+  "password": "P@ssword1"
+}
+
+staff admintwo
+{
+  "email": "staff202@staff.com",
+  "password": "P@ssword1"
+}
+
+customer
+{  "email": "customer200@customer.com",
+  "password": "P@ssword1"
+}
+
+dev
+{  "email": "dev200@dev.com",
   "password": "P@ssword1"
 }
 
 {
-  "email": "admin1@admin.com",
-  "password": "P@ssword1"
+  "userId": "fb3267ef-aff5-419e-acae-e23feae1e3b1",
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjdXN0b21lcjEwMEBjdXN0b21lci5jb20iLCJqdGkiOiI3MjI2ZWE5My05YjJlLTQyYTItYmEwNC04ZmM2M2VjOTA5YTEiLCJlbWFpbCI6ImN1c3RvbWVyMTAwQGN1c3RvbWVyLmNvbSIsInVpZCI6IjljODg2NjNmLWU5ZGYtNDU3NC1iZTlmLTM3ODliMWIyYjQ3YSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6IkN1c3RvbWVyIiwiZXhwIjoxNjg5MjI2NjE1LCJpc3MiOiJBdXRoUmVhZHlBUEkiLCJhdWQiOiJBdXRoUmVhZHlBUElVc2VycyJ9.Op0QOE4uHfJmBkncIVpTRLIAqXo8QHKKG-zn699i8fA",
+  "refreshToken": "CfDJ8KEAOUBBDqtNt4HBjfGGRHvezRnD6zwNfmMchYoZhEeRKNrDyjPhWxp2tFQenHWXPo487zD/B2hE5MdZyJ+3b7YntuXgEeEs03X8fnUT4uQPg99qx/Z8/KAsjTcYathJlkPigMvbTdqW0P389KILAQD34RE1VWcZr+ivrXJ4L849jUwjW0RScTxKGT06+K7QYd2qRXI+yr4NVkrTYfvUVn4rtdP2qX4QBIjDIch6JcST"
 }
 
 {
-  "userId": "697295b4-08ab-48b2-91ef-7f1fdffb29b7",
-  "token": "
-  
-  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjdXN0b21lcjAwMUB1c2VyLmNvbSIsImp0aSI6ImY4MjlhNjI4LTdhNGMtNGIyZS04ZGU0LTNmZWUzMzA1YjU1YSIsImVtYWlsIjoiY3VzdG9tZXIwMDFAdXNlci5jb20iLCJ1aWQiOiJlOTRlZmQ1ZC0zMmE4LTRiNGMtODU4MS1mNzc5YjYwMTRkYzMiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNjg3ODQyMTczLCJpc3MiOiJBdXRoUmVhZHlBUEkiLCJhdWQiOiJBdXRoUmVhZHlBUElVc2VycyJ9.MbLkbcgtKWM6FKviEoYn7fj_pfMKdG-Gnd8TE_rNmZU
-  
-  
-  ",
-  "refreshToken": "CfDJ8KEAOUBBDqtNt4HBjfGGRHvQ7FaLykVEpxEtyvaSuACr2P53QFYOj8GtRauub/CgEK6VbWFIumdzJKk6SHduKqI9KzM+tCq/mtIsJgwaappqIoqA4WPalQx3mp9ZWh5tCn8tmxwUt7Fikxht6PkY9kS9qg52KaZf1+DJrQUt1vsSp1jmIlRTPRJAPvKiNrVqXFswukhHu3oLrfQzq9rop9bu5UhEzUv/pyrH4qrclRDC"
-}
-
-{
-  "email": "admin200@admin.com",
-  "password": "P@ssword1"
-}
-
-
-  "afterExpiration": null,
-  "allowPromotionCodes": null,
-  "automaticTax": null,
-  "billingAddressCollection": null,
-  "cancelUrl": "payment failed",
-  "clientReferenceId": null,
-  "consentCollection": null,
-  "currency": null,
-  "customFields": null,
-  "customText": null,
-  "customer": null,
-  "customerCreation": null,
-  "customerEmail": null,
-  "customerUpdate": null,
-  "discounts": null,
-  "expiresAt": null,
-  "invoiceCreation": null,
-  "lineItems": [],
-  "locale": null,
-  "metadata": null,
-  "mode": "payment",
-  "paymentIntentData": null,
-  "paymentMethodCollection": null,
-  "paymentMethodOptions": null,
-  "paymentMethodTypes": [
-    "card"
+  "id": 3,
+  "customerId": "9c88663f-e9df-4574-be9f-3789b1b2b47a",
+  "companyId": 1,
+  "items": [
+    {
+      "id": 13,
+      "companyId": 1,
+      "stripeId": null,
+      "name": "Product 28",
+      "description": null,
+      "default_price": 6,
+      "quantity": 1,
+      "package_dimensions": null,
+      "statement_descriptor": null,
+      "unit_label": null,
+      "image": null,
+      "url": null,
+      "priceInString": "6.88",
+      "seo": null,
+      "keyword": null,
+      "imageToBeUploaded": null
+    }
   ],
-  "phoneNumberCollection": null,
-  "setupIntentData": null,
-  "shippingAddressCollection": null,
-  "shippingOptions": null,
-  "shippingRates": null,
-  "submitType": null,
-  "subscriptionData": null,
-  "successUrl": "order received",
-  "taxIdCollection": null,
-  "expand": null,
-  "extraParams": {}
+  "cost": 6,
+  "submitted": false,
+  "abandoned": false,
+  "costInString": "6"
 }
+
+ {
+    "id": 13,
+    "companyId": 1,
+    "stripeId": null,
+    "name": "Product 28",
+    "description": null,
+    "default_price": 6,
+    "quantity": 1,
+    "package_dimensions": null,
+    "statement_descriptor": null,
+    "unit_label": null,
+    "image": null,
+    "url": null,
+    "priceInString": "6.88",
+    "seo": null,
+    "keyword": null,
+    "imageToBeUploaded": null
+  }
 
 {
   "id": 0,
@@ -133,72 +151,4 @@ txcd_40060003
   "administratorTwo": null
 }
 -------------
-{
-  "id": 0,
-  "name": "La Imperial Bakery",
-  "description": "This is an example description of your company, and we're proud to do it in our small town. We've pulled ourselevs up by our bootstraps and offer the best bang for your buck.",
-  "phoneNumber": "863-315-1851",
-  "addressStreet": "123 East Main Street",
-  "addressSuite": "",
-  "addressCity": "Lakeland",
-  "addressState": "Florida",
-  "addressPostal_code": "33805",
-  "addressCountry": "USA",
-  "smallTagline": "Our Products are the result of our love for family and good quality which we dedicate to our customers.",
-  "menuDescription": "Comfort Food With A Puerto-Rican Twist.",
-  "headerImage": "https://via.placeholder.com/200x100?text=Header%20Placeholder",
-  "aboutUsImageUrl": "https://via.placeholder.com/150x100?text=About%20Us",
-  "locationImageUrl": "https://via.placeholder.com/150x100?text=Location",
-  "logoImageUrl": "https://via.placeholder.com/300x150?text=Logo",
-  "miscImageUrl": "https://via.placeholder.com/150x80?text=Misc%20Image",
-  "listOfAllProducts": [
-    {
-      "id": 0,
-      "companyId": 0,
-      "stripeId": "string",
-      "name": "string",
-      "description": "string",
-      "default_price": 0,
-      "quantity": 0,
-      "package_dimensions": "string",
-      "statement_descriptor": "string",
-      "unit_label": "string",
-      "image": "string",
-      "url": "string",
-      "priceInString": "string",
-      "seo": "string",
-      "keyword": "string",
-      "imageToBeUploaded": "string"
-    }
-  ],
-  "owner": {
-    "email": "user@example.com",
-    "password": "string",
-    "name": "string",
-    "position": "string",
-    "giveAdminPrivledges": true,
-    "longitude": "string",
-    "latitude": "string",
-    "coordinates": "string"
-  },
-  "administratorOne": {
-    "email": "user@example.com",
-    "password": "string",
-    "name": "string",
-    "position": "string",
-    "giveAdminPrivledges": true,
-    "longitude": "string",
-    "latitude": "string",
-    "coordinates": "string"
-  },
-  "administratorTwo": {
-    "email": "user@example.com",
-    "password": "string",
-    "name": "string",
-    "position": "string",
-    "giveAdminPrivledges": true,
-    "longitude": "string",
-    "latitude": "string",
-    "coordinates": "string"
-  }
 }

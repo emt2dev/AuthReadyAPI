@@ -14,7 +14,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public DateTime? timePickedUpByCustomer { get; set; }
         public Boolean orderCompleted { get; set; }
         public string status { get; set; }
-        public string eta { get; set; }
+        public string? eta { get; set; }
         public string method { get; set; }
     }
 }

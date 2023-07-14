@@ -139,6 +139,9 @@ builder.Services.AddScoped<IV2_User, v2_UserRepository>(); // Designed to be str
 // IAM2
 builder.Services.AddScoped<IV2_AuthManager, v2_AuthManager>();
 
+// Stripe Service
+builder.Services.AddScoped<IStripeService, StripeService>();
+
 /* IMediaService */
 builder.Services.AddScoped<IMediaService, MediaService>();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));

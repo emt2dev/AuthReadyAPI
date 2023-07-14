@@ -72,17 +72,35 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<string> updateCompanyAdmin(overrideDTO DTO)
         {
+            v2_Company companyOverriddenAdmin = await _company.GetAsyncById(DTO.companyId);
             v2_UserStripe userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
             userGivenPrivledges.companyId = DTO.companyId;
-            userGivenPrivledges.giveAdminPrivledges = true;
-            await _UM.AddToRoleAsync(userGivenPrivledges, "admin");
             
-            v2_Company companyOverriddenAdmin = await _company.GetAsyncById(DTO.companyId);
-            if(DTO.replaceAdminOneOrTwo == 1) companyOverriddenAdmin.administratorOne = userGivenPrivledges;
-            else companyOverriddenAdmin.administratorTwo = userGivenPrivledges;
-            await _company.UpdateAsync(companyOverriddenAdmin);
+            if(DTO.replaceAdminOneOrTwo == 1 || DTO.replaceAdminOneOrTwo == 2)
+            {
+                userGivenPrivledges.giveAdminPrivledges = true;
+                await _UM.AddToRoleAsync(userGivenPrivledges, "Staff");
 
-            return DTO.userEmail + " replaced existing admin " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
+                if(DTO.replaceAdminOneOrTwo == 1) companyOverriddenAdmin.administratorOne = userGivenPrivledges;
+                else if(DTO.replaceAdminOneOrTwo == 2) companyOverriddenAdmin.administratorTwo = userGivenPrivledges;
+
+                await _company.UpdateAsync(companyOverriddenAdmin);
+
+                return DTO.userEmail + " replaced existing admin " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
+            }
+            
+            else if(DTO.replaceAdminOneOrTwo == 0)
+            {
+                userGivenPrivledges.giveAdminPrivledges = true;
+                await _UM.AddToRoleAsync(userGivenPrivledges, "Owner");
+
+                companyOverriddenAdmin.owner = userGivenPrivledges;
+                await _company.UpdateAsync(companyOverriddenAdmin);
+
+                return DTO.userEmail + " replaced owner " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
+            }
+
+            return "invalid replace, choose 0 to replace the owner, 1 for adminone, 2 for admintwo.";
         }
 
         [HttpGet]

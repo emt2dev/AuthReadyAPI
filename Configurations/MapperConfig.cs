@@ -11,6 +11,7 @@ namespace AuthReadyAPI.Configurations
         {
             // V2 Product
             CreateMap<v2_ProductStripe, v2_ProductDTO>().ReverseMap();
+            CreateMap<v2_ProductDTO, v2_newProductDTO>().ReverseMap();
 
             // V2 Company
             CreateMap<v2_Company, v2_CompanyDTO>().ReverseMap();

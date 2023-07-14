@@ -54,6 +54,16 @@ namespace AuthReadyAPI.Controllers
                 findShoppingCart.costInString = findShoppingCart.cost.ToString("0.####");
 
                 v2_ShoppingCartDTO outgoingDTO = _mapper.Map<v2_ShoppingCartDTO>(findShoppingCart);
+
+                IList<v2_ProductDTO> outgoingProductDTOsList = new List<v2_ProductDTO>();
+
+                foreach (v2_ProductStripe product in findShoppingCart.Items)
+                {
+                    v2_ProductDTO outgoingProductDTO =_mapper.Map<v2_ProductDTO>(product);
+                    outgoingProductDTOsList.Add(outgoingProductDTO);
+                }
+                
+                outgoingDTO.Items = outgoingProductDTOsList;
                 return Ok(outgoingDTO);
             }           
 
@@ -177,7 +187,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> removeItem(int productId, string customerId)
+        public async Task<IActionResult> removeItem([FromRoute] int productId, [FromRoute] string customerId)
         {
             
             v2_ProductStripe findProduct = await _product.GetAsyncById(productId);

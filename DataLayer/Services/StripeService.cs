@@ -4,7 +4,6 @@ using AuthReadyAPI.DataLayer.Models;
 using Microsoft.Extensions.Logging;
 using Stripe;
 using Stripe.Checkout;
-using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
 
 namespace AuthReadyAPI.DataLayer.Services
