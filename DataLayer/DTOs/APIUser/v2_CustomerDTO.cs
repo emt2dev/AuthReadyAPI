@@ -10,13 +10,18 @@ namespace AuthReadyAPI.DataLayer.DTOs.APIUser
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+        public string? PhoneNumber { get; set; }
         public string? stripeId { get; set; }
         public string name { get; set; }
         public string description = "Created on SASNM";
         public string? addressStreet { get; set; }
+        public string? addressSuite { get; set; }
         public string? addressCity { get; set; }
         public string? addressState { get; set; }
         public string? addressPostal_code { get; set; }
+        public string? addressCountry { get; set; }
+        public string? longitutde { get; set; }
+        public string? latitude { get; set; }
         public string currency = "usd";
         public Boolean livemode = false; // change to true for production
     }

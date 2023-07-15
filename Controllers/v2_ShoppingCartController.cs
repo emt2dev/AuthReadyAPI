@@ -1,8 +1,10 @@
+using System.Text.Json;
 using AuthReadyAPI.DataLayer.DTOs.Cart;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +14,7 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/shoppingCart")]
     [ApiVersion("2.0")]
+    [Authorize(Roles = "Customer,Staff,Owner")]
     public class v2_ShoppingCartController : ControllerBase
     {
         private readonly IV2_ShoppingCart _cart;

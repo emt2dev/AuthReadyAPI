@@ -19,6 +19,8 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/developers")]
     [ApiVersion("2.0")]
+    // uncomment this out once deployed
+    // [Authorize(Roles = "Developer")]
     public class v2_DeveloperController : ControllerBase
     {
         private readonly IV2_AuthManager _IAM;
@@ -157,6 +159,5 @@ namespace AuthReadyAPI.Controllers
 
             return newCompany.id.ToString();
         }
-
     }
 }

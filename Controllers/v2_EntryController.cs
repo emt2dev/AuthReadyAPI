@@ -22,7 +22,7 @@ namespace AuthReadyAPI.Controllers
             this._mapper = mapper;
             this._IAM = IAM;
         }
-
+        
         [HttpPost]
         [Route("register/customer")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this

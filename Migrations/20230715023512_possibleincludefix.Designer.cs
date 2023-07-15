@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230715023512_possibleincludefix")]
+    partial class possibleincludefix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,25 +467,25 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "adc7b7f9-b6d7-47f0-946f-841a91ae346c",
+                            Id = "4c3b5cc1-daf6-4669-a183-eba1bfc8371e",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "d4b8ec25-2e76-448a-baed-df68a4de78b6",
+                            Id = "1e0987a8-843b-4173-8089-d74b1497fcb5",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "6bc8787c-3e6c-46a7-b756-fbae1e7e3409",
+                            Id = "a1e0adb6-eef2-4d94-ba90-0dbe73c85283",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "00b4e127-1d44-4159-bf64-fcc632ec8a3f",
+                            Id = "f8b5ce89-a2fd-42a8-a9b8-40bc9d13b02a",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });

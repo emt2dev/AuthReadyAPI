@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,7 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/staff")]
     [ApiVersion("2.0")]
+    [Authorize(Roles = "Staff,Owner")]
     public class v2_StaffController : ControllerBase
     {
         private readonly IV2_User _user;

@@ -21,7 +21,6 @@ namespace AuthReadyAPI.DataLayer.Services
 
         public async Task<string> v2_CheckOut(v2_ShoppingCart cart, v2_CustomerDTO customer)
         {
-
             try
             {
                 // Get the base URL 

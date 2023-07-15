@@ -5,7 +5,7 @@ namespace AuthReadyAPI.DataLayer.Models
     public class v2_OrderDTO
     {
         public int id { get; set; }
-        public v2_ShoppingCart cart { get; set; }
+        public v2_ShoppingCartDTO cart { get; set; }
         public v2_Staff? Driver { get; set; }
         public Boolean delivery { get; set; }
         public string? deliveryAddress { get;set; }

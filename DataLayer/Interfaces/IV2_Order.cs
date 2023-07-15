@@ -10,6 +10,6 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<IList<v2_Order>> getAllCompanyOrders(int companyId);
         public Task<IList<v2_Order>> getActiveCompanyOrders(int companyId);
         public Task<IList<v2_Order>> getCompletedCompanyOrders(int companyId);
-        
+        public Task<IList<v2_Order>> getReadyDeliveryOrders(int companyId);
     }
 }

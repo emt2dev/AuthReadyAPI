@@ -1,3 +1,6 @@
+nextbillion api key b98e9dd2f9414231bae19340b76feff0
+android studio github token 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
+
 stripe payment link https://buy.stripe.com/bIY7sJ62O7wz1dmfZ1
 
 https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&pivots=cs1-bash

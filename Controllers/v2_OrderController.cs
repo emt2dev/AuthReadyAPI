@@ -1,7 +1,9 @@
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
@@ -10,6 +12,7 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/orders")]
     [ApiVersion("2.0")]
+    [Authorize(Roles = "Customer,Staff,Owner")]
     public class v2_OrderController : ControllerBase
     {
         private readonly ILogger<v2_OrderController> _LOGS;
@@ -19,7 +22,15 @@ namespace AuthReadyAPI.Controllers
         private readonly IStripeService _ss;
         private readonly IV2_ShoppingCart _cart;
         private readonly IV2_Order _order;
-
+        private readonly String orderReceived = "order received";
+        private readonly String defaultETA = "To be determined";
+        private readonly String readyForPickup = "ready for pickup";
+        private readonly String readyForDelivery = "ready for delivery";
+        private readonly String acceptedDelivery = "out for delivery";
+        private readonly String deliveryFinished = "order was delivered";
+        private readonly String takeoutFinished = "order was picked up";
+        private readonly String methodDelivery = "Delivery";
+        private readonly String methodPickup = "Pick up";
         public v2_OrderController(ILogger<v2_OrderController> LOGS, IMapper mapper, IV2_AuthManager IAM, IV2_Order order, IStripeService ss, IV2_ShoppingCart cart)
         {
             this._LOGS = LOGS;
@@ -30,12 +41,76 @@ namespace AuthReadyAPI.Controllers
             this._order = order;
         }
 
+        [HttpGet]
+        [Route("delivery/ready/{orderId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> deliveryReady([FromRoute] int orderId)
+        {
+            v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
+            acceptedOrder.status = this.readyForDelivery;
+            acceptedOrder.eta = DateTime.Now.AddMinutes(33).ToString();
+
+            await _order.UpdateAsync(acceptedOrder);
+
+            var i = new JsonResult(readyForDelivery, new JsonSerializerOptions { PropertyNamingPolicy = null});
+            return i;
+        }
+
+        [HttpGet]
+        [Route("delivery/completed/{orderId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> deliveryComplete([FromRoute] int orderId)
+        {
+            v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
+            acceptedOrder.status = this.deliveryFinished;
+            acceptedOrder.eta = deliveryFinished;
+
+            await _order.UpdateAsync(acceptedOrder);
+
+            return Ok(deliveryFinished);
+        }
+
+        [HttpGet]
+        [Route("takeout/ready/{orderId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> takeoutReady([FromRoute] int orderId)
+        {
+            v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
+            acceptedOrder.status = readyForPickup;
+            acceptedOrder.eta = readyForPickup;
+
+            await _order.UpdateAsync(acceptedOrder);
+
+            return Ok(readyForPickup);
+        }
+
+        [HttpGet]
+        [Route("takeout/completed/{orderId}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<ActionResult> takeoutComplete([FromRoute] int orderId)
+        {
+            v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
+            acceptedOrder.status = this.takeoutFinished;
+            acceptedOrder.eta = takeoutFinished;
+
+            await _order.UpdateAsync(acceptedOrder);
+
+            return Ok(takeoutFinished);
+        }
+
         [HttpPost]
         [Route("submit/delivery/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-
         public async Task<JsonResult> newDeliveryOrder([FromRoute] int companyId, string customerId)
         {
             v2_ShoppingCart cartSubmitted = await _cart.getExistingShoppingCart(companyId, customerId);
@@ -51,9 +126,9 @@ namespace AuthReadyAPI.Controllers
                 pickedUpByCustomer = false,
                 orderCompleted = false,
                 deliveryAddress = addressBuilder,
-                status = "received",
-                eta = "To be determined",
-                method = "Pick Up",
+                status = orderReceived,
+                eta = defaultETA,
+                method = methodDelivery,
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -94,9 +169,9 @@ namespace AuthReadyAPI.Controllers
                 delivery = false,
                 pickedUpByCustomer = false,
                 orderCompleted = false,
-                status = "received",
-                eta = "To be determined",
-                method = "Pick Up",
+                status = orderReceived,
+                eta = defaultETA,
+                method = methodPickup,
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -120,16 +195,26 @@ namespace AuthReadyAPI.Controllers
             return i;
         }
 
+        
+
         [HttpGet]
         [Route("all/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
 
-        public async Task<IList<v2_Order>> getAllCustomerOrders([FromRoute] int companyId, string customerId)
+        public async Task<IList<v2_OrderDTO>> getAllCustomerOrders([FromRoute] int companyId, string customerId)
         {
             IList<v2_Order> allOrdersList = await _order.getAllCustomerOrders(companyId, customerId);
-            return allOrdersList;
+            IList<v2_OrderDTO> listOfAllOrderDTOs = new List<v2_OrderDTO>();
+
+            foreach (v2_Order order in allOrdersList)
+            {
+                v2_OrderDTO outgoingDTO = _mapper.Map<v2_OrderDTO>(order);
+                listOfAllOrderDTOs.Add(outgoingDTO);
+            }
+
+            return listOfAllOrderDTOs;
         }
 
         [HttpGet]

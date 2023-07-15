@@ -1,9 +1,11 @@
+using System.Text.Json;
 using AuthReadyAPI.DataLayer.DTOs.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.Pagination;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,13 +14,15 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/customers")]
     [ApiVersion("2.0")]
+    [Authorize(Roles = "Customer")]
     public class v2_CustomerController : ControllerBase
     {
+        private string _tokenProvider = "AuthReadyAPI";
         private readonly IV2_User _customer;
         private readonly ILogger<v2_CustomerController> _LOGS;
         private readonly IMapper _mapper;
         private readonly UserManager<v2_UserStripe> _UM;
-        private v2_UserStripe _user;
+        private v2_UserStripe? _user;
         public v2_CustomerController(UserManager<v2_UserStripe> UM, ILogger<v2_CustomerController> LOGS, IV2_User customer, IMapper mapper)
         {
             this._LOGS = LOGS;
@@ -27,29 +31,72 @@ namespace AuthReadyAPI.Controllers
             this._UM = UM;
         }
 
-        // [HttpGet]
-        // [Route("all")]
-        // // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        // [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        // [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        // // public async Task<IList<v2_CustomerDTO>> getAllCustomersPaged(int companyId, [FromQuery] QueryParameters QP)
-        // public async Task<IList<v2_CustomerDTO>> getAllCustomers()
-        // {
-        //     IList<v2_UserStripe> customerList = new List<v2_UserStripe>();
-        //     customerList = await _customer.GetAllAsync<v2_UserStripe>();
+        [HttpPost]
+        [Route("update/password/{customerId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IList<v2_CustomerDTO>> getAllCustomersPaged(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IActionResult> mobilePassword([FromRoute] string customerId, [FromForm] updatePasswordDTO incomingDTO)
+        {
+            v2_UserStripe found = await _UM.FindByIdAsync(customerId);
+            var i = await _UM.ChangePasswordAsync(found, incomingDTO.currentPassword, incomingDTO.newPassword);
 
-        //     IList<v2_CustomerDTO> listOfAllDTOs = new List<v2_CustomerDTO>();
+            await _UM.UpdateAsync(found);
 
-        //     foreach (v2_UserStripe customer in customerList)
-        //         {
-        //            v2_CustomerDTO DTO = _mapper.Map<v2_CustomerDTO>(customer);
+            return Ok();
+        }
+        
+        [HttpPost]
+        [Route("update/address/{customerId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IList<v2_CustomerDTO>> getAllCustomersPaged(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IActionResult> UpdateAddress([FromRoute] string customerId, [FromForm] updateAddressDTO DTO)
+        {
+            v2_UserStripe found = await _UM.FindByIdAsync(customerId);
 
-        //             listOfAllDTOs.Add(DTO);
-        //         }
+            if(found is not null) {
+                found.addressStreet = DTO.addressStreet;
+                found.addressSuite = DTO.addressSuite;
+                found.addressState = DTO.addressState;
+                found.addressCity = DTO.addressCity;
+                found.addressCountry = DTO.addressCountry;
+                found.addressPostal_code = DTO.addressPostal_code;
+                found.PhoneNumber = DTO.PhoneNumber;
 
-        //     return listOfAllDTOs;
-        // }
+                await _UM.UpdateAsync(found);
+                
+                return Ok();
+            } else return Ok();
+        }
+
+        [HttpPost]
+        [Route("get/address/{customerId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IList<v2_CustomerDTO>> getAllCustomersPaged(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<updateAddressDTO> GetAddress([FromRoute] string customerId)
+        {
+            v2_UserStripe found = await _UM.FindByIdAsync(customerId);
+
+            updateAddressDTO outgoingDTO = new updateAddressDTO();
+            
+            outgoingDTO.addressStreet = found.addressStreet;
+            outgoingDTO.addressSuite = found.addressSuite;
+            outgoingDTO.addressState = found.addressState;
+            outgoingDTO.addressCity = found.addressCity;
+            outgoingDTO.addressCountry = found.addressCountry;
+            outgoingDTO.addressPostal_code = found.addressPostal_code;
+            outgoingDTO.PhoneNumber = found.PhoneNumber;
+            
+            return outgoingDTO;
+        }
 
         [HttpPost]
         [Route("details/{customerId}")]
