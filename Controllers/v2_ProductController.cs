@@ -17,6 +17,8 @@ namespace AuthReadyAPI.Controllers
         private readonly ILogger<v2_ProductController> _LOGS;
         private readonly IMapper _mapper;
         private readonly IMediaService _IMS;
+        private readonly int _defaultId;
+        private readonly string staffDashboard = "http://localhost:4200/staff";
         public v2_ProductController(ILogger<v2_ProductController> LOGS, IV2_Product product, IMapper mapper, IMediaService IMS)
         {
             this._LOGS = LOGS;
@@ -64,29 +66,32 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPost]
         [Route("create")]
+        [Consumes("multipart/form-data")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<IActionResult> newProduct([FromForm] v2_newProductDTO incomingDTO)
         {
-            var builder1 = incomingDTO.dollars;
-            var builder2 = incomingDTO.cents;
-
-            var priceInString = $"{builder1}.{builder2}";
-
-            var i = float.Parse(priceInString);
-            var j = (long)i;
-
             v2_ProductDTO newProductBuilder = _mapper.Map<v2_ProductDTO>(incomingDTO);
-            newProductBuilder.default_price = j;
+            newProductBuilder.id = _defaultId;
 
-            v2_ProductStripe newProduct = _mapper.Map<v2_ProductStripe>(newProductBuilder);
-            newProduct.priceInString = priceInString;
+            var uploadPhoto = await _IMS.AddPhotoAsync(incomingDTO.newImage);
+
+            v2_ProductStripe newProduct = new v2_ProductStripe {
+                companyId = incomingDTO.companyId,
+                name = incomingDTO.name,
+                description = incomingDTO.description,
+                default_price = incomingDTO.default_price,
+                quantity = this._defaultId,
+                image = uploadPhoto.Url.ToString(),
+                priceInString = incomingDTO.default_price.ToString(),
+            };
             
             _ = await _product.AddAsync(newProduct);
 
-            string message = "New product created!";
-            return Ok(message);
+            System.Uri uri = new System.Uri(staffDashboard);
+
+            return Redirect(staffDashboard);
         }
 
         [HttpPut]
@@ -103,12 +108,12 @@ namespace AuthReadyAPI.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("update/image/{productId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> updateProductImage([FromRoute] int productId, [FromForm] IFormFile newImage)
+        public async Task<IActionResult> updateProductImage([FromRoute] int productId, IFormFile newImage)
         {
             v2_ProductStripe updatedProduct = await _product.GetAsyncById(productId);
 
@@ -118,19 +123,24 @@ namespace AuthReadyAPI.Controllers
 
             await _product.UpdateAsync(updatedProduct);
 
-            return Ok();
+            System.Uri uri = new System.Uri(staffDashboard);
+
+            return Redirect(staffDashboard);
         }
 
-        [HttpDelete]
-        [Route("delete/{productId}")]
+        [HttpPost]
+        [Route("delete")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> deleteProduct([FromRoute] int productId)
+        public async Task<IActionResult> deleteProduct([FromForm] string productId)
         {
-            await _product.DeleteAsync(productId);
+            var i = Convert.ToInt32(productId);
+            await _product.DeleteAsync(i);
 
-            return Ok();
+            System.Uri uri = new System.Uri(staffDashboard);
+
+            return Redirect(staffDashboard);
         }
     }
 }

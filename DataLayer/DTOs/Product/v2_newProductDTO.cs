@@ -4,9 +4,9 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
     {
         public int companyId { get; set; }
         public string name { get; set; }
-        public string? description { get; set; }
-        public int dollars { get; set; }
-        public int cents { get; set; }
+        public string description { get; set; }
+        public double default_price { get; set; }
         public int quantity = 1;
+        public IFormFile newImage { get; set; }
     }
 }

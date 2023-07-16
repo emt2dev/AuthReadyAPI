@@ -170,7 +170,7 @@ namespace AuthReadyAPI.Controllers
                 phoneNumber = "863-500-4411",
                 smallTagline = "American comfort food with an International Twist",
                 menuDescription = "Our Products are the result of our love for family and good quality which we dedicate to our customers.",
-                headerImage = "https://via.placeholder.com/200x100?text=Header%20Placeholder",
+                headerImage = "https://via.placeholder.com/300x100?text=Header%20Placeholder",
                 aboutUsImageUrl = "https://via.placeholder.com/150x100?text=About%20Us",
                 locationImageUrl = "https://via.placeholder.com/500x250?text=Location",
                 logoImageUrl = "https://via.placeholder.com/300x150?text=Logo",
