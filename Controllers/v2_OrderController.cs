@@ -12,7 +12,6 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/orders")]
     [ApiVersion("2.0")]
-    [Authorize(Roles = "Customer,Staff,Owner")]
     public class v2_OrderController : ControllerBase
     {
         private readonly ILogger<v2_OrderController> _LOGS;

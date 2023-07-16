@@ -14,7 +14,6 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/customers")]
     [ApiVersion("2.0")]
-    [Authorize(Roles = "Customer")]
     public class v2_CustomerController : ControllerBase
     {
         private string _tokenProvider = "AuthReadyAPI";

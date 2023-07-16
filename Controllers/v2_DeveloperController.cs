@@ -28,8 +28,9 @@ namespace AuthReadyAPI.Controllers
         private readonly ILogger<v2_DeveloperController> _LOGS;
         private readonly IMapper _mapper;
         private readonly UserManager<v2_UserStripe> _UM;
+        private readonly IV2_Product _product;
         private readonly IV2_Company _company;
-        public v2_DeveloperController(IV2_AuthManager IAM, IV2_Company company, UserManager<v2_UserStripe> UM, ILogger<v2_DeveloperController> LOGS, IV2_User staff, IMapper mapper)
+        public v2_DeveloperController(IV2_AuthManager IAM, IV2_Company company, IV2_Product product, UserManager<v2_UserStripe> UM, ILogger<v2_DeveloperController> LOGS, IV2_User staff, IMapper mapper)
         {
             this._LOGS = LOGS;
             this._mapper = mapper;
@@ -37,6 +38,7 @@ namespace AuthReadyAPI.Controllers
             this._UM = UM;
             this._company = company;
             this._IAM = IAM;
+            this._product = product;
         }
 
         // api/admin/company__create 

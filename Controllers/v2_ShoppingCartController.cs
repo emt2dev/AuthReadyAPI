@@ -14,7 +14,6 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     [Route("api/v{version:apiVersion}/shoppingCart")]
     [ApiVersion("2.0")]
-    [Authorize(Roles = "Customer,Staff,Owner")]
     public class v2_ShoppingCartController : ControllerBase
     {
         private readonly IV2_ShoppingCart _cart;

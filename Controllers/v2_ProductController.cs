@@ -63,7 +63,6 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Staff,Owner")]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -105,7 +104,6 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "Staff,Owner")]
         [Route("update/image/{productId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -124,7 +122,6 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpDelete]
-        [Authorize(Roles = "Staff,Owner")]
         [Route("delete/{productId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
