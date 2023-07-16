@@ -10,7 +10,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public string? stripeId { get; set; }
         public string name { get; set; }
         public string? description { get; set; }
-        public long default_price { get; set; }
+        public double default_price { get; set; }
         public int quantity { get; set; }
         public Boolean livemode = false;
         public string? package_dimensions { get; set; }

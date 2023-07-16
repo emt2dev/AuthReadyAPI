@@ -29,6 +29,16 @@ namespace AuthReadyAPI.Controllers
         private readonly IV2_Product _product;
         private readonly IConfiguration _configs;
         private readonly StripeClient _stripeClient;
+        private readonly String paymentSuccess =  "Payment was a success";
+        private readonly String orderReceived = "order received";
+        private readonly String defaultETA = "To be determined";
+        private readonly String readyForPickup = "ready for pickup";
+        private readonly String readyForDelivery = "ready for delivery";
+        private readonly String acceptedDelivery = "out for delivery";
+        private readonly String deliveryFinished = "order was delivered";
+        private readonly String takeoutFinished = "order was picked up";
+        private readonly String methodDelivery = "Delivery";
+        private readonly String methodPickup = "Pick up";
         public v2_MobileCustomerController(IConfiguration configs, ILogger<v2_MobileCustomerController> LOGS, IV2_ShoppingCart cart, IV2_Product product,  UserManager<v2_UserStripe> UM, IV2_Order order, IStripeService ss, IMapper mapper, IV2_AuthManager IAM)
         {
             this._LOGS = LOGS;
@@ -285,8 +295,6 @@ namespace AuthReadyAPI.Controllers
             v2_UserStripe customerFound = await _IAM.getCustomerDetails(customerId);
             v2_CustomerDTO outgoingDTO = _mapper.Map<v2_CustomerDTO>(customerFound);
 
-            var sessionId = await _ss.v2_CheckOut(cartSubmitted, outgoingDTO);
-
             string addressBuilder = $"{customerFound.addressStreet} {customerFound.addressSuite}, {customerFound.addressCity}, {customerFound.addressState} {customerFound.addressPostal_code} {customerFound.addressCountry}";
 
             v2_Order newOrder = new v2_Order {
@@ -295,9 +303,9 @@ namespace AuthReadyAPI.Controllers
                 pickedUpByCustomer = false,
                 orderCompleted = false,
                 deliveryAddress = addressBuilder,
-                status = "received",
-                eta = "To be determined",
-                method = "Delivery",
+                status = orderReceived,
+                eta = defaultETA,
+                method = methodDelivery,
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -316,7 +324,7 @@ namespace AuthReadyAPI.Controllers
 
             await _cart.AddAsync(newCart);
 
-            var i = new JsonResult(sessionId, new JsonSerializerOptions { PropertyNamingPolicy = null});
+            var i = new JsonResult(paymentSuccess, new JsonSerializerOptions { PropertyNamingPolicy = null});
             return i;
         }
 
@@ -331,7 +339,6 @@ namespace AuthReadyAPI.Controllers
             v2_ShoppingCart cartSubmitted = await _cart.getExistingShoppingCart(companyId, customerId);
             v2_UserStripe customerFound = await _IAM.getCustomerDetails(customerId);
             v2_CustomerDTO outgoingDTO = _mapper.Map<v2_CustomerDTO>(customerFound);
-            var sessionId = await _ss.v2_CheckOut(cartSubmitted, outgoingDTO);
 
             string addressBuilder = $"{customerFound.addressStreet} {customerFound.addressSuite}, {customerFound.addressCity}, {customerFound.addressState} {customerFound.addressPostal_code} {customerFound.addressCountry}";
 
@@ -341,9 +348,9 @@ namespace AuthReadyAPI.Controllers
                 pickedUpByCustomer = false,
                 orderCompleted = false,
                 deliveryAddress = addressBuilder,
-                status = "received",
-                eta = "To be determined",
-                method = "Pick Up",
+                status = orderReceived,
+                eta = defaultETA,
+                method = methodPickup,
             };
 
             _ = await _order.AddAsync(newOrder);
@@ -362,7 +369,7 @@ namespace AuthReadyAPI.Controllers
 
             await _cart.AddAsync(newCart);
 
-            var i = new JsonResult(sessionId, new JsonSerializerOptions { PropertyNamingPolicy = null});
+            var i = new JsonResult(paymentSuccess, new JsonSerializerOptions { PropertyNamingPolicy = null});
             return i;
         }
 
