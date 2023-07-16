@@ -167,6 +167,7 @@ namespace AuthReadyAPI.Controllers
             if(cartSearchingFor is not null)
             {
                 cartSearchingFor.abandoned = true;
+                await _cart.UpdateAsync(cartSearchingFor);
                 
                 v2_ShoppingCart newCart = new v2_ShoppingCart {
                     customerId = cartSearchingFor.customerId,
@@ -177,7 +178,7 @@ namespace AuthReadyAPI.Controllers
                     costInString = cartSearchingFor.cost.ToString("0.##")
                 };
 
-                await _cart.UpdateAsync(cartSearchingFor);
+                
                 await _cart.AddAsync(newCart);
             }
 

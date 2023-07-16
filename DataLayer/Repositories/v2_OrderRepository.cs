@@ -18,7 +18,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
             .Include(found => found.cart)
-            .Include(x => x.cart.Items)
+            .Include(found => found.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString() && found.cart.customerId == customerId)
             .ToListAsync();
 
@@ -28,6 +28,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
         public async Task<IList<v2_Order>> getActiveCustomerOrders(int companyId, string customerId)
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
+            .Include(found => found.cart)
+            .Include(found => found.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString() && found.cart.customerId == customerId && found.orderCompleted == false)
             .ToListAsync();
 
@@ -37,6 +39,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
         public async Task<IList<v2_Order>> getCompletedCustomerOrders(int companyId, string customerId)
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
+            .Include(found => found.cart)
+            .Include(found => found.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString() && found.cart.customerId == customerId && found.orderCompleted == true)
             .ToListAsync();
 
@@ -46,6 +50,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
         public async Task<IList<v2_Order>> getAllCompanyOrders(int companyId)
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
+            .Include(found => found.cart)
+            .Include(found => found.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString())
             .ToListAsync();
 
@@ -55,6 +61,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
         public async Task<IList<v2_Order>> getActiveCompanyOrders(int companyId)
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
+            .Include(found => found.cart)
+            .Include(found => found.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString() && found.orderCompleted == false)
             .ToListAsync();
 

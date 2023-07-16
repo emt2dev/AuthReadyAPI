@@ -30,6 +30,7 @@ namespace AuthReadyAPI.Controllers
         private readonly String takeoutFinished = "order was picked up";
         private readonly String methodDelivery = "Delivery";
         private readonly String methodPickup = "Pick up";
+        private readonly string staffDashboard = "http://localhost:4200/staff";
         public v2_OrderController(ILogger<v2_OrderController> LOGS, IMapper mapper, IV2_AuthManager IAM, IV2_Order order, IStripeService ss, IV2_ShoppingCart cart)
         {
             this._LOGS = LOGS;
@@ -51,10 +52,11 @@ namespace AuthReadyAPI.Controllers
             acceptedOrder.status = this.readyForDelivery;
             acceptedOrder.eta = DateTime.Now.AddMinutes(33).ToString();
 
-            await _order.UpdateAsync(acceptedOrder);
+            await _order.UpdateAsync(acceptedOrder);            
 
-            var i = new JsonResult(readyForDelivery, new JsonSerializerOptions { PropertyNamingPolicy = null});
-            return i;
+            System.Uri uri = new System.Uri(staffDashboard);
+
+            return Redirect(staffDashboard);
         }
 
         [HttpGet]
@@ -67,10 +69,13 @@ namespace AuthReadyAPI.Controllers
             v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
             acceptedOrder.status = this.deliveryFinished;
             acceptedOrder.eta = deliveryFinished;
+            acceptedOrder.orderCompleted = true;
 
             await _order.UpdateAsync(acceptedOrder);
 
-            return Ok(deliveryFinished);
+            System.Uri uri = new System.Uri(staffDashboard);
+
+            return Redirect(staffDashboard);
         }
 
         [HttpGet]
@@ -85,8 +90,10 @@ namespace AuthReadyAPI.Controllers
             acceptedOrder.eta = readyForPickup;
 
             await _order.UpdateAsync(acceptedOrder);
+            
+            System.Uri uri = new System.Uri(staffDashboard);
 
-            return Ok(readyForPickup);
+            return Redirect(staffDashboard);
         }
 
         [HttpGet]
@@ -99,6 +106,7 @@ namespace AuthReadyAPI.Controllers
             v2_Order acceptedOrder = await _order.GetAsyncById(orderId);
             acceptedOrder.status = this.takeoutFinished;
             acceptedOrder.eta = takeoutFinished;
+            acceptedOrder.orderCompleted = true;
 
             await _order.UpdateAsync(acceptedOrder);
 
@@ -194,26 +202,17 @@ namespace AuthReadyAPI.Controllers
             return i;
         }
 
-        
-
         [HttpGet]
         [Route("all/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-
         public async Task<IList<v2_OrderDTO>> getAllCustomerOrders([FromRoute] int companyId, string customerId)
         {
             IList<v2_Order> allOrdersList = await _order.getAllCustomerOrders(companyId, customerId);
-            IList<v2_OrderDTO> listOfAllOrderDTOs = new List<v2_OrderDTO>();
+            IList<v2_OrderDTO> listOfDTOs = _mapper.Map<IList<v2_OrderDTO>>(allOrdersList);
 
-            foreach (v2_Order order in allOrdersList)
-            {
-                v2_OrderDTO outgoingDTO = _mapper.Map<v2_OrderDTO>(order);
-                listOfAllOrderDTOs.Add(outgoingDTO);
-            }
-
-            return listOfAllOrderDTOs;
+            return listOfDTOs;
         }
 
         [HttpGet]
@@ -222,11 +221,11 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
 
-        public async Task<IList<v2_Order>> getActiveCustomerOrders([FromRoute] int companyId, string customerId)
+        public async Task<IList<v2_OrderDTO>> getActiveCustomerOrders([FromRoute] int companyId, string customerId)
         {
             IList<v2_Order> allOrdersList = await _order.getActiveCustomerOrders(companyId, customerId);
             IList<v2_OrderDTO> listOfDTOs = _mapper.Map<IList<v2_OrderDTO>>(allOrdersList);
-            return allOrdersList;
+            return listOfDTOs;
         }
 
         [HttpGet]
@@ -235,10 +234,11 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
 
-        public async Task<IList<v2_Order>> getCompletedCustomerOrders([FromRoute] int companyId, string customerId)
+        public async Task<IList<v2_OrderDTO>> getCompletedCustomerOrders([FromRoute] int companyId, string customerId)
         {
             IList<v2_Order> allOrdersList = await _order.getCompletedCustomerOrders(companyId, customerId);
-            return allOrdersList;
+            IList<v2_OrderDTO> listOfDTOs = _mapper.Map<IList<v2_OrderDTO>>(allOrdersList);
+            return listOfDTOs;
         }
 
         [HttpGet]
