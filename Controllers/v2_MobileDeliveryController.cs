@@ -53,28 +53,21 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
-        [Route("orders/{companyId}/{staffId}")]
+        [Route("orders/{companyId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> getOrdersReadyForDelivery([FromRoute] int companyId, [FromRoute] string staffId)
+        public async Task<ActionResult> getOrdersReadyForDelivery([FromRoute] int companyId)
         {
-            v2_UserStripe verifyStaff = await _UM.FindByIdAsync(staffId);
-            if(verifyStaff is null || verifyStaff.companyId != company) {
-                
-                return new JsonResult("user is not a staff member", new JsonSerializerOptions { PropertyNamingPolicy = null});
-            } else {
-                IList<v2_Order> orderList = await _order.getReadyDeliveryOrders(companyId);
-                IList<v2_Order> orderList2 = await _order.getAllCompanyOrders(companyId);
+            IList<v2_Order> orderList = await _order.getReadyDeliveryOrders(companyId);
+            IList<v2_Order> orderList2 = await _order.getAllCompanyOrders(companyId);
 
-                foreach (v2_Order order in orderList)
-                {
-                    orderList2.Add(order);
-                }
-                
-            
-                return new JsonResult(orderList2, new JsonSerializerOptions { PropertyNamingPolicy = null});
+            foreach (v2_Order order in orderList)
+            {
+                orderList2.Add(order);
             }
+            
+            return new JsonResult(orderList2, new JsonSerializerOptions { PropertyNamingPolicy = null});
         }
 
         [HttpGet]

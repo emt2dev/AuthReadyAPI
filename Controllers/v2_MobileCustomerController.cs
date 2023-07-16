@@ -61,7 +61,8 @@ namespace AuthReadyAPI.Controllers
         public async Task<IActionResult> mobileIntent([FromRoute] int cartId)
         {
             v2_ShoppingCart cartSearchingFor = await _cart.GetAsyncById(cartId);
-            var l =cartSearchingFor.cost;
+            
+            var l = cartSearchingFor.cost;
 
             v2_UserStripe userFound = await _UM.FindByIdAsync(cartSearchingFor.customerId);
             
@@ -79,8 +80,6 @@ namespace AuthReadyAPI.Controllers
                     ClientSecret = intent.ClientSecret,
                 });
 
-            // var i = new JsonResult(intent.ClientSecret, new JsonSerializerOptions { PropertyNamingPolicy = null});
-            // return i;
         }
         
         [HttpPost]
