@@ -37,7 +37,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         // public async Task<IList<v2_CustomerDTO>> getAllCustomersPaged(int companyId, [FromQuery] QueryParameters QP)
-        public async Task<IActionResult> mobilePassword([FromRoute] string customerId, [FromForm] updatePasswordDTO incomingDTO)
+        public async Task<IActionResult> updatePassword([FromRoute] string customerId, [FromForm] updatePasswordDTO incomingDTO)
         {
             v2_UserStripe found = await _UM.FindByIdAsync(customerId);
             var i = await _UM.ChangePasswordAsync(found, incomingDTO.currentPassword, incomingDTO.newPassword);
@@ -121,10 +121,21 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> updateCustomer(v2_CustomerDTO incomingDTO)
+        public async Task<IActionResult> updateCustomer(v2_CustomerDTO DTO)
         {
-            v2_UserStripe customerFound = _mapper.Map<v2_UserStripe>(incomingDTO);
-            _ = await _UM.UpdateAsync(customerFound);
+            v2_UserStripe customerToBeUpdated = await _UM.FindByEmailAsync(DTO.Email);
+
+            if (DTO.PhoneNumber != customerToBeUpdated.PhoneNumber && DTO.PhoneNumber != "") customerToBeUpdated.PhoneNumber = DTO.PhoneNumber;
+            if (DTO.name != customerToBeUpdated.name && DTO.name != "") customerToBeUpdated.name = customerToBeUpdated.name;
+    
+            if (DTO.addressStreet != customerToBeUpdated.addressStreet && DTO.addressStreet != "") customerToBeUpdated.addressStreet = DTO.addressStreet;
+            if (DTO.addressSuite != customerToBeUpdated.addressSuite && DTO.addressSuite != "") customerToBeUpdated.addressSuite = DTO.addressSuite;
+            if (DTO.addressCity != customerToBeUpdated.addressCity && DTO.addressCity != "") customerToBeUpdated.addressCity = DTO.addressCity;
+            if (DTO.addressState != customerToBeUpdated.addressState && DTO.addressState != "") customerToBeUpdated.addressState = DTO.addressState;
+            if (DTO.addressPostal_code != customerToBeUpdated.addressPostal_code && DTO.addressPostal_code != "") customerToBeUpdated.addressPostal_code = DTO.addressPostal_code;
+            if (DTO.addressCountry != customerToBeUpdated.addressCountry && DTO.addressCountry != "") customerToBeUpdated.addressCountry = DTO.addressCountry;
+
+            _ = await _UM.UpdateAsync(customerToBeUpdated);
 
             return Ok();
         }

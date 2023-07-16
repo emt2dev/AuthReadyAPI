@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20230713052523_updatedv2User")]
-    partial class updatedv2User
+    [Migration("20230716021949_finaldraft")]
+    partial class finaldraft
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -121,11 +121,23 @@ namespace AuthReadyAPI.Migrations
                     b.Property<string>("deliveryAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("eta")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("method")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("orderCompleted")
                         .HasColumnType("bit");
 
                     b.Property<bool>("pickedUpByCustomer")
                         .HasColumnType("bit");
+
+                    b.Property<string>("status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("timeDelivered")
                         .HasColumnType("datetime2");
@@ -153,8 +165,8 @@ namespace AuthReadyAPI.Migrations
                     b.Property<int>("companyId")
                         .HasColumnType("int");
 
-                    b.Property<long>("default_price")
-                        .HasColumnType("bigint");
+                    b.Property<double>("default_price")
+                        .HasColumnType("float");
 
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
@@ -455,25 +467,25 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "46888851-1b1b-418c-94e1-5948e9f68d6e",
+                            Id = "ca7c72d4-df73-4b16-b3dd-3155ba1e280a",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "90e79bcc-2709-450b-bff3-7e89cffce9d4",
+                            Id = "7350ab64-9ecf-4f73-b55d-b79c31e62570",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "d1f7c4fd-1328-47ea-a696-2238668cf519",
+                            Id = "3c28211f-75ca-4539-88cb-13090af306a2",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "a52a185a-c8a0-46f4-9cb8-51f41d050274",
+                            Id = "43993574-3957-46ac-85b8-a43b19e77daa",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });

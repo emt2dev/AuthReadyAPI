@@ -15,9 +15,9 @@ namespace AuthReadyAPI.DataLayer.Services
     {
         private readonly IConfiguration _configs;
         private UserManager<v2_UserStripe> _UM;
-
-        private string _tokenProvider = "AuthReadyAPI";
-        private string _refreshToken = "MadeByDavidDuron";
+        private readonly int companyId = 1;
+        private readonly string _tokenProvider = "AuthReadyAPI";
+        private readonly string _refreshToken = "MadeByDavidDuron";
         
 
         public v2_AuthManager(UserManager<v2_UserStripe> UM, IConfiguration configuration)
@@ -45,6 +45,7 @@ namespace AuthReadyAPI.DataLayer.Services
             v2_UserStripe _user = new v2_UserStripe {
                 Email = incomingDTO.Email,
                 UserName = incomingDTO.Email,
+                companyId = companyId
             };
 
             var resultOfScript = await _UM.CreateAsync(_user, incomingDTO.Password);

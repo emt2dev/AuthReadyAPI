@@ -80,13 +80,18 @@ namespace AuthReadyAPI.Controllers
             v2_UserStripe userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
             userGivenPrivledges.companyId = DTO.companyId;
             
-            if(DTO.replaceAdminOneOrTwo == 1 || DTO.replaceAdminOneOrTwo == 2)
+            
+            if(DTO.replaceAdminOneOrTwo != 0)
             {
                 userGivenPrivledges.giveAdminPrivledges = true;
                 await _UM.AddToRoleAsync(userGivenPrivledges, "Staff");
 
-                if(DTO.replaceAdminOneOrTwo == 1) companyOverriddenAdmin.administratorOne = userGivenPrivledges;
-                else if(DTO.replaceAdminOneOrTwo == 2) companyOverriddenAdmin.administratorTwo = userGivenPrivledges;
+                if(DTO.replaceAdminOneOrTwo == 1) {
+                    companyOverriddenAdmin.administratorOne = userGivenPrivledges;
+                }
+                else if(DTO.replaceAdminOneOrTwo == 2) {
+                    companyOverriddenAdmin.administratorTwo = userGivenPrivledges;
+                }
 
                 await _company.UpdateAsync(companyOverriddenAdmin);
 
@@ -122,19 +127,30 @@ namespace AuthReadyAPI.Controllers
             var errors = await _IAM.registerCustomer(newCustomer);
 
             Base__APIUser newDeveloper = new Base__APIUser {
-                Email = "admin1@admin.com",
+                Email = "dev1@dev.com",
                 Password = "P@ssword1",
             };
 
             errors = await _IAM.registerDeveloper(newDeveloper);
 
-            Base__APIUser newStaff = new Base__APIUser {
-                Email = "staff1@admin.com",
+            Base__APIUser newStaff1 = new Base__APIUser {
+                Email = "staff1@staff.com",
                 Password = "P@ssword1",
             };
 
+            errors = await _IAM.registerStaff(newStaff1);
+            v2_UserStripe findStaff1 = await _UM.FindByEmailAsync(newStaff1.Email);
+
+            Base__APIUser newStaff2 = new Base__APIUser {
+                Email = "staff1@staff.com",
+                Password = "P@ssword1",
+            };
+
+            errors = await _IAM.registerStaff(newStaff2);
+            v2_UserStripe findStaff2 = await _UM.FindByEmailAsync(newStaff2.Email);
+
             Base__APIUser newOwner = new Base__APIUser {
-                Email = "staff1@admin.com",
+                Email = "owner1@owner.com",
                 Password = "P@ssword1",
             };
 
@@ -143,8 +159,8 @@ namespace AuthReadyAPI.Controllers
             v2_UserStripe findOwner = await _UM.FindByEmailAsync(newOwner.Email);
 
             v2_Company newCompany = new v2_Company {
-                name = "La Imperial Bakery",
-                description = "A Puerto Rican Bakery located in downtown Lakeland, Florida serving our grandma's recipe.",
+                name = "Cafe of the World",
+                description = "This is an example description of your company, and we're proud to do it in our small town. We've pulled ourselevs up by our bootstraps and offer the best bang for your buck.",
                 addressStreet = "123 E Main St",
                 addressCity = "Lakeland",
                 addressState = "FL",
@@ -152,9 +168,16 @@ namespace AuthReadyAPI.Controllers
                 addressCountry = "USA",
                 addressSuite = "",
                 phoneNumber = "863-500-4411",
-                smallTagline = "Comfort food with a Puerto Rican Twist",
-                menuDescription = "Our products are the result of a fusion of two loves; love for family and love for good food.",
+                smallTagline = "American comfort food with an International Twist",
+                menuDescription = "Our Products are the result of our love for family and good quality which we dedicate to our customers.",
+                headerImage = "https://via.placeholder.com/200x100?text=Header%20Placeholder",
+                aboutUsImageUrl = "https://via.placeholder.com/150x100?text=About%20Us",
+                locationImageUrl = "https://via.placeholder.com/500x250?text=Location",
+                logoImageUrl = "https://via.placeholder.com/300x150?text=Logo",
+                miscImageUrl = "https://via.placeholder.com/150x80?text=Misc%20Image",
                 owner = findOwner,
+                administratorOne = findStaff1,
+                administratorTwo = findStaff2                
             };
 
             newCompany = await _company.AddAsync(newCompany);

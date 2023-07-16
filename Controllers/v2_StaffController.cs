@@ -52,6 +52,54 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
+        [Route("nonadmins/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IList<v2_StaffDTO>> getAllStaffsPaged(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IList<v2_StaffDTO>> getNonAdmins([FromRoute] int companyId)
+        {
+            IList<v2_UserStripe> staffList = new List<v2_UserStripe>();
+            staffList = await _user.getNonAdmins(companyId);
+
+            IList<v2_StaffDTO> listOfAllDTOs = new List<v2_StaffDTO>();
+
+            foreach (v2_UserStripe staff in staffList)
+                {
+                   v2_StaffDTO DTO = _mapper.Map<v2_StaffDTO>(staff);
+
+                    listOfAllDTOs.Add(DTO);
+                }
+
+            return listOfAllDTOs;
+        }
+
+        [HttpGet]
+        [Route("admins/{companyId}")]
+        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IList<v2_StaffDTO>> getAllStaffsPaged(int companyId, [FromQuery] QueryParameters QP)
+        public async Task<IList<v2_StaffDTO>> getAdmins([FromRoute] int companyId)
+        {
+            IList<v2_UserStripe> staffList = new List<v2_UserStripe>();
+            staffList = await _user.getAdmins(companyId);
+
+            IList<v2_StaffDTO> listOfAllDTOs = new List<v2_StaffDTO>();
+
+            foreach (v2_UserStripe staff in staffList)
+                {
+                   v2_StaffDTO DTO = _mapper.Map<v2_StaffDTO>(staff);
+
+                    listOfAllDTOs.Add(DTO);
+                }
+
+            return listOfAllDTOs;
+        }
+
+        [HttpGet]
         [Route("details/{staffId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -74,10 +122,21 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> updateStaff(v2_StaffDTO incomingDTO)
+        public async Task<IActionResult> updateStaff(v2_StaffDTO DTO)
         {
-            v2_UserStripe customerFound = _mapper.Map<v2_UserStripe>(incomingDTO);
-            _ = await _UM.UpdateAsync(customerFound);
+            v2_UserStripe customerToBeUpdated = await _UM.FindByEmailAsync(DTO.Email);
+
+            if (DTO.PhoneNumber != customerToBeUpdated.PhoneNumber && DTO.PhoneNumber != "") customerToBeUpdated.PhoneNumber = DTO.PhoneNumber;
+            if (DTO.name != customerToBeUpdated.name && DTO.name != "") customerToBeUpdated.name = customerToBeUpdated.name;
+    
+            if (DTO.addressStreet != customerToBeUpdated.addressStreet && DTO.addressStreet != "") customerToBeUpdated.addressStreet = DTO.addressStreet;
+            if (DTO.addressSuite != customerToBeUpdated.addressSuite && DTO.addressSuite != "") customerToBeUpdated.addressSuite = DTO.addressSuite;
+            if (DTO.addressCity != customerToBeUpdated.addressCity && DTO.addressCity != "") customerToBeUpdated.addressCity = DTO.addressCity;
+            if (DTO.addressState != customerToBeUpdated.addressState && DTO.addressState != "") customerToBeUpdated.addressState = DTO.addressState;
+            if (DTO.addressPostal_code != customerToBeUpdated.addressPostal_code && DTO.addressPostal_code != "") customerToBeUpdated.addressPostal_code = DTO.addressPostal_code;
+            if (DTO.addressCountry != customerToBeUpdated.addressCountry && DTO.addressCountry != "") customerToBeUpdated.addressCountry = DTO.addressCountry;
+
+            _ = await _UM.UpdateAsync(customerToBeUpdated);
 
             return Ok();
         }

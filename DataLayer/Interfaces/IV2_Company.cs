@@ -6,5 +6,6 @@ namespace AuthReadyAPI.DataLayer.Interfaces
     {
         public Task<string> giveAdminPrivledges(string staffEmailAddress, int companyId);
         public Task<string> removeAdminPrivledges(string staffEmailAddress, int companyId);
+        public Task<v2_Company> getFullCompany(int companyId);
     }
 }

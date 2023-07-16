@@ -18,6 +18,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             IList<v2_Order> ordersList = await _context.Set<v2_Order>()
             .Include(found => found.cart)
+            .Include(x => x.cart.Items)
             .Where(found => found.cart.companyId == companyId.ToString() && found.cart.customerId == customerId)
             .ToListAsync();
 

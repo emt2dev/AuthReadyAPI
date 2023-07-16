@@ -21,5 +21,23 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             return listOfAllStaff;
         }
+
+        public async Task<IList<v2_UserStripe>> getAdmins(int companyId)
+        {
+            IList<v2_UserStripe> listOfAllStaff = await _context.Set<v2_UserStripe>()
+            .Where(found => found.companyId == companyId && found.giveAdminPrivledges == true)
+            .ToListAsync();
+
+            return listOfAllStaff;
+        }
+
+        public async Task<IList<v2_UserStripe>> getNonAdmins(int companyId)
+        {
+            IList<v2_UserStripe> listOfAllStaff = await _context.Set<v2_UserStripe>()
+            .Where(found => found.companyId == companyId && found.giveAdminPrivledges == false)
+            .ToListAsync();
+
+            return listOfAllStaff;
+        }
     }
 }

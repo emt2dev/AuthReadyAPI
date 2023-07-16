@@ -12,7 +12,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.APIUser
         public string Password { get; set; }
         public string? PhoneNumber { get; set; }
         public string? stripeId { get; set; }
-        public string name { get; set; }
+        public string? name { get; set; }
         public string description = "Created on SASNM";
         public string? addressStreet { get; set; }
         public string? addressSuite { get; set; }

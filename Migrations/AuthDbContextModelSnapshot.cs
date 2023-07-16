@@ -162,8 +162,8 @@ namespace AuthReadyAPI.Migrations
                     b.Property<int>("companyId")
                         .HasColumnType("int");
 
-                    b.Property<long>("default_price")
-                        .HasColumnType("bigint");
+                    b.Property<double>("default_price")
+                        .HasColumnType("float");
 
                     b.Property<string>("description")
                         .HasColumnType("nvarchar(max)");
@@ -464,25 +464,25 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "adc7b7f9-b6d7-47f0-946f-841a91ae346c",
+                            Id = "ca7c72d4-df73-4b16-b3dd-3155ba1e280a",
                             Name = "Developer",
                             NormalizedName = "DEVELOPER"
                         },
                         new
                         {
-                            Id = "d4b8ec25-2e76-448a-baed-df68a4de78b6",
+                            Id = "7350ab64-9ecf-4f73-b55d-b79c31e62570",
                             Name = "Customer",
                             NormalizedName = "CUSTOMER"
                         },
                         new
                         {
-                            Id = "6bc8787c-3e6c-46a7-b756-fbae1e7e3409",
+                            Id = "3c28211f-75ca-4539-88cb-13090af306a2",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "00b4e127-1d44-4159-bf64-fcc632ec8a3f",
+                            Id = "43993574-3957-46ac-85b8-a43b19e77daa",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         });

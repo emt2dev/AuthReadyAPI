@@ -3,6 +3,7 @@ using AuthReadyAPI.DataLayer.DTOs.Pagination;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -15,6 +16,17 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             this._context = context;
             this._UM = UM;
+        }
+
+        public async Task<v2_Company> getFullCompany(int companyId)
+        {
+            v2_Company foundCompany = await _context.Set<v2_Company>()
+            .Include(x => x.owner)
+            .Include(x => x.administratorOne)
+            .Include(x => x.administratorTwo)
+            .FirstOrDefaultAsync<v2_Company>(x => x.id == companyId);
+
+            return foundCompany;
         }
 
         public async Task<string> giveAdminPrivledges(string staffEmailAddress, int companyId)
