@@ -67,22 +67,26 @@ namespace AuthReadyAPI.Controllers
         [HttpPost]
         [Route("create")]
         [Consumes("multipart/form-data")]
+        [Authorize(Roles ="Staff")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        // public async Task<IActionResult> newProduct([FromForm] IFormFile icFile)
         public async Task<IActionResult> newProduct([FromForm] v2_newProductDTO incomingDTO)
         {
+            // return Ok("reached");
+            
             v2_ProductDTO newProductBuilder = _mapper.Map<v2_ProductDTO>(incomingDTO);
             newProductBuilder.id = _defaultId;
 
-            var uploadPhoto = await _IMS.AddPhotoAsync(incomingDTO.newImage);
+            var uploadPhoto = await _IMS.AddPhotoAsync(incomingDTO.image);
 
             v2_ProductStripe newProduct = new v2_ProductStripe {
                 companyId = incomingDTO.companyId,
                 name = incomingDTO.name,
                 description = incomingDTO.description,
                 default_price = incomingDTO.default_price,
-                quantity = this._defaultId,
+                quantity = 1,
                 image = uploadPhoto.Url.ToString(),
                 priceInString = incomingDTO.default_price.ToString(),
             };
@@ -92,6 +96,7 @@ namespace AuthReadyAPI.Controllers
             System.Uri uri = new System.Uri(staffDashboard);
 
             return Redirect(staffDashboard);
+            
         }
 
         [HttpPut]

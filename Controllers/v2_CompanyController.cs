@@ -1,6 +1,7 @@
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -26,6 +27,7 @@ namespace AuthReadyAPI.Controllers
 
         [HttpGet]
         [Route("details/{companyId}")]
+        [Authorize(Roles ="Staff,Owner")]
         // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
@@ -65,7 +67,6 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPut]
         [Route("update")]
-        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
