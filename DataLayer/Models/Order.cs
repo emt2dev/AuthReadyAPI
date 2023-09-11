@@ -19,5 +19,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public Boolean delivery { get; set; }
         public Double Payment_Amount { get; set; }
         public DateTime Time__Submitted { get; set; }
+        public ShippingOption? ShippingChoice { get; set; }
+        public string? TrackingNumber { get; set; }
     }
 }

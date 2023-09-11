@@ -14,5 +14,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public int Discount_Rate { get; set; }
         public Boolean Abandoned { get; set; }
         public Boolean Submitted { get; set; }
+        public double? TotalWeightInPounds { get; set; }
+        public double? TotalAreaInInches { get; set; }
     }
 }
