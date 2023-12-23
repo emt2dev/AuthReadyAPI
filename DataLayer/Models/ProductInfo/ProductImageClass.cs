@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
 {
     public class ProductImageClass
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string ImageUrl { get; set; }
@@ -13,5 +15,9 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public int StyleId { get; set; }
         [ForeignKey(nameof(ProductId))]
         public int ProductId { get; set; }
+        public ProductImageClass()
+        {
+            
+        }
     }
 }

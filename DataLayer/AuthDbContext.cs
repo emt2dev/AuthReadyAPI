@@ -12,6 +12,7 @@ namespace AuthReadyAPI.DataLayer
         public AuthDbContext(DbContextOptions options) : base(options) { }
 
         public DbSet<CompanyClass> Companies { get; set; }
+        public DbSet<PointOfContactClass> PointOfContacts { get; set; }
         public DbSet<OrderClass> Orders { get; set; }
         public DbSet<ProductClass> Products { get; set; }
         public DbSet<ProductImageClass> ProductImages { get; set; }

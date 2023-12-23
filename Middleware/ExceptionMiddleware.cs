@@ -1,4 +1,5 @@
 ﻿using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.Middleware;
 using AuthReadyAPI.Exceptions;
 using Newtonsoft.Json;
 using System.Net;
@@ -35,7 +36,7 @@ namespace AuthReadyAPI.Middleware
 
             HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
 
-            var details = new ErrorDetails
+            var details = new ErrorDetailsClass
             {
                 Type = "Failure",
                 Message = ex.Message

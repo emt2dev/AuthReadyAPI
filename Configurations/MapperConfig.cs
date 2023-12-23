@@ -20,6 +20,9 @@ namespace AuthReadyAPI.Configurations
             CreateMap<StyleClass, NewStyleDTO>().ReverseMap();
             CreateMap<APIUserClass, APIUserDTO>().ReverseMap();
             CreateMap<CompanyClass, CompanyDTO>().ReverseMap();
+            CreateMap<CompanyClass, NewCompanyDTO>().ReverseMap();
+            CreateMap<PointOfContactClass, PointOfContactDTO>().ReverseMap();
+            CreateMap<PointOfContactClass, NewPointOfContactDTO>().ReverseMap();
             CreateMap<ProductClass, ProductDTO>().ReverseMap();
             CreateMap<ProductClass, NewProductDTO>().ReverseMap();
             CreateMap<ShoppingCartClass, ShoppingCartDTO>().ReverseMap();

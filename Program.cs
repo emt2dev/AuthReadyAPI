@@ -113,26 +113,19 @@ builder.Services.AddIdentityCore<APIUserClass>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
-/* Generic Interface and Repository */
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>)); // uses these interfaces/classes
-
 /* IAuthManager */
-builder.Services.AddScoped<IAuthManager, AuthManager>();
+//builder.Services.AddScoped<IAuthManager, AuthManager>();
 
 /* User */
-builder.Services.AddScoped<IUser, UserRepository>();
-/* API Admin */
-builder.Services.AddScoped<IApiAdmin, ApiAdminRepository>();
+//builder.Services.AddScoped<IUser, UserRepository>();
 /* Company*/
 builder.Services.AddScoped<ICompany, CompanyRepository>();
 /* Product */
 builder.Services.AddScoped<IProduct, ProductRepository>();
-/* Cart */
-builder.Services.AddScoped<ICart, CartRepository>();
 /* shoppingCart */
-builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>();
+//builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>();
 /* Order */
-builder.Services.AddScoped<IOrder, OrderRepository>();
+//builder.Services.AddScoped<IOrder, OrderRepository>();
 
 /* IMediaService */
 builder.Services.AddScoped<IMediaService, MediaService>();

@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
 {
     public class StyleClass
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -37,5 +39,9 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         // Digital Product Ownership
         [ForeignKey(nameof(DigitalOwnerId))]
         public int DigitalOwnerId { get; set; }
+        public StyleClass()
+        {
+            
+        }
     }
 }

@@ -1,10 +1,12 @@
 ﻿using AuthReadyAPI.DataLayer.Models.ProductInfo;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.PII
 {
     public class ShippingInfoClass
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Carrier { get; set; }
@@ -22,5 +24,9 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         // Fkeys
         [ForeignKey(nameof(OrderId))]
         public int OrderId { get; set; }
+        public ShippingInfoClass()
+        {
+            
+        }
     }
 }

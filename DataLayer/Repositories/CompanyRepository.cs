@@ -3,8 +3,11 @@ using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models.Companies;
 using AuthReadyAPI.DataLayer.Models.PII;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -21,9 +24,37 @@ namespace AuthReadyAPI.DataLayer.Repositories
             this._UM = UM;
         }
 
-        public Task<string> COMPANY__GIVE__ADMIN(APIUserDTO DTO)
+        public async Task<bool> NewCompany(NewCompanyDTO IncomingDTO)
         {
-            throw new NotImplementedException();
+            CompanyClass Obj = _mapper.Map<CompanyClass>(IncomingDTO);
+
+            await _context.Companies.AddAsync(Obj);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> NewContact(NewPointOfContactDTO IncomingDTO)
+        {
+            PointOfContactClass Obj = _mapper.Map<PointOfContactClass>(IncomingDTO);
+
+            await _context.PointOfContacts.AddAsync(Obj);
+            await _context.SaveChangesAsync();
+
+            _context.ChangeTracker.Clear();
+
+            CompanyClass Company = await _context.Companies.Where(x => x.Id == Obj.CompanyId).FirstOrDefaultAsync();
+            Company.PointOfContactId = Obj.Id;
+
+            _context.Companies.Update(Company);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<List<CompanyDTO>> GetAPICompanyList()
+        {
+            return await _context.Companies.ProjectTo<CompanyDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
     }
 }

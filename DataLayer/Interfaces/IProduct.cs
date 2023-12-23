@@ -8,7 +8,7 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<List<ProductDTO>> GetAPIProductsByCategoryId(int CategoryId);
         public Task<List<ProductDTO>> GetAPIProductsByKeyword(string Keyword);
         public Task<List<ProductDTO>> GetCompanyProducts(int CompanyId);
-        public Task<List<ProductDTO>> GetCompanyProductsByCategoryId(int CategoryId, int CompanyId);
+        public Task<List<ProductDTO>> GetCompanyProductsByCategoryName(string CategoryName, int CompanyId);
         public Task<List<ProductDTO>> GetCompanyProductsByKeyword(string Keyword, int CompanyId);
         public Task<ProductDTO> GetProduct(int ProductId);
         public Task<ProductWithStyleDTO> GetProductCartCount();

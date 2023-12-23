@@ -108,11 +108,11 @@ namespace AuthReadyAPI.DataLayer.Repositories
             return await _context.Products.Where(x => x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<List<ProductDTO>> GetCompanyProductsByCategoryId(int CategoryId, int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyProductsByCategoryName(string CategoryName, int CompanyId)
         {
-            if (!_context.Categories.Any(x => x.Id == CategoryId && x.CompanyId == CompanyId)) return new List<ProductDTO>();
+            if (!_context.Categories.Any(x => x.Name == CategoryName && x.CompanyId == CompanyId)) return new List<ProductDTO>();
 
-            return await _context.Products.Where(x => x.CategoryId == CategoryId && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            return await _context.Products.Where(x => x.Name == CategoryName && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
         public async Task<List<ProductDTO>> GetCompanyProductsByKeyword(string Keyword, int CompanyId)
@@ -246,7 +246,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             int LastId = await _context.Categories.CountAsync();
 
-            Obj.Id = LastId; // prevents errors when saving new entities
+            Obj.Id = LastId++; // prevents errors when saving new entities
 
             await _context.Categories.AddAsync(Obj);
             await _context.SaveChangesAsync();
@@ -261,7 +261,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             int LastId = await _context.Products.CountAsync();
 
-            Obj.Id = LastId;
+            Obj.Id = LastId++;
 
             await _context.Products.AddAsync(Obj);
             await _context.SaveChangesAsync();
@@ -276,7 +276,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             int LastId = await _context.Styles.CountAsync();
 
-            Obj.Id = LastId;
+            Obj.Id = LastId++;
 
             await _context.Styles.AddAsync(Obj);
             await _context.SaveChangesAsync();
@@ -291,7 +291,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             int LastId = await _context.ProductImages.CountAsync();
 
-            Obj.Id = LastId;
+            Obj.Id = LastId++;
 
             await _context.ProductImages.AddAsync(Obj);
             await _context.SaveChangesAsync();

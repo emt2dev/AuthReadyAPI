@@ -6,6 +6,8 @@ namespace AuthReadyAPI.DataLayer.Interfaces
 {
     public interface ICompany
     {
-        public Task<string> COMPANY__GIVE__ADMIN(APIUserDTO DTO);
+        public Task<bool> NewCompany(NewCompanyDTO IncomingDTO);
+        public Task<bool> NewContact(NewPointOfContactDTO IncomingDTO);
+        public Task<List<CompanyDTO>> GetAPICompanyList();
     }
 }

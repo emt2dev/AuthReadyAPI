@@ -1,9 +1,6 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
-using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthReadyAPI.Controllers
@@ -65,14 +62,14 @@ namespace AuthReadyAPI.Controllers
         }
         
         [HttpPost]
-        [Route("list/company/category")]
+        [Route("list/company/{CategoryName}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetCompanyProductsByCat([FromBody] int CompanyId, [FromBody] int CategoryId)
+        public async Task<List<ProductDTO>> GetCompanyProductsByCat([FromBody] int CompanyId, [FromRoute] string CategoryName)
         {
             // todo: create a dto due to the way FromBody works
-            return await _product.GetCompanyProductsByCategoryId(CategoryId, CompanyId);
+            return await _product.GetCompanyProductsByCategoryName(CategoryName, CompanyId);
         }
         
         [HttpPost]
@@ -180,7 +177,7 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
-        [Route("list/available/all")]
+        [Route("list/available/api")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -200,7 +197,7 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
-        [Route("list/available/all")]
+        [Route("list/unavailable/api")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -211,7 +208,7 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPost]
-        [Route("list/available/company")]
+        [Route("list/unavailable/company")]
         [Authorize(Roles = "Company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

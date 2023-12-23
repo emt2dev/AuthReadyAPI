@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
 {
     public class ProductClass
     {
+        [Key]
         public int Id { get; set; } // Primary Key
         // Information
         public string Name { get; set; }
@@ -27,5 +29,9 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public string TaxCode { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public int CategoryId { get; set; }
+        public ProductClass()
+        {
+            
+        }
     }
 }

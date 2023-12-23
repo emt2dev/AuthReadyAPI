@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,39 @@ namespace AuthReadyAPI.Controllers
         {
             _company = company;
             _product = product;
+        }
+
+        [HttpPost]
+        [Route("debug/company")]
+        //[Authorize(Roles = ("API_Admin, Company_Admin"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> NewCompany([FromForm] NewCompanyDTO IncomingDTO)
+        {
+            return Ok(await _company.NewCompany(IncomingDTO));
+        }
+
+        [HttpPost]
+        [Route("new/contact")]
+        //[Authorize(Roles = ("API_Admin, Company_Admin"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> NewContact([FromForm] NewPointOfContactDTO IncomingDTO)
+        {
+            return Ok(await _company.NewContact(IncomingDTO));
+        }
+
+        [HttpPost]
+        [Route("debug/all/company")]
+        //[Authorize(Roles = ("API_Admin, Company_Admin"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<IActionResult> GetAllCompanies()
+        {
+            return Ok(await _company.GetAPICompanyList());
         }
 
         /* Product Life Cycle
@@ -90,65 +124,5 @@ namespace AuthReadyAPI.Controllers
         {
             return Ok(await _product.SetStyleToUnavailable(StyleId));
         }
-
-        /*
-        [HttpPost]
-        [Route("image/company/new")]
-        //[Authorize(Roles = ("API_Admin, Company_Admin"))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewCompanyImage([FromForm] NewProductImageDTO IncomingDTO)
-        {
-            return Ok(await _company.NewCompanyImage(IncomingDTO));
-        }
-
-        
-        [HttpPut]
-        [Route("product/update")]
-        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__PRODUCT(Full__Product productObj)
-        {
-            ProductDTO searchedFor = _mapper.Map<ProductDTO>(productObj);
-            await _product.UpdateAsync(searchedFor);
-
-            Full__Product _DTO = _mapper.Map<Full__Product>(productObj);
-
-            return _DTO;
-        }
-
-        [HttpDelete]
-        [Route("product/deactivate")]
-        // [Authorize(Roles = ("API_Admin, Company_Admin"))]
-        //[Authorize(Roles = "Company_Admin")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> DELETE__COMPANY__PRODUCT(int productId)
-        {
-            await _product.DeleteAsync(productId);
-
-            return "This product has been deleted";
-        }
-
-        [HttpPut]
-        [Route("details/update")]
-        [Authorize(Roles = ("API_Admin, Company_Admin"))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> UPDATE__COMPANY__DETAILS(Full__Product productObj)
-        {
-            ProductDTO searchedFor = _mapper.Map<ProductDTO>(productObj);
-            await _product.UpdateAsync(searchedFor);
-
-            Full__Product _DTO = _mapper.Map<Full__Product>(productObj);
-
-            return _DTO;
-        }
-        */
     }
 }

@@ -1,11 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace AuthReadyAPI.DataLayer.DTOs.Company
 {
-    public class PointOfContactDTO
+    public class NewPointOfContactDTO
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         [Phone]
         public string Phone { get; set; }

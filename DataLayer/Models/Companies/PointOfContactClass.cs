@@ -1,10 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.Companies
 {
     public class PointOfContactClass
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         [Phone]
@@ -15,5 +17,18 @@ namespace AuthReadyAPI.DataLayer.Models.Companies
         // Fkey
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
+        public PointOfContactClass()
+        {
+
+        }
+        public PointOfContactClass(int CompanyId, PointOfContactDTO IncomingDTO)
+        {
+            this.CompanyId = CompanyId;
+            Name = IncomingDTO.Name;
+            Phone = IncomingDTO.Phone;
+            Email = IncomingDTO.Email;
+        }
+
+
     }
 }

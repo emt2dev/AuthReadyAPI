@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
 {
     public class CartItemClass
     {
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -25,5 +27,9 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public int ProductId { get; set; }
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
+        public CartItemClass()
+        {
+            
+        }
     }
 }

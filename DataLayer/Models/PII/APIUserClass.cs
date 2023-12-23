@@ -19,5 +19,9 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         // Fkeys
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
+        public APIUserClass()
+        {
+            
+        }
     }
 }

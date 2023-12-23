@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.PII
 {
     public class OrderClass
     {
+        [Key]
         public int Id { get; set; }
         public string Status { get; set; }
 
@@ -46,5 +48,10 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         public string? Destination_longitude { get; set; }
         public string? DestinationAddress { get; set; }
         */
+
+        public OrderClass()
+        {
+            
+        }
     }
 }
