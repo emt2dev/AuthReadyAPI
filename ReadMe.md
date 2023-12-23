@@ -1,14 +1,15 @@
-﻿# AuthReadyAPI
-## Here is a ready-to-use out of the box ecommerce application. This was made by David Duron, aka emt2dev.
-# Under Maintenance
-1. Testing Controllers
-2. Testing Routes
+﻿# **AuthReadyAPI**
+ _Here is a ready-to-use out of the box ecommerce application. This was made by professional software developer David Duron, aka emt2dev._
 
-# To Do List
-1. Add cart controller
-2. Add cart routes
-3. Add order controller
-4. Add order routes
-5. Add payment integration (development mode0
-6. Add front-end (Angular)
-7. Add mobile application (Java) for restaurant use and customer ordering.
+ As of 12/23/2023 this repo is being updated to allow product shipping, greater jwt security, updated to dotnet 8, XUnit testing, Angular Client application.
+
+ Dev Log
+ 12/23/2023
+ 1. Updated the following:
+  - product class
+  - dto
+  - interface
+  - repository
+  - controller
+ 2. Added CategoryClass
+ 3. Added StyleClass
