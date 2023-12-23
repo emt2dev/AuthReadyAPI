@@ -1,6 +1,6 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -22,12 +22,9 @@ namespace AuthReadyAPI.Controllers
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
 
-        private readonly UserManager<APIUser> _UM;
+        private readonly UserManager<APIUserClass> _UM;
 
-
-
-
-        public UserController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<UserController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public UserController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<UserController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUserClass> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -40,17 +37,17 @@ namespace AuthReadyAPI.Controllers
             this._user = user;
         }
 
+        /*
         [HttpPost]
-
         [Route("details/{userId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__APIUser> USER__DETAILS__GET(string userId)
+        public async Task<APIUserDTO> USER__DETAILS__GET(string userId)
         {
 
-            APIUser userFound = await _IAM.USER__DETAILS(userId);
-            Full__APIUser preparedUser =_mapper.Map<Full__APIUser>(userFound);
+            APIUserClass userFound = await _IAM.USER__DETAILS(userId);
+            APIUserDTO preparedUser =_mapper.Map<APIUserDTO>(userFound);
 
             if (preparedUser == null || userFound == null) return null;
 
@@ -62,13 +59,13 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__APIUser> USER__UPDATE__DETAILS(Full__APIUser DTO)
+        public async Task<APIUserDTO> USER__UPDATE__DETAILS(APIUserDTO DTO)
         {
-            APIUser userFound = _mapper.Map<APIUser>(DTO);
+            APIUserClass userFound = _mapper.Map<APIUserClass>(DTO);
 
             _ = await _UM.UpdateAsync(userFound);
             
-            Full__APIUser _DTO = _mapper.Map<Full__APIUser>(userFound);
+            APIUserDTO _DTO = _mapper.Map<APIUserDTO>(userFound);
 
             return _DTO;
         }
@@ -80,10 +77,11 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<string> USER__UPDATE__PASSWORD(userUpdatesDTO DTO)
         {
-            APIUser userFound = await _UM.FindByEmailAsync(DTO.email);
+            APIUserClass userFound = await _UM.FindByEmailAsync(DTO.email);
             _ = await _UM.ChangePasswordAsync(userFound, DTO.currentPassword, DTO.newPassword);
 
             return "password updated";
         }
+        */
     }
 }

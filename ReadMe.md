@@ -11,8 +11,5 @@
   - interface
   - repository
   - controller
- 2. Added CategoryClass
- 3. Added StyleClass
- 4. Added StyleDTO
- 3. Added newStyleDTO
+ 2. Added new DTOs and Classes
     

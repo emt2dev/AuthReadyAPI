@@ -8,7 +8,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
         public string Name { get; set; }
         public string Description { get; set; }
         public double CurrentPrice { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> ProductImageUrls { get; set; }
 
         // Metrics
         public int CartCount { get; set; }

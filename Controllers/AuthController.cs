@@ -1,21 +1,9 @@
-﻿using AuthReadyAPI.DataLayer.DTOs;
-using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
-using AuthReadyAPI.DataLayer.DTOs.Cart;
-using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.DTOs.Order;
-using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
-using AuthReadyAPI.DataLayer.Services;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using MySqlConnector;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Windows.Input;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -32,12 +20,12 @@ namespace AuthReadyAPI.Controllers
         private readonly ILogger<AuthController> _LOGS;
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
-        private readonly UserManager<APIUser> _UM;
+        private readonly UserManager<APIUserClass> _UM;
 
 
 
 
-        public AuthController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public AuthController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUserClass> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -49,13 +37,13 @@ namespace AuthReadyAPI.Controllers
             this._order = order;
             this._user = user;
         }
-
+        /*
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Register(Base__APIUser DTO)
+        public async Task<ActionResult> Register(LoginDTO DTO)
         {
             var errors = await _IAM.USER__REGISTER(DTO);
 
@@ -80,7 +68,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> Login(Base__APIUser DTO)
+        public async Task<ActionResult> Login(LoginDTO DTO)
         {
             Full__AuthResponseDTO authenticatedUser = await _IAM.USER__LOGIN(DTO);
 
@@ -102,5 +90,6 @@ namespace AuthReadyAPI.Controllers
         {
             return "sent over a newly refreshed token now";
         }
+        */
     }
 }

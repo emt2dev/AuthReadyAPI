@@ -1,12 +1,12 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
+using AuthReadyAPI.DataLayer.Models.PII;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface IUser : IGenericRepository<APIUser>
+    public interface IUser
     {
-        public Task<string> USER__CREATE(Full__APIUser user);
+        public Task<string> USER__CREATE(APIUserDTO user);
         
-        public Task<APIUser> USER__FIND__BY__EMAIL__ASYNC(string? email);
+        public Task<APIUserClass> USER__FIND__BY__EMAIL__ASYNC(string? email);
     }
 }

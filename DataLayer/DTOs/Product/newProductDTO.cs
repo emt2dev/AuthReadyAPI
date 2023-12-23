@@ -1,16 +1,20 @@
 namespace AuthReadyAPI.DataLayer.DTOs.Product
 {
-    public class newProductDTO
+    public class NewProductDTO
     {
         public int Id { get; set; }
+
         // Information
         public string Name { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; } // updated by cloudinary
+        public string ImageUrl { get; set; }
 
         // FKeys
-        public string UpdatedBy { get; set; } // userId pulled from jwt
-        public int CompanyId { get; set; } // which company does the product belong to?
+        public string UpdatedBy { get; set; }
+        public int CompanyId { get; set; }
+        public int CategoryId { get; set; }
+
+        // Stripe Info
         public string TaxCode { get; set; }
     }
 }

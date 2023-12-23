@@ -1,9 +1,11 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.Cart;
-using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.DTOs.Order;
+﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.PII;
+using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
 using AuthReadyAPI.DataLayer.DTOs.Product;
-using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.PII;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AutoMapper;
 
 namespace AuthReadyAPI.Configurations
@@ -12,23 +14,18 @@ namespace AuthReadyAPI.Configurations
     {
         public MapperConfig()
         {
+            CreateMap<DigitalOwnershipClass, DigitalOwnershipDTO>().ReverseMap();
+            CreateMap<ShippingInfoClass, ShippingInfoDTO>().ReverseMap();
             CreateMap<StyleClass, StyleDTO>().ReverseMap();
-
-            /* APIUser and DTO */
-            CreateMap<APIUser, Full__APIUser>().ReverseMap();
-            CreateMap<APIUser, Base__APIUser>().ReverseMap();
-
-            CreateMap<Company, Full__Company>().ReverseMap();
-            CreateMap<Company, Base__Company>().ReverseMap();
-
-            CreateMap<DataLayer.Models.ProductClass, Full__Product>().ReverseMap();
-            CreateMap<ProductDTO, ProductDTO>().ReverseMap();
-
-            CreateMap<Cart, Full__Cart>().ReverseMap();
-            CreateMap<Cart, Base__Cart>().ReverseMap();
-
-            CreateMap<Order, Full__Order>().ReverseMap();
-            CreateMap<Order, Base__Order>().ReverseMap();
+            CreateMap<StyleClass, NewStyleDTO>().ReverseMap();
+            CreateMap<APIUserClass, APIUserDTO>().ReverseMap();
+            CreateMap<CompanyClass, CompanyDTO>().ReverseMap();
+            CreateMap<ProductClass, ProductDTO>().ReverseMap();
+            CreateMap<ProductClass, NewProductDTO>().ReverseMap();
+            CreateMap<ShoppingCartClass, ShoppingCartDTO>().ReverseMap();
+            CreateMap<OrderClass, OrderDTO>().ReverseMap();
+            CreateMap<CategoryClass, CategoryDTO>().ReverseMap();
+            CreateMap<CategoryClass, NewCategoryDTO>().ReverseMap();
         }
         
     }

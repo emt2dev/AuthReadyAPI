@@ -1,12 +1,11 @@
 ﻿namespace AuthReadyAPI.DataLayer.DTOs.Product
 {
-    public class newStyleDTO
+    public class NewStyleDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public double CurrentPrice { get; set; }
-        public string ImageUrl { get; set; }
 
         // Urgency
         public bool IsAvailableForOrder { get; set; }

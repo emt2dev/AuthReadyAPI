@@ -1,8 +1,8 @@
-﻿using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.Models.PII;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface IOrder : IGenericRepository<Order>
+    public interface IOrder
     {
     }
 }

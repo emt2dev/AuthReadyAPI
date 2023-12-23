@@ -1,21 +1,23 @@
-﻿using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.PII;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.Metrics;
 
 namespace AuthReadyAPI.DataLayer
 {
-    public class AuthDbContext : IdentityDbContext<APIUser>
+    public class AuthDbContext : IdentityDbContext<APIUserClass>
     {
         public AuthDbContext(DbContextOptions options) : base(options) { }
 
-        public DbSet<Cart> Carts { get; set; }
-        public DbSet<Company> Companies { get; set; }
-        public DbSet<Order> Orders { get; set; }
+        public DbSet<CompanyClass> Companies { get; set; }
+        public DbSet<OrderClass> Orders { get; set; }
         public DbSet<ProductClass> Products { get; set; }
+        public DbSet<ProductImageClass> ProductImages { get; set; }
+        public DbSet<CompanyImageClass> CompanyImages { get; set; }
         public DbSet<StyleClass> Styles { get; set; }
-        public DbSet<shoppingCart> shoppingCarts { get; set; }
+        public DbSet<ShoppingCartClass> ShoppingCarts { get; set; }
         public DbSet<CategoryClass> Categories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

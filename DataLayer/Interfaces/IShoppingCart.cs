@@ -1,9 +1,9 @@
-﻿using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.Models.PII;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface IShoppingCart : IGenericRepository<shoppingCart>
+    public interface IShoppingCart
     {
-        public  Task<shoppingCart> GET__EXISTING__CART(int companyId, string customerId);
+        public  Task<ShoppingCartClass> GET__EXISTING__CART(int companyId, string customerId);
     }
 }

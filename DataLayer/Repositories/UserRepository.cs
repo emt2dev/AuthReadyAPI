@@ -1,48 +1,32 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class UserRepository : GenericRepository<APIUser>, IUser
+    public class UserRepository : IUser
     {
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
-        UserManager<APIUser> _UM;
+        UserManager<APIUserClass> _UM;
 
-        public UserRepository(AuthDbContext context, IMapper mapper, UserManager<APIUser> UM) : base(context, mapper)
+        public UserRepository(AuthDbContext context, IMapper mapper, UserManager<APIUserClass> UM)
         {
-            this._context = context;
-            this._mapper = mapper;
-            this._UM = UM;
+            _context = context;
+            _mapper = mapper;
+            _UM = UM;
         }
 
-        public async Task<string> USER__CREATE(Full__APIUser initObj)
+        public Task<string> USER__CREATE(APIUserDTO user)
         {
-            APIUser newUser = new()
-            {
-                Email = initObj.Email,
-                Name = initObj.Name,
-                UserName = initObj.Email,
-                IsStaff = initObj.IsStaff,
-                PhoneNumber = initObj.PhoneNumber,
-            };
-
-            _ = await _UM.CreateAsync(newUser, initObj.Password);
-            _ = await _UM.AddToRoleAsync(newUser, "User");
-
-            return newUser.UserName;
+            throw new NotImplementedException();
         }
 
-        public async Task<APIUser> USER__FIND__BY__EMAIL__ASYNC(string? email)
+        public Task<APIUserClass> USER__FIND__BY__EMAIL__ASYNC(string? email)
         {
-            if (email == null) return null;
-
-            APIUser user = await _UM.FindByNameAsync(email);
-
-            return user;
+            throw new NotImplementedException();
         }
     }
 }

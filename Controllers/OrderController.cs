@@ -1,14 +1,8 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Order;
-using AuthReadyAPI.DataLayer.DTOs.Pagination;
-using AuthReadyAPI.DataLayer.DTOs.Product;
-using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Stripe.Checkout;
-using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -26,23 +20,22 @@ namespace AuthReadyAPI.Controllers
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
         private readonly IConfiguration _configs;
-        private readonly UserManager<APIUser> _UM;
+        private readonly UserManager<APIUserClass> _UM;
 
-        public OrderController(IConfiguration configs, ICompany company, IUser user, IProduct product, IShoppingCart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public OrderController(IConfiguration configs, ICompany company, IUser user, IProduct product, IShoppingCart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUserClass> UM)
         {
-            this._company = company;
-            this._LOGS = LOGS;
-            this._IAM = IAM;
-            this._mapper = mapper;
-            this._UM = UM;
-            this._product = product;
-            this._cart = cart;
-            this._order = order;
-            this._user = user;
-            this._configs = configs;
+            _company = company;
+            _LOGS = LOGS;
+            _IAM = IAM;
+            _mapper = mapper;
+            _UM = UM;
+            _product = product;
+            _cart = cart;
+            _order = order;
+            _user = user;
+            _configs = configs;
         }
-
-        /* api/order/submit/pickup */
+        /* 
         [HttpPost]
         [Route("submit/pickup/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
@@ -50,14 +43,14 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<IActionResult> ORDER__SUBMITTED([FromRoute] int companyId, string customerId)
         {
-            /* 
+            
                 * Process stripe api payment here
                 * Notify Company of new order
                 * Notify customer of payment processed
-            */
+            
             // shoppingCart cartSubmitted = await _cart.GetAsyncById(shoppingCartId);
-            shoppingCart cartSubmitted = await _cart.GET__EXISTING__CART(companyId, customerId);
-            APIUser customerFound = await _IAM.USER__DETAILS(customerId);
+            ShoppingCartClass cartSubmitted = await _cart.GET__EXISTING__CART(companyId, customerId);
+            APIUserClass customerFound = await _IAM.USER__DETAILS(customerId);
 
             var options = new SessionCreateOptions {
                 PaymentMethodTypes = new List<string>
@@ -75,7 +68,7 @@ namespace AuthReadyAPI.Controllers
             };
 
             // Populate LineItems with detail from each ShoppingCart
-            foreach (CartItem item in cartSubmitted.Items)
+            foreach (CartItemDTO item in cartSubmitted.Items)
             {
                 SessionLineItemOptions sessionLineItem = new SessionLineItemOptions
                 {
@@ -115,7 +108,6 @@ namespace AuthReadyAPI.Controllers
             // return Ok("reached");
         }
 
-        /* api/order/cancel */
         [HttpPost]
         [Route("cancel")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
@@ -123,31 +115,28 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public string ORDER__CANCEL(int cartId)
         {
-            /*
+            
              * 
              * Process refund here
              * Notify customer here
              * 
-             */ 
             string result = $"cartId: {cartId}, return order currentstatus == cancelled";
             return result;
         }
 
-        /* api/order/update */
         [HttpPut]
         [Route("update")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public string ORDER__UPDATE(Full__Order DTO)
+        public string ORDER__UPDATE(OrderDTO DTO)
         {
-            /*
              * 
              * Notify customer of order status change
              * 
-             */ 
             string result = $"order DTO, return updated order (ie: currentstatus == cooking/preparing/delivering/delivered/etc)";
             return result;
         }
+        */
     }
 }

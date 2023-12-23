@@ -1,7 +1,6 @@
 using AuthReadyAPI.Configurations;
 using AuthReadyAPI.DataLayer;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
 using AuthReadyAPI.DataLayer.Repositories;
 using AuthReadyAPI.DataLayer.Services;
 using AuthReadyAPI.DataLayer.Services.Helpers;
@@ -19,6 +18,7 @@ using Serilog;
 using System.Text;
 using System.Text.Json;
 using Stripe;
+using AuthReadyAPI.DataLayer.Models.PII;
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -107,9 +107,9 @@ builder.Host.UseSerilog((builderContext, loggerConfig) =>
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 /* Adds Identity Core */
-builder.Services.AddIdentityCore<APIUser>()
+builder.Services.AddIdentityCore<APIUserClass>()
     .AddRoles<IdentityRole>()
-    .AddTokenProvider<DataProtectorTokenProvider<APIUser>>("AuthReadyAPI")
+    .AddTokenProvider<DataProtectorTokenProvider<APIUserClass>>("AuthReadyAPI")
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 

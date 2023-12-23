@@ -1,9 +1,6 @@
-using AuthReadyAPI.DataLayer.DTOs.Cart;
-using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +20,9 @@ namespace AuthReadyAPI.Controllers
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
 
-        private readonly UserManager<APIUser> _UM;
+        private readonly UserManager<APIUserClass> _UM;
 
-        public shoppingCartController(ICompany company, IUser user, IProduct product, IShoppingCart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public shoppingCartController(ICompany company, IUser user, IProduct product, IShoppingCart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUserClass> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -38,6 +35,8 @@ namespace AuthReadyAPI.Controllers
             this._user = user;
         }
 
+        /*
+
         [HttpPost]
         [Route("existing/{companyId}/{customerId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
@@ -49,7 +48,7 @@ namespace AuthReadyAPI.Controllers
 
             // returns perfectly with empty items array (concerning)?
             if(findShoppingCart is null) {
-                shoppingCart newCart = new shoppingCart {
+                ShoppingCartClass newCart = new ShoppingCartClass {
                     customerId = customerId,
                     companyId = companyId.ToString(),
                     cost = 0.00,
@@ -84,7 +83,7 @@ namespace AuthReadyAPI.Controllers
 
             if(findProduct is not null && findShoppingCart is not null) {
                 // determine if item already in the cart
-                CartItem addItemToCart = new CartItem {
+                CartItemDTO addItemToCart = new CartItemDTO {
                     Id = findProduct.Id,
                     productId = findProduct.Id.ToString(),
                     name = findProduct.Name,
@@ -95,7 +94,7 @@ namespace AuthReadyAPI.Controllers
                 };
 
                 if(findShoppingCart.Items is not null) {
-                    foreach (CartItem item in findShoppingCart.Items)
+                    foreach (CartItemDTO item in findShoppingCart.Items)
                     {
 
                         if (item.productId == addItemToCart.productId) {
@@ -132,7 +131,7 @@ namespace AuthReadyAPI.Controllers
                         return Ok("Item Added to Cart else landmark");
                 }
             } else if(findProduct is not null && findShoppingCart is null) {
-                shoppingCart newCart = new shoppingCart {
+                ShoppingCartClass newCart = new ShoppingCartClass {
                     customerId = customerId,
                     companyId = companyId.ToString(),
                     cost = 0.00,
@@ -141,7 +140,7 @@ namespace AuthReadyAPI.Controllers
                     costInString = "",
                 };
 
-                CartItem addItemToCart = new CartItem {
+                CartItemDTO addItemToCart = new CartItemDTO {
                     productId = findProduct.Id.ToString(),
                     name = findProduct.Name,
                     price = findProduct.Price_Current,
@@ -172,13 +171,13 @@ namespace AuthReadyAPI.Controllers
         public async Task<IActionResult> CART__EMPTY(int cartId)
         {
 
-            shoppingCart cartSearchingFor = await _cart.GetAsyncById(cartId);
+            ShoppingCartClass cartSearchingFor = await _cart.GetAsyncById(cartId);
 
             if(cartSearchingFor is not null)
             {
                 cartSearchingFor.abandoned = true;
                 
-                shoppingCart newCart = new shoppingCart {
+                ShoppingCartClass newCart = new ShoppingCartClass {
                     customerId = cartSearchingFor.customerId,
                     companyId = cartSearchingFor.companyId,
                     cost = 0.00,
@@ -212,9 +211,9 @@ namespace AuthReadyAPI.Controllers
             var itemFound = cartSearchingFor.Items
             .Where(found => found.productId == findProduct.Id.ToString());
 
-            IList<CartItem> bag = itemFound.ToList<CartItem>();
+            IList<CartItemDTO> bag = itemFound.ToList<CartItemDTO>();
 
-            foreach (CartItem item in bag)
+            foreach (CartItemDTO item in bag)
             {
                 if(item.productId == productId.ToString())
                 {
@@ -231,5 +230,6 @@ namespace AuthReadyAPI.Controllers
             await _cart.UpdateAsync(cartSearchingFor);
             return Ok("Cart has been updated");
         }
+        */
     }
 }

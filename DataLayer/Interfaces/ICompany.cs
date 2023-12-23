@@ -1,11 +1,11 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.Models;
+﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
+using AuthReadyAPI.DataLayer.Models.Companies;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface ICompany : IGenericRepository<Company>
+    public interface ICompany
     {
-        public Task<string> COMPANY__GIVE__ADMIN(Full__APIUser DTO);
+        public Task<string> COMPANY__GIVE__ADMIN(APIUserDTO DTO);
     }
 }

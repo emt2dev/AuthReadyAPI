@@ -1,18 +1,11 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.APIUser;
-using AuthReadyAPI.DataLayer.DTOs.AuthResponse;
-using AuthReadyAPI.DataLayer.DTOs.Cart;
-using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.DTOs.Order;
-using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -24,7 +17,6 @@ namespace AuthReadyAPI.Controllers
         private readonly ICompany _company;
         private readonly IUser _user;
         private readonly IProduct _product;
-        private readonly ICart _cart;
         private readonly IOrder _order;
         private readonly IApiAdmin _apiAdmin;
 
@@ -33,9 +25,9 @@ namespace AuthReadyAPI.Controllers
         private readonly IAuthManager _IAM;
         private readonly IMapper _mapper;
 
-        private readonly UserManager<APIUser> _UM;
+        private readonly UserManager<APIUserClass> _UM;
 
-        public AdminController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, IApiAdmin apiAdmin, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public AdminController(ICompany company, IUser user, IProduct product, IOrder order, IApiAdmin apiAdmin, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUserClass> UM)
         {
             this._company = company;
             this._LOGS = LOGS;
@@ -43,7 +35,6 @@ namespace AuthReadyAPI.Controllers
             this._mapper = mapper;
             this._UM = UM;
             this._product = product;
-            this._cart = cart;
             this._order = order;
             this._apiAdmin = apiAdmin;
             this._user = user;
@@ -51,13 +42,15 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPost]
-        [Route("admin__create")]
+        [Route("admin/new")]
+        [Authorize(Roles ="Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<ActionResult> CREATE__API__ADMIN(Base__APIUser DTO)
+        public async Task<ActionResult> NewAdmin([FromBody] NewUserDTO IncomingDTO)
         {
-           var errors = await _IAM.API__ADMIN__REGISTER(DTO);
+            /*
+           var errors = await _IAM.API__ADMIN__REGISTER(IncomingDTO);
 
             if (errors.Any())
             {
@@ -66,80 +59,38 @@ namespace AuthReadyAPI.Controllers
                     ModelState.AddModelError(error.Code, error.Description);
                 }
 
-                _LOGS.LogInformation($"Failed Register Attempt for {DTO.Email}");
+                //_LOGS.LogInformation($"Failed Register Attempt for {IncomingDTO.Email}");
 
                 return BadRequest(ModelState);
             }
-
+            */
             return Ok();
         }
 
         // api/admin/company__create 
         [HttpPost]
-        [Route("company__create")]
+        [Route("company/new")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> CREATE__COMPANY(Base__Company DTO)
+        public async Task<string> NewCompany([FromBody] CompanyDTO IncomingDTO)
         {
-           Base__Company createdCompany = await _apiAdmin.COMPANY__CREATE(DTO);
 
-            return createdCompany.Name + " was created";
+            return $"{IncomingDTO.Name} was created";
         }
 
+        // api/admin/company__create 
         [HttpPost]
-        [Route("company__admin__override")]
+        [Route("company/deactivate")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> OVERRIDE__COMPANY__ADMIN(overrideDTO DTO)
+        public async Task<string> DeactivateCompany([FromBody] CompanyDTO IncomingDTO)
         {
-            APIUser userGivenPrivledges = await _UM.FindByEmailAsync(DTO.userEmail);
-            userGivenPrivledges.CompanyId = DTO.companyId;
-            userGivenPrivledges.IsStaff = true;
-            await _UM.AddToRoleAsync(userGivenPrivledges, "Company_Admin");
-            
-            Company companyOverriddenAdmin = await _company.GetAsyncById(DTO.companyId);
-            if(DTO.replaceAdminOneOrTwo == 1) companyOverriddenAdmin.Id_admin_one = userGivenPrivledges.Id;
-            else companyOverriddenAdmin.Id_admin_two = userGivenPrivledges.Id;
-            await _company.UpdateAsync(companyOverriddenAdmin);
 
-            return DTO.userEmail + " replaced existing admin " + DTO.replaceAdminOneOrTwo + "for company: " + DTO.companyId;
+            return $"{IncomingDTO.Name} was deactivated";
         }
-
-        [HttpGet]
-        [Route("init")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<string> init()
-        {
-            Base__APIUser newCustomer = new Base__APIUser {
-                Email = "customer1@customer.com",
-                Password = "P@ssword1",
-            };
-
-            _ = await _IAM.USER__REGISTER(newCustomer);
-
-            Base__APIUser newAdmin = new Base__APIUser {
-                Email = "admin100@admin.com",
-                Password = "P@ssword1",
-            };
-
-            _ = await _IAM.API__ADMIN__REGISTER(newAdmin);
-
-            Base__Company newCompany = new Base__Company {
-                Id = "0",
-                Name = "La Imperial Bakery",
-                Description = "A Puerto Rican Bakery",
-                Address = "123 E Main St, Lakeland, FL 33801",
-                PhoneNumber = "863-500-4411",
-            };
-
-            newCompany = await _apiAdmin.COMPANY__CREATE(newCompany);
-
-            return newCompany.Id;
-        }
-
     }
 }

@@ -2,6 +2,7 @@
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace AuthReadyAPI.Controllers
 
         /*
          * This controller is to display products, their metrics, and their styles
+         * Products are maniupulated in the company controller
          */
 
         [HttpGet]
@@ -99,7 +101,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetAPICartCount()
+        public async Task<ProductWithStyleDTO> GetAPICartCount()
         {
             return await _product.GetProductCartCount();
         }
@@ -109,17 +111,18 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetAPIOrderCount()
+        public async Task<ProductWithStyleDTO> GetAPIOrderCount()
         {
             return await _product.GetProductOrderCount();
         }
         
         [HttpGet]
         [Route("api/count/income")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetAPIGrossIncomeCount()
+        public async Task<ProductWithStyleDTO> GetAPIGrossIncomeCount()
         {
             return await _product.GetProductGrossIncome();
         }
@@ -140,7 +143,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetCompanyCartCount([FromBody] int CompanyId)
+        public async Task<ProductWithStyleDTO> GetCompanyCartCount([FromBody] int CompanyId)
         {
             return await _product.GetProductCartCount(CompanyId);
         }
@@ -150,17 +153,18 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetCompanyOrderCount([FromBody] int CompanyId)
+        public async Task<ProductWithStyleDTO> GetCompanyOrderCount([FromBody] int CompanyId)
         {
             return await _product.GetProductOrderCount(CompanyId);
         }
 
         [HttpPost]
         [Route("company/count/income")]
+        [Authorize(Roles = "Company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<PopularProductDTO> GetCompanyGrossIncomeCount([FromBody] int CompanyId)
+        public async Task<ProductWithStyleDTO> GetCompanyGrossIncomeCount([FromBody] int CompanyId)
         {
             return await _product.GetProductGrossIncome(CompanyId);
         }
@@ -180,7 +184,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetAPIAvailable()
+        public async Task<List<ProductWithStyleDTO>> GetAPIAvailable()
         {
             return await _product.GetAllAvailableAPIProducts();
         }
@@ -190,7 +194,29 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetCompanyAvailable([FromBody] int CompanyId)
+        public async Task<List<ProductWithStyleDTO>> GetCompanyAvailable([FromBody] int CompanyId)
+        {
+            return await _product.GetAllAvailableCompanyProducts(CompanyId);
+        }
+
+        [HttpGet]
+        [Route("list/available/all")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductWithStyleDTO>> GetAPIUnavailable()
+        {
+            return await _product.GetAllAvailableAPIProducts();
+        }
+
+        [HttpPost]
+        [Route("list/available/company")]
+        [Authorize(Roles = "Company")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductWithStyleDTO>> GetCompanyUnavailable([FromBody] int CompanyId)
         {
             return await _product.GetAllAvailableCompanyProducts(CompanyId);
         }
