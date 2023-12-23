@@ -87,7 +87,7 @@ namespace AuthReadyAPI.Controllers
             
             if (searchedFor.Products is not null)
             {
-                foreach (Product product in searchedFor.Products)
+                foreach (ProductDTO product in searchedFor.Products)
                 {
                     Full__Product mappedProduct = new Full__Product {
                         Id = product.Id.ToString(),
@@ -202,7 +202,7 @@ namespace AuthReadyAPI.Controllers
 
             var uploadPhoto = await _IMS.AddPhotoAsync(DTO.ImageURL);
 
-            Product newProduct = new Product {
+            ProductDTO newProduct = new ProductDTO {
                 Id = 0,
                 Name = DTO.Name,
                 Description = "update description",
@@ -231,7 +231,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<Full__Product> UPDATE__COMPANY__PRODUCT(Full__Product productObj)
         {
-            Product searchedFor = _mapper.Map<Product>(productObj);
+            ProductDTO searchedFor = _mapper.Map<ProductDTO>(productObj);
             await _product.UpdateAsync(searchedFor);
 
             Full__Product _DTO = _mapper.Map<Full__Product>(productObj);
@@ -263,7 +263,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
         public async Task<Full__Product> UPDATE__COMPANY__DETAILS(Full__Product productObj)
         {
-            Product searchedFor = _mapper.Map<Product>(productObj);
+            ProductDTO searchedFor = _mapper.Map<ProductDTO>(productObj);
             await _product.UpdateAsync(searchedFor);
 
             Full__Product _DTO = _mapper.Map<Full__Product>(productObj);

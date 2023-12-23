@@ -7,10 +7,11 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.Design;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class ProductRepository : GenericRepository<Product>, IProduct
+    public class ProductRepository : GenericRepository<ProductDTO>, IProduct
     {
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
@@ -20,53 +21,112 @@ namespace AuthReadyAPI.DataLayer.Repositories
             this._context = context;
         }
 
-        // public async Task<PagedResult<Product>> GET__PRODUCT__ALL(int companyId, QueryParameters QP)
-        public async Task<IList<Product>> GET__PRODUCT__ALL(int companyId)
+        public async Task<List<ProductDTO>> GetAllAvailableAPIProducts()
         {
-            // var recordCount = await _context.Set<Product>().CountAsync();
-            // var records = await _context.Set<Product>()
-            //     .Where(found => found.Company == companyId.ToString())
-            //     .Skip(QP.NextPageNumber)
-            //     .Take(QP.PageSize)
-            //     .ToListAsync();
-
-            // return new PagedResult<Product>
-            // {
-            //     Records = records,
-            //     PageNumber = QP.NextPageNumber,
-            //     TotalCount = recordCount
-            // };
-
-            var matchingProducts = await _context.Set<Product>()
-                .Where(found => found.CompanyId == companyId.ToString())
-                .ToListAsync();
-
-            return matchingProducts;
+            return await _context.Products.Where(x => x.IsAvailableForOrder == true).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<PagedResult<Product>> GET__PRODUCT__KEYWORD__ALL(int companyId, QueryParameters QP, string keyword)
+        public async Task<List<ProductDTO>> GetAllAvailableCompanyProducts(int CompanyId)
         {
-            var recordCount = await _context.Set<Product>().CountAsync();
-            var records = await _context.Set<Product>()
-                .Where(found => found.CompanyId == companyId.ToString() && found.Keyword == keyword)
-                .Skip(QP.NextPageNumber)
-                .Take(QP.PageSize)
-                .ToListAsync();
-
-            return new PagedResult<Product>
-            {
-                Records = records,
-                PageNumber = QP.NextPageNumber,
-                TotalCount = recordCount
-            };
+            return await _context.Products.Where(x => x.CompanyId == CompanyId && x.IsAvailableForOrder == true).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
 
-        public async Task<Product> GET__PRODUCT__ONE(int productId)
+        public async Task<List<ProductDTO>> GetAPIProducts()
         {
+            return await _context.Products.ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
 
-            Product productFound = await this.GetAsyncById(productId);
+        public async Task<List<ProductDTO>> GetAPIProductsByCategoryId(int CategoryId)
+        {
+            return await _context.Products.Where(x => x.CategoryId == CategoryId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
 
-            return productFound;
+        public async Task<List<ProductDTO>> GetAPIProductsByKeyword(string Keyword)
+        {
+            if(!_context.Categories.Any(x => x.Name == Keyword)) return new List<ProductDTO>();
+
+            CategoryClass Found = await _context.Categories.Where(x => x.Name == Keyword).FirstOrDefaultAsync();
+            _context.ChangeTracker.Clear();
+
+            if (Found is null) return new List<ProductDTO>(); 
+
+            return await _context.Products.Where(x => x.CategoryId == Found.Id).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<List<ProductDTO>> GetCompanyProducts(int CompanyId)
+        {
+            return await _context.Products.Where(x => x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<List<ProductDTO>> GetCompanyProductsByCategoryId(int CategoryId, int CompanyId)
+        {
+            if (!_context.Categories.Any(x => x.Id == CategoryId && x.CompanyId == CompanyId)) return new List<ProductDTO>();
+
+            return await _context.Products.Where(x => x.CategoryId == CategoryId && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<List<ProductDTO>> GetCompanyProductsByKeyword(string Keyword, int CompanyId)
+        {
+            if (!_context.Categories.Any(x => x.Name == Keyword && x.CompanyId == CompanyId)) return new List<ProductDTO>();
+
+            CategoryClass Found = await _context.Categories.Where(x => x.Name == Keyword && x.CompanyId == CompanyId).FirstOrDefaultAsync();
+            _context.ChangeTracker.Clear();
+
+            if (Found is null) return new List<ProductDTO>();
+
+            return await _context.Products.Where(x => x.CategoryId == Found.Id && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<ProductDTO> GetProduct(int ProductId)
+        {
+            if (!_context.Products.Any(x => x.Id == ProductId)) return null;
+            return await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+        }
+
+        public ProductDTO GetProductCartCount()
+        {
+            return _context.Products.OrderByDescending(p => p.CartCount)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+
+        }
+
+        public ProductDTO GetProductCartCount(int CompanyId)
+        {
+            return _context.Products.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(p => p.CartCount)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductGrossIncome()
+        {
+            return _context.Products.OrderByDescending(p => p.GrossIncome)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductGrossIncome(int CompanyId)
+        {
+            return _context.Products.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(p => p.GrossIncome)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductOrderCount()
+        {
+            return _context.Products.OrderByDescending(p => p.OrderCount)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductOrderCount(int CompanyId)
+        {
+            return _context.Products.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(p => p.OrderCount)
+    .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+    .FirstOrDefault();
         }
     }
 }

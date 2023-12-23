@@ -1,13 +1,9 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Company;
-using AuthReadyAPI.DataLayer.DTOs.Pagination;
-using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -15,167 +11,167 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ICompany _company;
-        private readonly IUser _user;
         private readonly IProduct _product;
-        private readonly ICart _cart;
-        private readonly IOrder _order;
 
-        private readonly ILogger<AuthController> _LOGS;
-        private readonly IAuthManager _IAM;
-        private readonly IMapper _mapper;
-
-        private readonly UserManager<APIUser> _UM;
-
-        public ProductController(ICompany company, IUser user, IProduct product, ICart cart, IOrder order, ILogger<AuthController> LOGS, IAuthManager IAM, IMapper mapper, UserManager<APIUser> UM)
+        public ProductController(IProduct product)
         {
-            this._company = company;
-            this._LOGS = LOGS;
-            this._IAM = IAM;
-            this._mapper = mapper;
-            this._UM = UM;
-            this._product = product;
-            this._cart = cart;
-            this._order = order;
-            this._user = user;
+            _product = product;
         }
 
-        // [HttpPost]
-        // [Route("list/category/{keyword}/{companyId}")]
-        // // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        // [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        // [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        // [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        // public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
-        // {
-        //     PagedResult<Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
-        //     return AllKeywordProducts;
-        // }
-/*
+        /*
+         * This controller is to display products and metrics
+         */
+
+        [HttpGet]
+        [Route("list/all")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetAllAPI()
+        {
+            return await _product.GetAPIProducts();
+        }
+                
         [HttpPost]
-        [Route("list/category/{keyword}/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        [Route("list/category")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetAPIByCategory([FromBody] int CategoryId)
         {
-            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
-            return AllKeywordProducts;
+            return await _product.GetAPIProductsByCategoryId(CategoryId);
         }
-        */
-        /* api/Product/all/{keyword}
- 
+                
+        [HttpGet]
+        [Route("list/keyword/{keyword}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetAPIBykeyword([FromRoute] string Keyword)
+        {
+            return await _product.GetAPIProductsByKeyword(Keyword);
+        }
+        
         [HttpPost]
-        [Route("list/category/{keyword}/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__KEYWORD__ALL(int companyId, [FromQuery] QueryParameters QP, string keyword)
+        [Route("list/company")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetCompanyProducts([FromBody] int CompanyId)
         {
-            PagedResult<Base__Product> AllKeywordProducts = await _product.GET__PRODUCT__KEYWORD__ALL(companyId, QP, keyword);
-            return AllKeywordProducts;
+            return await _product.GetCompanyProducts(CompanyId);
         }
-*/
+        
+        [HttpPost]
+        [Route("list/company/category")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetCompanyProductsByCat([FromBody] int CompanyId, [FromBody] int CategoryId)
+        {
+            // todo: create a dto due to the way FromBody works
+            return await _product.GetCompanyProductsByCategoryId(CategoryId, CompanyId);
+        }
+        
+        [HttpPost]
+        [Route("list/company/keyword/{keyword}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetCompanyProductsByKeyword([FromBody] int CompanyId, [FromRoute] string Keyword)
+        {
+            return await _product.GetCompanyProductsByKeyword(Keyword, CompanyId);
+        }
+                
+        [HttpPost]
+        [Route("details/one")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ProductDTO> GetCompanyProductsByKeyword([FromBody] int ProductId)
+        {
+            // Need to add DTO to include all styles
+            return await _product.GetProduct(ProductId);
+        }
+        
+        [HttpGet]
+        [Route("api/count/cart")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetAPICartCount()
+        {
+            return _product.GetProductCartCount();
+        }
+        
+        [HttpGet]
+        [Route("api/count/order")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetAPIOrderCount()
+        {
+            return _product.GetProductOrderCount();
+        }
+        
+        [HttpGet]
+        [Route("api/count/income")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetAPIGrossIncomeCount()
+        {
+            return _product.GetProductGrossIncome();
+        }
+
+        [HttpPost]
+        [Route("company/count/cart")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetCompanyCartCount([FromBody] int CompanyId)
+        {
+            return _product.GetProductCartCount(CompanyId);
+        }
+
+        [HttpPost]
+        [Route("company/count/order")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetCompanyOrderCount([FromBody] int CompanyId)
+        {
+            return _product.GetProductOrderCount(CompanyId);
+        }
+
+        [HttpPost]
+        [Route("company/count/income")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetCompanyGrossIncomeCount([FromBody] int CompanyId)
+        {
+            return _product.GetProductGrossIncome(CompanyId);
+        }
 
         [HttpGet]
-        [Route("list/all/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        // public async Task<IList<Full__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
-        public async Task<IList<Full__Product>> PRODUCT__ALL(int companyId)
+        [Route("list/available/all")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetAPIAvailable()
         {
-            IList<Product> ProductsList = new List<Product>();
-            IList<Full__Product> ProductDTOs = new List<Full__Product>();
-
-            ProductsList = await _product.GET__PRODUCT__ALL(companyId);
-
-            foreach (var product in ProductsList)
-                {
-                    Full__Product mappedProduct = new Full__Product {
-                        Id = product.Id.ToString(),
-                        Name = product.Name,
-                        Description = product.Description,
-                        Price_Current = product.Price_Current,
-                        Price_Sale = product.Price_Sale,
-                        Price_Normal = product.Price_Normal,
-                        ImageURL = product.ImageURL,
-                        CompanyId = product.CompanyId,
-                        Modifiers = product.Modifiers,
-                        Keyword = product.Keyword,
-                    };
-
-                    ProductDTOs.Add(mappedProduct);
-                }
-
-            return ProductDTOs;
+            return await _product.GetAllAvailableAPIProducts();
         }
-/*
-        [HttpGet]
-        [Route("list/all/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
+
+        [HttpPost]
+        [Route("list/available/company")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<ProductDTO>> GetCompanyAvailable([FromBody] int CompanyId)
         {
-            PagedResult<Base__Product> AllCompanyProducts = await _product.GET__PRODUCT__ALL(companyId, QP);
-            return AllCompanyProducts;
+            return await _product.GetAllAvailableCompanyProducts(CompanyId);
         }
-        */
-
-        /* api/Product/all/{keyword}
-
-        [HttpGet]
-        [Route("list/all/{companyId}")]
-        // ?StartIndex={StartIndex}&pagesize={pagesize}&pagenumber={pagenumber}
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<PagedResult<Base__Product>> PRODUCT__ALL(int companyId, [FromQuery] QueryParameters QP)
-        {
-            PagedResult<Base__Product> AllCompanyProducts = await _product.GET__PRODUCT__ALL(companyId, QP);
-            return AllCompanyProducts;
-        }
-*/
-        [HttpGet]
-        [Route("details/{productId}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public string PRODUCT__ONE([FromRoute] int productId)
-        {
-            return "full product details recevied";
-        }
-/*
-        [HttpGet]
-        [Route("details/{productId}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> PRODUCT__ONE([FromRoute] int productId)
-        {
-            Full__Product SpecificProduct = await _product.GET__PRODUCT__ONE(productId);
-            return SpecificProduct;
-        }
-        */
-        /* api/Products
-         * semantics, by not needed since this is going to be used by one company.
-         * Can be add other companies to this.
-         
-        [HttpGet]
-        [Route("details/{productId}")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
-        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<Full__Product> PRODUCT__ONE([FromRoute] int productId)
-        {
-            Full__Product SpecificProduct = await _product.GET__PRODUCT__ONE(productId);
-            return SpecificProduct;
-        }
-        */
     }
 }

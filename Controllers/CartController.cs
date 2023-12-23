@@ -127,7 +127,7 @@ namespace AuthReadyAPI.Controllers
             //  *  if cart exists add product to cart, return cart
             //  *
             APIUser usersGiven = await _UM.FindByIdAsync(userId);
-            Product ProductToAdd = await _product.GetAsyncById(productId);
+            ProductDTO ProductToAdd = await _product.GetAsyncById(productId);
             Full__Product mappedProduct = _mapper.Map<Full__Product>(ProductToAdd);
             mappedProduct.Quantity = 1;
 
@@ -253,7 +253,7 @@ namespace AuthReadyAPI.Controllers
             {
                 cartSearchingFor.Abandoned = true;
             
-                IList<Product> newList = new List<Product>();
+                IList<ProductDTO> newList = new List<ProductDTO>();
                 
                 Cart newCart = new Cart {
                     Customer = cartSearchingFor.Customer,

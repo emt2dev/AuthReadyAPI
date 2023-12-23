@@ -19,8 +19,8 @@ namespace AuthReadyAPI.Configurations
             CreateMap<Company, Full__Company>().ReverseMap();
             CreateMap<Company, Base__Company>().ReverseMap();
 
-            CreateMap<Product, Full__Product>().ReverseMap();
-            CreateMap<Product, Base__Product>().ReverseMap();
+            CreateMap<DataLayer.Models.ProductClass, Full__Product>().ReverseMap();
+            CreateMap<ProductDTO, ProductDTO>().ReverseMap();
 
             CreateMap<Cart, Full__Cart>().ReverseMap();
             CreateMap<Cart, Base__Cart>().ReverseMap();

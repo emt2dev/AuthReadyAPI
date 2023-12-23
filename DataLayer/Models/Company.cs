@@ -12,7 +12,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public string? Id_admin_one { get; set; }
         public string? Id_admin_two { get; set; }
         public virtual IList<APIUser>? APIUsers { get; set; }
-        public virtual IList<Product>? Products { get; set; }
+        public virtual IList<ProductClass>? Products { get; set; }
         public virtual IList<Order>? Orders { get; set; }
         public virtual IList<Cart>? Carts { get; set; }
     }
