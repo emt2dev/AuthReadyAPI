@@ -16,8 +16,10 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public ProductDTO GetProductCartCount();
         public ProductDTO GetProductOrderCount();
         public ProductDTO GetProductGrossIncome();
+        public ProductDTO GetProductViewCount();
         public ProductDTO GetProductCartCount(int CompanyId);
         public ProductDTO GetProductOrderCount(int CompanyId);
+        public ProductDTO GetProductViewCount(int CompanyId);
         public ProductDTO GetProductGrossIncome(int CompanyId);
         public Task<List<ProductDTO>> GetAllAvailableAPIProducts();
         public Task<List<ProductDTO>> GetAllAvailableCompanyProducts(int CompanyId);

@@ -19,6 +19,7 @@ namespace AuthReadyAPI.DataLayer.Models
         // Metrics
         public int CartCount { get; set; }
         public int OrderCount { get; set; }
+        public int ViewCount { get; set; }
         public double GrossIncome { get; set; }
 
         // FKeys

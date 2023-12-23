@@ -111,7 +111,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
             return _context.Products.OrderByDescending(p => p.CartCount)
                 .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();
-
         }
 
         public ProductDTO GetProductCartCount(int CompanyId)
@@ -148,8 +147,23 @@ namespace AuthReadyAPI.DataLayer.Repositories
         {
             return _context.Products.Where(x => x.CompanyId == CompanyId)
                 .OrderByDescending(p => p.OrderCount)
-    .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-    .FirstOrDefault();
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductViewCount()
+        {
+            return _context.Products.OrderByDescending(p => p.ViewCount)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
+        }
+
+        public ProductDTO GetProductViewCount(int CompanyId)
+        {
+            return _context.Products.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(p => p.ViewCount)
+                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
         }
     }
 }

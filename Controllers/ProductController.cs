@@ -19,7 +19,7 @@ namespace AuthReadyAPI.Controllers
         }
 
         /*
-         * This controller is to display products and metrics
+         * This controller is to display products, their metrics, and their styles
          */
 
         [HttpGet]
@@ -125,6 +125,17 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPost]
+        [Route("api/count/views")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetAPIViewCount()
+        {
+            return _product.GetProductViewCount();
+        }
+
+
+        [HttpPost]
         [Route("company/count/cart")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -152,6 +163,16 @@ namespace AuthReadyAPI.Controllers
         public ProductDTO GetCompanyGrossIncomeCount([FromBody] int CompanyId)
         {
             return _product.GetProductGrossIncome(CompanyId);
+        }
+
+        [HttpPost]
+        [Route("company/count/views")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ProductDTO GetCompanyViewCount([FromBody] int CompanyId)
+        {
+            return _product.GetProductViewCount(CompanyId);
         }
 
         [HttpGet]
