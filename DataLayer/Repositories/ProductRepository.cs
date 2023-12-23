@@ -23,12 +23,35 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<List<ProductDTO>> GetAllAvailableAPIProducts()
         {
-            return await _context.Products.Where(x => x.IsAvailableForOrder == true).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            List<StyleClass> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == true).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            foreach (var item in StyleList)
+            {
+                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
+                ProductList.Add(_mapper.Map<ProductDTO>(P));
+            }
+
+            return ProductList;
         }
 
         public async Task<List<ProductDTO>> GetAllAvailableCompanyProducts(int CompanyId)
         {
-            return await _context.Products.Where(x => x.CompanyId == CompanyId && x.IsAvailableForOrder == true).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+
+            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId && x.IsAvailableForOrder == true).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            foreach (var item in StyleList)
+            {
+                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
+                ProductList.Add(_mapper.Map<ProductDTO>(P));
+            }
+
+            return ProductList;
         }
 
         public async Task<List<ProductDTO>> GetAPIProducts()
