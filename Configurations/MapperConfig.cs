@@ -12,6 +12,8 @@ namespace AuthReadyAPI.Configurations
     {
         public MapperConfig()
         {
+            CreateMap<StyleClass, StyleDTO>().ReverseMap();
+
             /* APIUser and DTO */
             CreateMap<APIUser, Full__APIUser>().ReverseMap();
             CreateMap<APIUser, Base__APIUser>().ReverseMap();

@@ -1,13 +1,14 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AuthReadyAPI.DataLayer.Models
+namespace AuthReadyAPI.DataLayer.DTOs.Product
 {
-    public class StyleClass
+    public class StyleDTO
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public double CurrentPrice { get; set; }
+        public string ImageUrl { get; set; }
 
         // Metrics
         public int CartCount { get; set; }
@@ -29,9 +30,7 @@ namespace AuthReadyAPI.DataLayer.Models
         public double PackagedWeight { get; set; }
 
         // FKeys
-        [ForeignKey(nameof(ProductId))]
         public int ProductId { get; set; }
-        [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
     }
 }

@@ -5,7 +5,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
 {
     public class ProductDTO
     {
-        public int Id { get; set; } // Primary Key
+        public int Id { get; set; }
         // Information
         public string Name { get; set; }
         public string Description { get; set; }
@@ -18,13 +18,10 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
         public int Quantity { get; set; }
 
         // Metrics
-        public int CartCount { get; set; }
-        public int OrderCount { get; set; }
-        public int ViewCount { get; set; }
         public double GrossIncome { get; set; }
 
         // FKeys
-        public string UpdatedBy { get; set; } // userId
+        public string UpdatedBy { get; set; } // userId pulled from jwt
         public int CompanyId { get; set; } // which company does the product belong to?
         public string TaxCode { get; set; }
         public int CategoryId { get; set; }

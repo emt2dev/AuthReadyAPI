@@ -99,9 +99,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetAPICartCount()
+        public async Task<PopularProductDTO> GetAPICartCount()
         {
-            return _product.GetProductCartCount();
+            return await _product.GetProductCartCount();
         }
         
         [HttpGet]
@@ -109,9 +109,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetAPIOrderCount()
+        public async Task<PopularProductDTO> GetAPIOrderCount()
         {
-            return _product.GetProductOrderCount();
+            return await _product.GetProductOrderCount();
         }
         
         [HttpGet]
@@ -119,9 +119,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetAPIGrossIncomeCount()
+        public async Task<PopularProductDTO> GetAPIGrossIncomeCount()
         {
-            return _product.GetProductGrossIncome();
+            return await _product.GetProductGrossIncome();
         }
 
         [HttpPost]
@@ -129,9 +129,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetAPIViewCount()
+        public async Task<ProductDTO> GetAPIViewCount()
         {
-            return _product.GetProductViewCount();
+            return await _product.GetProductViewCount();
         }
 
 
@@ -140,9 +140,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetCompanyCartCount([FromBody] int CompanyId)
+        public async Task<PopularProductDTO> GetCompanyCartCount([FromBody] int CompanyId)
         {
-            return _product.GetProductCartCount(CompanyId);
+            return await _product.GetProductCartCount(CompanyId);
         }
 
         [HttpPost]
@@ -150,9 +150,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetCompanyOrderCount([FromBody] int CompanyId)
+        public async Task<PopularProductDTO> GetCompanyOrderCount([FromBody] int CompanyId)
         {
-            return _product.GetProductOrderCount(CompanyId);
+            return await _product.GetProductOrderCount(CompanyId);
         }
 
         [HttpPost]
@@ -160,9 +160,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetCompanyGrossIncomeCount([FromBody] int CompanyId)
+        public async Task<PopularProductDTO> GetCompanyGrossIncomeCount([FromBody] int CompanyId)
         {
-            return _product.GetProductGrossIncome(CompanyId);
+            return await _product.GetProductGrossIncome(CompanyId);
         }
 
         [HttpPost]
@@ -170,9 +170,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public ProductDTO GetCompanyViewCount([FromBody] int CompanyId)
+        public async Task<ProductDTO> GetCompanyViewCount([FromBody] int CompanyId)
         {
-            return _product.GetProductViewCount(CompanyId);
+            return await _product.GetProductViewCount(CompanyId);
         }
 
         [HttpGet]

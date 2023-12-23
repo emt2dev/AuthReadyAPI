@@ -106,64 +106,94 @@ namespace AuthReadyAPI.DataLayer.Repositories
             return await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
         }
 
-        public ProductDTO GetProductCartCount()
+        public async Task<PopularProductDTO> GetProductCartCount()
         {
-            return _context.Products.OrderByDescending(p => p.CartCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.CartCount).FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductCartCount(int CompanyId)
+        public async Task<PopularProductDTO> GetProductCartCount(int CompanyId)
         {
-            return _context.Products.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(p => p.CartCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(x => x.CartCount).FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductGrossIncome()
+        public async Task<PopularProductDTO> GetProductGrossIncome()
         {
-            return _context.Products.OrderByDescending(p => p.GrossIncome)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.GrossIncome).FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductGrossIncome(int CompanyId)
+        public async Task<PopularProductDTO> GetProductGrossIncome(int CompanyId)
         {
-            return _context.Products.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(p => p.GrossIncome)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(x => x.GrossIncome).FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductOrderCount()
+        public async Task<PopularProductDTO> GetProductOrderCount()
         {
-            return _context.Products.OrderByDescending(p => p.OrderCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.OrderCount).FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductOrderCount(int CompanyId)
+        public async Task<PopularProductDTO> GetProductOrderCount(int CompanyId)
         {
-            return _context.Products.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(p => p.OrderCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
+                .OrderByDescending(x => x.OrderCount)                .FirstOrDefaultAsync();
+
+            _context.ChangeTracker.Clear();
+
+            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
+
+            PopularProductDTO DTO = new PopularProductDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
+            return DTO;
         }
 
-        public ProductDTO GetProductViewCount()
+        public async Task<ProductDTO> GetProductViewCount()
         {
-            return _context.Products.OrderByDescending(p => p.ViewCount)
+            return await _context.Products.OrderByDescending(p => p.ViewCount)
                 .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
 
-        public ProductDTO GetProductViewCount(int CompanyId)
+        public async Task<ProductDTO> GetProductViewCount(int CompanyId)
         {
-            return _context.Products.Where(x => x.CompanyId == CompanyId)
+            return await _context.Products.Where(x => x.CompanyId == CompanyId)
                 .OrderByDescending(p => p.ViewCount)
                 .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
         }
     }
 }

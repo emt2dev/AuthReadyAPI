@@ -17,14 +17,11 @@ namespace AuthReadyAPI.DataLayer.Models
         public int Quantity { get; set; }
 
         // Metrics
-        public int CartCount { get; set; }
-        public int OrderCount { get; set; }
         public int ViewCount { get; set; }
-        public double GrossIncome { get; set; }
 
         // FKeys
         [ForeignKey(nameof(UpdatedBy))]
-        public string UpdatedBy { get; set; } // userId
+        public string UpdatedBy { get; set; } // userId pulled from jwt
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; } // which company does the product belong to?
         public string TaxCode { get; set; }
