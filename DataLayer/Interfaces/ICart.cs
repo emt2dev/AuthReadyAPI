@@ -9,5 +9,6 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<ShoppingCartDTO> GetUserCart(string UserId);
         public Task<bool> AddItem(AddProductToCartDTO IncomingDTO);
         public Task<bool> RemoveItem(RemoveProductFromCartDTO IncomingDTO);
+        public Task<ShoppingCartDTO> AbandonCart(int CartId);
     }
 }

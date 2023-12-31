@@ -45,5 +45,15 @@ namespace AuthReadyAPI.Controllers
         {
             return await _cart.RemoveItem(IncomingDTO);
         }
+
+        [HttpPost]
+        [Route("abandon")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ShoppingCartDTO> AbandonCart(int CartId)
+        {
+            return await _cart.AbandonCart(CartId);
+        }
     }
 }

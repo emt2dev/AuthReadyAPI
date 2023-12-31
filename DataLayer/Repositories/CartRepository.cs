@@ -149,5 +149,36 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             return true;
         }
+
+        public async Task<ShoppingCartDTO> AbandonCart(int CartId)
+        {
+            ShoppingCartClass Obj = await _context.ShoppingCarts.Where(x => x.Id == CartId).FirstOrDefaultAsync();
+            Obj.Abandoned = true;
+
+            _context.Update(Obj);
+            await _context.SaveChangesAsync();
+
+            ShoppingCartClass New = new ShoppingCartClass
+            {
+                Id = 0,
+                Items = new List<CartItemClass>(),
+                Submitted = false,
+                Abandoned = false,
+                CouponApplied = false,
+                PriceAfterCoupon = 0.00,
+                PriceBeforeCoupon = 0.00,
+                CouponCodeId = 0,
+                UserId = Obj.UserId,
+            };
+
+            await _context.AddAsync(New);
+            await _context.SaveChangesAsync();
+
+            List<CartItemDTO> ciList = new List<CartItemDTO>();
+            List<ShippingInfoDTO> siList = new List<ShippingInfoDTO>();
+            ShoppingCartDTO OutgoingDTO = new ShoppingCartDTO(New, ciList, siList, 0, 0.00);
+
+            return OutgoingDTO;
+        }
     }
 }
