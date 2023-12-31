@@ -36,7 +36,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetAPIByCategory([FromBody] int CategoryId)
+        public async Task<List<ProductDTO>> GetAPIByCategory([FromForm] int CategoryId)
         {
             return await _product.GetAPIProductsByCategoryId(CategoryId);
         }
@@ -56,7 +56,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetCompanyProducts([FromBody] int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyProducts([FromForm] int CompanyId)
         {
             return await _product.GetCompanyProducts(CompanyId);
         }
@@ -66,9 +66,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetCompanyProductsByCat([FromBody] int CompanyId, [FromRoute] string CategoryName)
+        public async Task<List<ProductDTO>> GetCompanyProductsByCat([FromForm] int CompanyId, [FromRoute] string CategoryName)
         {
-            // todo: create a dto due to the way FromBody works
+            // todo: create a dto due to the way FromForm works
             return await _product.GetCompanyProductsByCategoryName(CategoryName, CompanyId);
         }
         
@@ -77,17 +77,17 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductDTO>> GetCompanyProductsByKeyword([FromBody] int CompanyId, [FromRoute] string Keyword)
+        public async Task<List<ProductDTO>> GetCompanyProductsByKeyword([FromForm] int CompanyId, [FromRoute] string Keyword)
         {
             return await _product.GetCompanyProductsByKeyword(Keyword, CompanyId);
         }
                 
         [HttpPost]
-        [Route("details/one")]
+        [Route("details/one/{ProductId}")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductDTO> GetCompanyProductsByKeyword([FromBody] int ProductId)
+        public async Task<ProductWithStyleDTO> GetProductById([FromRoute] int ProductId)
         {
             // Need to add DTO to include all styles
             return await _product.GetProduct(ProductId);
@@ -98,7 +98,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetAPICartCount()
+        public async Task<List<ProductDTO>> GetAPICartCount()
         {
             return await _product.GetProductCartCount();
         }
@@ -108,7 +108,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetAPIOrderCount()
+        public async Task<List<ProductDTO>> GetAPIOrderCount()
         {
             return await _product.GetProductOrderCount();
         }
@@ -119,7 +119,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetAPIGrossIncomeCount()
+        public async Task<List<ProductDTO>> GetAPIGrossIncomeCount()
         {
             return await _product.GetProductGrossIncome();
         }
@@ -129,7 +129,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductDTO> GetAPIViewCount()
+        public async Task<List<ProductDTO>> GetAPIViewCount()
         {
             return await _product.GetProductViewCount();
         }
@@ -140,7 +140,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetCompanyCartCount([FromBody] int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyCartCount([FromForm] int CompanyId)
         {
             return await _product.GetProductCartCount(CompanyId);
         }
@@ -150,7 +150,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetCompanyOrderCount([FromBody] int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyOrderCount([FromForm] int CompanyId)
         {
             return await _product.GetProductOrderCount(CompanyId);
         }
@@ -161,7 +161,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> GetCompanyGrossIncomeCount([FromBody] int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyGrossIncomeCount([FromForm] int CompanyId)
         {
             return await _product.GetProductGrossIncome(CompanyId);
         }
@@ -171,7 +171,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductDTO> GetCompanyViewCount([FromBody] int CompanyId)
+        public async Task<List<ProductDTO>> GetCompanyViewCount([FromForm] int CompanyId)
         {
             return await _product.GetProductViewCount(CompanyId);
         }
@@ -191,7 +191,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductWithStyleDTO>> GetCompanyAvailable([FromBody] int CompanyId)
+        public async Task<List<ProductWithStyleDTO>> GetCompanyAvailable([FromForm] int CompanyId)
         {
             return await _product.GetAllAvailableCompanyProducts(CompanyId);
         }
@@ -204,7 +204,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<ProductWithStyleDTO>> GetAPIUnavailable()
         {
-            return await _product.GetAllAvailableAPIProducts();
+            return await _product.GetAllunavailableAPIProducts();
         }
 
         [HttpPost]
@@ -213,9 +213,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ProductWithStyleDTO>> GetCompanyUnavailable([FromBody] int CompanyId)
+        public async Task<List<ProductWithStyleDTO>> GetCompanyUnavailable([FromForm] int CompanyId)
         {
-            return await _product.GetAllAvailableCompanyProducts(CompanyId);
+            return await _product.GetAllUnavailableCompanyProducts(CompanyId);
         }
     }
 }

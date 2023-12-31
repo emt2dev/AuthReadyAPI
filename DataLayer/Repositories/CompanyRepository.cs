@@ -26,7 +26,8 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<bool> NewCompany(NewCompanyDTO IncomingDTO)
         {
-            CompanyClass Obj = _mapper.Map<CompanyClass>(IncomingDTO);
+            CompanyClass Obj = new CompanyClass(IncomingDTO);
+            Obj.Active = false;
 
             await _context.Companies.AddAsync(Obj);
             await _context.SaveChangesAsync();
@@ -45,6 +46,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             CompanyClass Company = await _context.Companies.Where(x => x.Id == Obj.CompanyId).FirstOrDefaultAsync();
             Company.PointOfContactId = Obj.Id;
+            Company.Active = true;
 
             _context.Companies.Update(Company);
             await _context.SaveChangesAsync();

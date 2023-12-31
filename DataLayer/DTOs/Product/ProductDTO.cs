@@ -12,7 +12,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
         public string UpdatesMade { get; set; }
-        public string ImageUrl { get; set; }
+        public string MainImageUrl { get; set; }
 
         // Used for Cart
         public int Quantity { get; set; }

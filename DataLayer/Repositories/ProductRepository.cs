@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -19,30 +20,47 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts()
         {
-            List<StyleClass> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == false).ToListAsync();
-            _context.ChangeTracker.Clear();
-
             List<ProductWithStyleDTO> ProductList = new List<ProductWithStyleDTO>();
 
-            foreach (var item in StyleList)
-            {
-                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
-                ProductList.Add(new ProductWithStyleDTO(_mapper.Map<ProductDTO>(P), _mapper.Map<StyleDTO>(item)));
-            }
+            List<StyleDTO> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == false).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();            
 
+            if(StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+
+                    ProductList.Add(FullProduct);
+                }
+            }
+            
             return ProductList;
         }
+
         public async Task<List<ProductWithStyleDTO>> GetAllUnavailableCompanyProducts(int CompanyId)
         {
-            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId && x.IsAvailableForOrder == false).ToListAsync();
-            _context.ChangeTracker.Clear();
-
             List<ProductWithStyleDTO> ProductList = new List<ProductWithStyleDTO>();
 
-            foreach (var item in StyleList)
+            List<StyleDTO> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.CompanyId == CompanyId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            if (StyleList.Count > 0)
             {
-                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
-                ProductList.Add(new ProductWithStyleDTO(_mapper.Map<ProductDTO>(P), _mapper.Map<StyleDTO>(item)));
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+
+                    ProductList.Add(FullProduct);
+                }
             }
 
             return ProductList;
@@ -50,15 +68,23 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<List<ProductWithStyleDTO>> GetAllAvailableAPIProducts()
         {
-            List<StyleClass> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == true).ToListAsync();
-            _context.ChangeTracker.Clear();
-
             List<ProductWithStyleDTO> ProductList = new List<ProductWithStyleDTO>();
 
-            foreach (var item in StyleList)
+            List<StyleDTO> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == true).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            if (StyleList.Count > 0)
             {
-                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
-                ProductList.Add(new ProductWithStyleDTO(_mapper.Map<ProductDTO>(P), _mapper.Map<StyleDTO>(item)));
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+
+                    ProductList.Add(FullProduct);
+                }
             }
 
             return ProductList;
@@ -66,16 +92,23 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<List<ProductWithStyleDTO>> GetAllAvailableCompanyProducts(int CompanyId)
         {
-
-            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId && x.IsAvailableForOrder == true).ToListAsync();
-            _context.ChangeTracker.Clear();
-
             List<ProductWithStyleDTO> ProductList = new List<ProductWithStyleDTO>();
 
-            foreach (var item in StyleList)
+            List<StyleDTO> StyleList = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.CompanyId == CompanyId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            if (StyleList.Count > 0)
             {
-                ProductClass P = await _context.Products.Where(x => x.Id == item.ProductId).FirstOrDefaultAsync();
-                ProductList.Add(new ProductWithStyleDTO(_mapper.Map<ProductDTO>(P), _mapper.Map<StyleDTO>(item)));
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+
+                    ProductList.Add(FullProduct);
+                }
             }
 
             return ProductList;
@@ -110,133 +143,216 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<List<ProductDTO>> GetCompanyProductsByCategoryName(string CategoryName, int CompanyId)
         {
-            if (!_context.Categories.Any(x => x.Name == CategoryName && x.CompanyId == CompanyId)) return new List<ProductDTO>();
+            List<ProductDTO> ProductList = new List<ProductDTO>();
 
-            return await _context.Products.Where(x => x.Name == CategoryName && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            List<CategoryClass> Categories = await _context.Categories.Where(x => x.Name.Contains(CategoryName) && x.CompanyId == CompanyId).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            foreach (var item in Categories)
+            {
+                ProductDTO p = await _context.Products.Where(x => x.Name.Contains(CategoryName) && x.CompanyId == CompanyId || x.CategoryId == item.Id && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                ProductList.Add(p);
+            }
+
+            _context.ChangeTracker.Clear();
+            List<StyleClass> Styles = await _context.Styles.Where(x => x.Name.Contains(CategoryName) && x.CompanyId == CompanyId || x.Description.Contains(CategoryName) && x.CompanyId == CompanyId).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            foreach (var item in Styles)
+            {
+                ProductDTO p = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                ProductList.Add(p);
+            }
+
+            return ProductList;
         }
 
         public async Task<List<ProductDTO>> GetCompanyProductsByKeyword(string Keyword, int CompanyId)
         {
-            if (!_context.Categories.Any(x => x.Name == Keyword && x.CompanyId == CompanyId)) return new List<ProductDTO>();
+            List<ProductDTO> ProductList = new List<ProductDTO>();
 
-            CategoryClass Found = await _context.Categories.Where(x => x.Name == Keyword && x.CompanyId == CompanyId).FirstOrDefaultAsync();
+            List<CategoryClass> Categories = await _context.Categories.Where(x => x.Name.Contains(Keyword) && x.CompanyId == CompanyId).ToListAsync();
             _context.ChangeTracker.Clear();
 
-            if (Found is null) return new List<ProductDTO>();
-
-            return await _context.Products.Where(x => x.CategoryId == Found.Id && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
-        }
-
-        public async Task<ProductDTO> GetProduct(int ProductId)
-        {
-            if (!_context.Products.Any(x => x.Id == ProductId)) return null;
-            return await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductCartCount()
-        {
-            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.CartCount).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductCartCount(int CompanyId)
-        {
-            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(x => x.CartCount).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductGrossIncome()
-        {
-            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.GrossIncome).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductGrossIncome(int CompanyId)
-        {
-            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(x => x.GrossIncome).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductOrderCount()
-        {
-            StyleClass Styles = await _context.Styles.OrderByDescending(x => x.OrderCount).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductWithStyleDTO> GetProductOrderCount(int CompanyId)
-        {
-            StyleClass Styles = await _context.Styles.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(x => x.OrderCount).FirstOrDefaultAsync();
-
-            _context.ChangeTracker.Clear();
-
-            ProductClass Product = await _context.Products.Where(x => x.Id == Styles.ProductId).FirstOrDefaultAsync();
-
-            ProductWithStyleDTO DTO = new ProductWithStyleDTO(_mapper.Map<ProductDTO>(Product), _mapper.Map<StyleDTO>(Styles));
-            return DTO;
-        }
-
-        public async Task<ProductDTO> GetProductViewCount()
-        {
-            return await _context.Products.OrderByDescending(p => p.ViewCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<ProductDTO> GetProductViewCount(int CompanyId)
-        {
-            return await _context.Products.Where(x => x.CompanyId == CompanyId)
-                .OrderByDescending(p => p.ViewCount)
-                .ProjectTo<ProductDTO>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<List<StyleDTO>> GetAvailableProductStyles(int ProductId)
-        {
-            if (!await _context.Products.AnyAsync(x => x.Id == ProductId)) return new List<StyleDTO>();
-            List<StyleDTO> List = await _context.Styles.Where(x => x.ProductId == ProductId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-
-            _context.ChangeTracker.Clear();
-
-            foreach (var item in List)
+            foreach (var item in Categories)
             {
-                var Image = await _context.ProductImages.Where(x => x.StyleId == item.Id).FirstOrDefaultAsync();
-                item.ProductImageUrls.Add(Image.ImageUrl);
+                ProductDTO p = await _context.Products.Where(x => x.Name.Contains(Keyword) && x.CompanyId == CompanyId || x.CategoryId == item.Id && x.CompanyId == CompanyId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                ProductList.Add(p);
             }
 
-            return List;
+            _context.ChangeTracker.Clear();
+            List<StyleClass> Styles = await _context.Styles.Where(x => x.Name.Contains(Keyword) && x.CompanyId == CompanyId || x.Description.Contains(Keyword) && x.CompanyId == CompanyId).ToListAsync();
+            _context.ChangeTracker.Clear();
+
+            foreach (var item in Styles)
+            {
+                ProductDTO p = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                ProductList.Add(p);
+            }
+
+            return ProductList;
+        }
+
+        public async Task<ProductWithStyleDTO> GetProduct(int ProductId)
+        {
+            List<StyleDTO> Styles = await _context.Styles.Where(x => x.ProductId == ProductId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();
+            if (Styles.Count < 1) return null;
+
+            ProductDTO Product = await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            if (Product is null) return null;
+
+            ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
+
+            return Full;
+        }
+
+        public async Task<List<ProductDTO>> GetProductCartCount()
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.OrderByDescending(x => x.CartCount).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductCartCount(int CompanyId)
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId).OrderByDescending(x => x.CartCount).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductGrossIncome()
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.OrderByDescending(x => x.GrossIncome).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductGrossIncome(int CompanyId)
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId).OrderByDescending(x => x.GrossIncome).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductOrderCount()
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.OrderByDescending(x => x.OrderCount).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductOrderCount(int CompanyId)
+        {
+            List<ProductDTO> ProductList = new List<ProductDTO>();
+
+            List<StyleClass> StyleList = await _context.Styles.Where(x => x.CompanyId == CompanyId).OrderByDescending(x => x.OrderCount).ToListAsync();
+
+            if (StyleList.Count > 0)
+            {
+                foreach (var item in StyleList)
+                {
+                    ProductDTO Product = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    ProductList.Add(Product);
+                }
+            }
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductViewCount()
+        {
+            List<ProductDTO> ProductList = await _context.Products.OrderByDescending(x => x.ViewCount).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+
+            return ProductList;
+        }
+
+        public async Task<List<ProductDTO>> GetProductViewCount(int CompanyId)
+        {
+            List<ProductDTO> ProductList = await _context.Products.Where(x => x.CompanyId == CompanyId).OrderByDescending(x => x.ViewCount).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+
+            return ProductList;
+        }
+
+        public async Task<ProductWithStyleDTO> GetAvailableProductStyles(int ProductId)
+        {
+            List<StyleDTO> Styles = await _context.Styles.Where(x => x.ProductId == ProductId && x.IsAvailableForOrder == true).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            _context.ChangeTracker.Clear();
+            if (Styles.Count < 1) return null;
+
+            ProductDTO Product = await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
+            if (Product is null) return null;
+
+            ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
+
+            return Full;
         }
 
         // Add Rows
@@ -257,26 +373,16 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
         public async Task<bool> NewProduct(NewProductDTO IncomingDTO)
         {
-            ProductClass Obj = _mapper.Map<ProductClass>(IncomingDTO);
-
-            int LastId = await _context.Products.CountAsync();
-
-            Obj.Id = LastId++;
+            ProductClass Obj = new ProductClass(IncomingDTO);
 
             await _context.Products.AddAsync(Obj);
             await _context.SaveChangesAsync();
 
-            if (await _context.Products.Where(x => x.Id == Obj.Id).FirstOrDefaultAsync() is not null) return true;
-
-            return false;
+            return true;
         }
         public async Task<bool> NewStyle(NewStyleDTO IncomingDTO)
         {
-            StyleClass Obj = _mapper.Map<StyleClass>(IncomingDTO);
-
-            int LastId = await _context.Styles.CountAsync();
-
-            Obj.Id = LastId++;
+            StyleClass Obj = new StyleClass(IncomingDTO);
 
             await _context.Styles.AddAsync(Obj);
             await _context.SaveChangesAsync();

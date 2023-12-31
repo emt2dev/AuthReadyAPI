@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
-using Microsoft.AspNetCore.OData;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
@@ -160,7 +159,6 @@ builder.Services.AddApiVersioning(options =>
     options.ReportApiVersions = true;
     options.ApiVersionReader = ApiVersionReader.Combine(
             new QueryStringApiVersionReader("api-version"),
-            new HeaderApiVersionReader("X-Version"),
             new MediaTypeApiVersionReader("ver")
         );
 });
@@ -177,13 +175,6 @@ builder.Services.AddResponseCaching(options =>
     options.MaximumBodySize = 1024;
     options.UseCaseSensitivePaths = true;
 });
-
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddOData(options =>
-    {
-        options.Select().Filter().OrderBy();
-    });
 
 /* Health Checks, 
  * includes AspNetCore.HealthChecks.SqlServer

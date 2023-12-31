@@ -15,8 +15,10 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<PointOfContactClass> PointOfContacts { get; set; }
         public DbSet<OrderClass> Orders { get; set; }
         public DbSet<ProductClass> Products { get; set; }
+        public DbSet<CartItemClass> CartItems { get; set; }
         public DbSet<ProductImageClass> ProductImages { get; set; }
         public DbSet<CompanyImageClass> CompanyImages { get; set; }
+        public DbSet<ShippingInfoClass> ShippingInfo { get; set; }
         public DbSet<StyleClass> Styles { get; set; }
         public DbSet<ShoppingCartClass> ShoppingCarts { get; set; }
         public DbSet<CategoryClass> Categories { get; set; }

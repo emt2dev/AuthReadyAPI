@@ -30,13 +30,13 @@ namespace AuthReadyAPI.DataLayer.Models.Companies
         }
         public CompanyClass(NewCompanyDTO IncomingDTO)
         {
-            Active = IncomingDTO.Active;
+            Active = false;
             Name = IncomingDTO.CompanyName;
             Description = IncomingDTO.Description;
             PhoneNumber = IncomingDTO.PhoneNumber;
             MailingAddress = IncomingDTO.MailingAddress;
             ShippingAddress = IncomingDTO.ShippingAddress;
-            Email = IncomingDTO.ExternalEmail;
+            Email = IncomingDTO.Email;
             PointOfContactId = 0;
         }
     }

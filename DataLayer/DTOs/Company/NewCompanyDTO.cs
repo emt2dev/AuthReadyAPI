@@ -5,7 +5,6 @@ namespace AuthReadyAPI.DataLayer.DTOs.Company
 {
     public class NewCompanyDTO
     {
-        public bool Active { get; set; }
         public string CompanyName { get; set; }
         public string Description { get; set; }
         public string PhoneNumber { get; set; }
@@ -14,6 +13,6 @@ namespace AuthReadyAPI.DataLayer.DTOs.Company
 
         // For Customers
         [EmailAddress]
-        public string ExternalEmail { get; set; }
+        public string Email { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.Company;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.Companies;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthReadyAPI.Controllers
@@ -24,9 +25,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewCompany([FromForm] NewCompanyDTO IncomingDTO)
+        public async Task<bool> NewCompany([FromForm] NewCompanyDTO IncomingDTO)
         {
-            return Ok(await _company.NewCompany(IncomingDTO));
+            return await _company.NewCompany(IncomingDTO);
         }
 
         [HttpPost]
@@ -35,9 +36,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewContact([FromForm] NewPointOfContactDTO IncomingDTO)
+        public async Task<bool> NewContact([FromForm] NewPointOfContactDTO IncomingDTO)
         {
-            return Ok(await _company.NewContact(IncomingDTO));
+            return await _company.NewContact(IncomingDTO);
         }
 
         [HttpPost]
@@ -46,9 +47,10 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> GetAllCompanies()
+        public async Task<List<CompanyDTO>> GetAllCompanies()
         {
-            return Ok(await _company.GetAPICompanyList());
+            List<CompanyDTO> CompanyList = await _company.GetAPICompanyList();
+            return CompanyList;
         }
 
         /* Product Life Cycle
@@ -65,9 +67,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewProductCategory([FromForm] NewCategoryDTO IncomingDTO)
+        public async Task<bool> NewProductCategory([FromForm] NewCategoryDTO IncomingDTO)
         {
-            return Ok(await _product.NewCategory(IncomingDTO));
+            return await _product.NewCategory(IncomingDTO);
         }
 
         [HttpPost]
@@ -76,9 +78,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewProduct([FromForm] NewProductDTO IncomingDTO)
+        public async Task<bool> NewProduct([FromForm] NewProductDTO IncomingDTO)
         {
-            return Ok(await _product.NewProduct(IncomingDTO));
+            return await _product.NewProduct(IncomingDTO);
         }
 
         [HttpPost]
@@ -87,9 +89,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewStyle([FromForm] NewStyleDTO IncomingDTO)
+        public async Task<bool> NewStyle([FromForm] NewStyleDTO IncomingDTO)
         {
-            return Ok(await _product.NewStyle(IncomingDTO));
+            return await _product.NewStyle(IncomingDTO);
         }
 
         [HttpPost]
@@ -98,9 +100,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> NewProductImage([FromForm] NewProductImageDTO IncomingDTO)
+        public async Task<bool> NewProductImage([FromForm] NewProductImageDTO IncomingDTO)
         {
-            return Ok(await _product.NewProductImage(IncomingDTO));
+            return await _product.NewProductImage(IncomingDTO);
         }
 
         [HttpPost]
@@ -109,9 +111,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> StyleIsAvailable([FromForm] int StyleId)
+        public async Task<bool> StyleIsAvailable([FromForm] int StyleId)
         {
-            return Ok(await _product.SetStyleToAvailable(StyleId));
+            return await _product.SetStyleToAvailable(StyleId);
         }
 
         [HttpPost]
@@ -120,9 +122,9 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<IActionResult> StyleNotAvailable([FromForm] int StyleId)
+        public async Task<bool> StyleNotAvailable([FromForm] int StyleId)
         {
-            return Ok(await _product.SetStyleToUnavailable(StyleId));
+            return await _product.SetStyleToUnavailable(StyleId);
         }
     }
 }

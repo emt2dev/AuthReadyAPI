@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+using Microsoft.Identity.Client;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
@@ -32,6 +34,23 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public ProductClass()
         {
             
+        }
+
+        public ProductClass(NewProductDTO DTO)
+        {
+            Id = 0;
+            Name = DTO.Name;
+            Description = DTO.Description;
+            CreatedOn = DateTime.Now;
+            UpdatedOn = DateTime.Now;
+            UpdatesMade = "New Product";
+            MainImageUrl = DTO.ImageUrl;
+            Quantity = 1;
+            ViewCount = 0;
+            UpdatedBy = "";
+            CompanyId = DTO.CompanyId;
+            CategoryId = DTO.CategoryId;
+            TaxCode = DTO.TaxCode;
         }
     }
 }

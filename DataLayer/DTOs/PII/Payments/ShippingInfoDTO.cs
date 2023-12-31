@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.Models.ProductInfo;
+﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
@@ -17,7 +18,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
         public bool IsDigital { get; set; }
         public string DeliveryExpectation { get; set; }
         public string TrackingNumber { get; set; }
-        public List<ProductClass> PackingList { get; set; }
+        public List<ProductWithStyleDTO> PackingList { get; set; }
 
         // Fkeys
         public int OrderId { get; set; }

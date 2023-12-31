@@ -10,20 +10,20 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<List<ProductDTO>> GetCompanyProducts(int CompanyId);
         public Task<List<ProductDTO>> GetCompanyProductsByCategoryName(string CategoryName, int CompanyId);
         public Task<List<ProductDTO>> GetCompanyProductsByKeyword(string Keyword, int CompanyId);
-        public Task<ProductDTO> GetProduct(int ProductId);
-        public Task<ProductWithStyleDTO> GetProductCartCount();
-        public Task<ProductWithStyleDTO> GetProductOrderCount();
-        public Task<ProductWithStyleDTO> GetProductGrossIncome();
-        public Task<ProductDTO> GetProductViewCount();
-        public Task<ProductWithStyleDTO> GetProductCartCount(int CompanyId);
-        public Task<ProductWithStyleDTO> GetProductOrderCount(int CompanyId);
-        public Task<ProductWithStyleDTO> GetProductGrossIncome(int CompanyId);
-        public Task<ProductDTO> GetProductViewCount(int CompanyId);
+        public Task<ProductWithStyleDTO> GetProduct(int ProductId);
+        public Task<List<ProductDTO>> GetProductCartCount();
+        public Task<List<ProductDTO>> GetProductOrderCount();
+        public Task<List<ProductDTO>> GetProductGrossIncome();
+        public Task<List<ProductDTO>> GetProductViewCount();
+        public Task<List<ProductDTO>> GetProductCartCount(int CompanyId);
+        public Task<List<ProductDTO>> GetProductOrderCount(int CompanyId);
+        public Task<List<ProductDTO>> GetProductGrossIncome(int CompanyId);
+        public Task<List<ProductDTO>> GetProductViewCount(int CompanyId);
         public Task<List<ProductWithStyleDTO>> GetAllAvailableAPIProducts();
         public Task<List<ProductWithStyleDTO>> GetAllAvailableCompanyProducts(int CompanyId);
         public Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts();
         public Task<List<ProductWithStyleDTO>> GetAllUnavailableCompanyProducts(int CompanyId);
-        public Task<List<StyleDTO>> GetAvailableProductStyles(int ProductId);
+        public Task<ProductWithStyleDTO> GetAvailableProductStyles(int ProductId);
 
         /* Product Life Cycle
          * 1. Create Category

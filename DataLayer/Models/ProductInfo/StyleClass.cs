@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
@@ -23,7 +24,7 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public bool IsComingSoon { get; set; }
         public DateTime AvailableOn { get; set; }
         public double DiscountedPrice { get; set; }
-        public bool UseSalePrice { get; set; }
+        public bool UseDiscountPrice { get; set; }
         public bool DigitalOnly { get; set; }
 
         // Shipping Details
@@ -42,6 +43,34 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public StyleClass()
         {
             
+        }
+
+        public StyleClass(NewStyleDTO DTO)
+        {
+            Id = 0;
+            Name = DTO.Name;
+            Description = DTO.Description;
+
+            CurrentPrice = DTO.CurrentPrice;
+            DiscountedPrice = DTO.DiscountedPrice;
+            UseDiscountPrice = DTO.UseDiscountPrice;
+
+            CartCount = 0;
+            OrderCount = 0;
+            GrossIncome = 0.00;
+
+            IsAvailableForOrder = false;
+            IsLimitedTimeOnly = false;
+            IsComingSoon = true;
+
+            DigitalOnly = DTO.DigitalOnly;
+            PackagedDimensions = DTO.PackagedDimensions;
+            PackagedWeight = DTO.PackagedWeight;
+
+            ProductId = DTO.ProductId;
+
+            AvailableOn = DateTime.Now;
+            UnavailableOn = DateTime.Now;
         }
     }
 }

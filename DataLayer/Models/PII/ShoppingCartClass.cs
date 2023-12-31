@@ -19,8 +19,10 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         // Fkeys
         [ForeignKey(nameof(CouponCodeId))]
         public int CouponCodeId { get; set; }
+
         [ForeignKey(nameof(UserId))]
         public string UserId { get; set; }
+
         public ShoppingCartClass()
         {
             
