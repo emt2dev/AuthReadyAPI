@@ -1,72 +1,73 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Product;
-using AuthReadyAPI.DataLayer.DTOs.Services;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
+using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
+using Humanizer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
 
 namespace AuthReadyAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ServicesController : ControllerBase
+    public class AuctionController : ControllerBase
     {
-        private readonly IServices _services;
-
-        public ServicesController(IServices services)
+        private readonly IAuction _auction;
+        public AuctionController(IAuction auction)
         {
-            _services = services;
+            _auction = auction;
         }
 
-        // This controller is for services rendered (non-phyiscal products)
         [HttpGet]
-        [Route("list/all")]
+        [Route("accepting")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ServicesDTO>> GetCompanyServices(int CompanyId)
+        public async Task<List<AuctionProductDTO>> GetAuctionProduct()
         {
-            return await _services.GetCompanyServicesOffered(CompanyId);
+            return await _auction.GetAuctionProducts();
         }
 
         [HttpPost]
-        [Route("list/category")]
+        [Route("create/new")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ServicesDTO>> FindCompanyServices([FromForm] string Description, int CompanyId)
+        public async Task<bool> CreateAuctionProduct(NewAuctionProductDTO DTO)
         {
-            return await _services.FindCompanyServicesOffered(CompanyId, Description);
+            return await _auction.AddAuctionProduct(DTO);
         }
 
         [HttpPost]
-        [Route("new")]
+        [Route("submit/bid")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> AddService([FromForm] NewServicesDTO DTO, int CompanyId)
+        public async Task<bool> NewBid(BidDTO DTO)
         {
-            return await _services.AddService(DTO);
+            return await _auction.AddBid(DTO);
         }
 
-        [HttpPut]
-        [Route("update")]
+        [HttpPost]
+        [Route("finished/company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> UpdateOffering([FromForm] ServicesDTO DTO)
+        public async Task<List<AuctionProductDTO>> GetComnpanyCompleted()
         {
-            return await _services.UpdateService(DTO);
+            // from jwt
+            return await _auction.GetFinishedAuctionsByCompanyId(1);
         }
 
-        [HttpDelete]
-        [Route("delete")]
+        [HttpPost]
+        [Route("finished/user")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> DeleteOffering([FromForm] int ServiceId)
+        public async Task<List<AuctionProductDTO>> GetUserCompleted()
         {
-            return await _services.DeleteService(ServiceId);
+            // from jwt
+            return await _auction.GetFinishAuctionsByUserId("1");
         }
     }
 }

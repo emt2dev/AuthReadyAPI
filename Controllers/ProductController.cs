@@ -157,7 +157,7 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPost]
         [Route("company/count/income")]
-        [Authorize(Roles = "Company")]
+
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -209,13 +209,24 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPost]
         [Route("list/unavailable/company")]
-        [Authorize(Roles = "Company")]
+
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<ProductWithStyleDTO>> GetCompanyUnavailable([FromForm] int CompanyId)
         {
             return await _product.GetAllUnavailableCompanyProducts(CompanyId);
+        }
+
+        [HttpPost]
+        [Route("custom/product")]
+
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ProductWithStyleDTO> CreateCustomProduct([FromForm] NewCouponDTO IncomingDTO)
+        {
+            return await _product.AddCustomSale(IncomingDTO);
         }
     }
 }

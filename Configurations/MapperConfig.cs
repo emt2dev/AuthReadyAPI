@@ -3,9 +3,11 @@ using AuthReadyAPI.DataLayer.DTOs.PII;
 using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
 using AuthReadyAPI.DataLayer.DTOs.Product;
+using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Models.Companies;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
+using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 using AutoMapper;
 
 namespace AuthReadyAPI.Configurations
@@ -29,7 +31,11 @@ namespace AuthReadyAPI.Configurations
             CreateMap<OrderClass, OrderDTO>().ReverseMap();
             CreateMap<CategoryClass, CategoryDTO>().ReverseMap();
             CreateMap<CategoryClass, NewCategoryDTO>().ReverseMap();
+            CreateMap<CartItemClass, CartItemDTO>().ReverseMap();
+            CreateMap<BidClass, BidDTO>().ReverseMap();
+            CreateMap<AuctionProductCartClass, AuctionProductCartDTO>().ReverseMap();
+            CreateMap<ServicesClass, ServicesDTO>().ReverseMap();
         }
-        
+
     }
 }

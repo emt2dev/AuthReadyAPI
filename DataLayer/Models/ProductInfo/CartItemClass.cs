@@ -23,10 +23,13 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         // Fkeys
         [ForeignKey(nameof(StyleId))]
         public int StyleId { get; set; }
+
         [ForeignKey(nameof(ProductId))]
         public int ProductId { get; set; }
+
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
+
         public CartItemClass()
         {
             

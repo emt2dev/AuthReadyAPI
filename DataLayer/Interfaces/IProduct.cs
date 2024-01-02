@@ -1,4 +1,5 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
@@ -24,6 +25,9 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts();
         public Task<List<ProductWithStyleDTO>> GetAllUnavailableCompanyProducts(int CompanyId);
         public Task<ProductWithStyleDTO> GetAvailableProductStyles(int ProductId);
+        public Task<UpsellItemClass> GetAllUpsellItems();
+        public Task<List<SingleProductDTO>> GetUserSingles(string UserId);
+        public Task<List<SingleProductDTO>> GetCompanySingles(int CompanyId);
 
         /* Product Life Cycle
          * 1. Create Category

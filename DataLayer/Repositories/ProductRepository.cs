@@ -1,10 +1,13 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -353,6 +356,31 @@ namespace AuthReadyAPI.DataLayer.Repositories
             ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
 
             return Full;
+        }
+        public async Task<List<SingleProductCartDTO>> GetUserSingles(string UserId)
+        {
+            // APIUser User = await _userManager.FindById(UserId);
+            //return await _context.SingleProducts.Where(x => x.UserEmail == User.Email && !x.Submitted && !x.Abandonded).ToListAsync();
+            return null;
+        }
+        public async Task<List<SingleProductCartDTO>> GetCompanySingles(int CompanyId)
+        {
+            List<SingleProductCartClass> List = await _context.SingleProductCarts.Where(x => x.CompanyId == CompanyId && !x.Abandoned && !x.Submitted).ToListAsync();
+            List<SingleProductCartDTO> OutgoingList = new List<SingleProductCartDTO>();
+
+            foreach (var item in List)
+            {
+                SingleProductCartDTO OutgoingDTO = new SingleProductCartDTO(item);
+
+                SingleProductDTO Product = new SingleProductDTO(item.Item);
+                Product.AddImages(item.Item.Images);
+
+                OutgoingDTO.AddItemDTO(Product);
+
+                OutgoingList.Add(OutgoingDTO);
+            }
+
+            return OutgoingList;
         }
 
         // Add Rows

@@ -2,6 +2,7 @@
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
+using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,14 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<StyleClass> Styles { get; set; }
         public DbSet<ShoppingCartClass> ShoppingCarts { get; set; }
         public DbSet<CategoryClass> Categories { get; set; }
+        public DbSet<SingleProductClass> SingleProducts { get; set; }
+        public DbSet<SingleProductCartClass> SingleProductCarts { get; set; }
+        public DbSet<AuctionProductCartClass> AuctionCarts { get; set; }
+        public DbSet<AuctionProductClass> AuctionProducts { get; set; }
+        public DbSet<SingleProductImageClass> SingleProductImages { get; set; }
+        public DbSet<AuctionProductImageClass> AuctionProductImages { get; set; }
+        public DbSet<BidClass> Bids { get; set; }
+        public DbSet<ServicesClass> Services { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

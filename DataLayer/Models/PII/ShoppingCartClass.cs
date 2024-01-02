@@ -10,6 +10,7 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         [Key]
         public int Id { get; set; }
         public IList<CartItemClass> Items { get; set; } = new List<CartItemClass>();
+        public List<UpsellItemClass> Upsells { get; set; }
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
         public bool CouponApplied { get; set; }
