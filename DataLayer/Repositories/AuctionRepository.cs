@@ -68,7 +68,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                 Submitted = false,
                 Abandoned = false,
                 Expiration = DateTime.Now.AddHours(24).ToString("MM/dd/yyyy"),
-                Upsells = new List<UpsellItemClass>()
+                Upsells = new List<ProductUpsellItemClass>()
             };
 
             await _context.AuctionCarts.AddAsync(Cart);
@@ -134,7 +134,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     Submitted = false,
                     Abandoned = false,
                     Expiration = DateTime.Now.AddHours(24).ToString("MM/dd/yyyy"),
-                    Upsells = new List<UpsellItemClass>(),
+                    Upsells = new List<ProductUpsellItemClass>(),
                     CompanyId = CompanyId,
                 };
 
@@ -162,8 +162,9 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
                     _context.ChangeTracker.Clear();
                     ShoppingCartClass Cart = await _context.ShoppingCarts.Where(x => x.UserId == item.UserId && !x.Submitted && !x.Abandoned).Include(x => x.Items).FirstOrDefaultAsync();
-                    
+
                     // Add penalty fee for abandonded cart here
+                    Cart.PriceAfterCoupon = Cart.PriceBeforeCoupon += item.Item.CurrentBidAmount / 2; // We charge the user 50% of the bid amount.
                 }
                 else
                 {

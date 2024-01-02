@@ -16,7 +16,7 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
         public string Expiration { get; set; }
-        public List<UpsellItemClass> Upsells { get; set; }
+        public List<ProductUpsellItemClass> Upsells { get; set; }
 
 
         public AuctionProductCartClass()

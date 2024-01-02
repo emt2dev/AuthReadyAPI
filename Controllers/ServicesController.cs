@@ -68,5 +68,15 @@ namespace AuthReadyAPI.Controllers
         {
             return await _services.DeleteService(ServiceId);
         }
+
+        [HttpPost]
+        [Route("appointment/schedule")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<bool> NewAppointment([FromForm] NewAppointmentDTO DTO)
+        {
+            return await _services.ScheduleAppointment(DTO);
+        }
     }
 }

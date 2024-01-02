@@ -15,7 +15,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
 
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
-        public List<UpsellItemClass> Upsells { get; set; }
+        public List<ProductUpsellItemClass> Upsells { get; set; }
         public string UserEmail { get; set; }
 
         public SingleProductCartDTO()
@@ -31,7 +31,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
             UserId = Class.UserId;
             Submitted = Class.Submitted;
             Abandoned = Class.Abandoned;
-            Upsells = new List<UpsellItemClass>();
+            Upsells = new List<ProductUpsellItemClass>();
             UserEmail = "";
         }
 

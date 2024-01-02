@@ -25,7 +25,7 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts();
         public Task<List<ProductWithStyleDTO>> GetAllUnavailableCompanyProducts(int CompanyId);
         public Task<ProductWithStyleDTO> GetAvailableProductStyles(int ProductId);
-        public Task<UpsellItemClass> GetAllUpsellItems();
+        public Task<ProductUpsellItemClass> GetAllUpsellItems();
         public Task<List<SingleProductDTO>> GetUserSingles(string UserId);
         public Task<List<SingleProductDTO>> GetCompanySingles(int CompanyId);
 

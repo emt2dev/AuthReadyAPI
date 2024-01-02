@@ -1,4 +1,5 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.Services;
+using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
@@ -9,5 +10,8 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<bool> AddService(NewServicesDTO DTO);
         public Task<bool> UpdateService(ServicesDTO DTO);
         public Task<bool> DeleteService(int ServiceId);
+        public Task<bool> ScheduleAppointment(NewAppointmentDTO DTO); // this should be called after submitting payment
+        public Task<bool> CustomerArrived(AppointmentShowDTO DTO);
+        public Task<string> SubmitServicesOrder(AppointmentClass Obj);
     }
 }

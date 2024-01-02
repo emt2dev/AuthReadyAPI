@@ -55,5 +55,40 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             return true;
         }
+        public async Task<bool> ScheduleAppointment(NewAppointmentDTO DTO)
+        {
+            AppointmentClass Obj = new AppointmentClass(DTO);
+
+            foreach (var item in DTO.ServicesClassIds)
+            {
+                ServicesClass Svc = await _context.Services.Where(x => x.Id == item).FirstOrDefaultAsync();
+                Obj.AddService(Svc);
+            }
+
+            _context.ChangeTracker.Clear();
+
+            await _context.Appointments.AddAsync(Obj);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> CustomerArrived(AppointmentShowDTO DTO)
+        {
+            AppointmentClass Obj = await _context.Appointments.Where(x => x.Id == DTO.AppointmentId).FirstOrDefaultAsync();
+            Obj.CustomerShowed = DTO.CustomerArrived;
+
+            _context.Appointments.Update(Obj);
+            await _context.SaveChangesAsync();
+
+            return false;
+
+        }
+        public Task<string> SubmitServicesOrder(AppointmentClass Obj)
+        {
+
+
+            return "worked";
+        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace AuthReadyAPI.DataLayer.Models.ProductInfo
 {
-    public class UpsellItemClass
+    public class ProductUpsellItemClass
     {
         public int Id { get; set; }
 

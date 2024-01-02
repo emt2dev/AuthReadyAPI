@@ -15,6 +15,6 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         public int CompanyId { get; set; }
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
-        public List<UpsellItemClass> Upsells { get; set; }
+        public List<ProductUpsellItemClass> Upsells { get; set; }
     }
 }

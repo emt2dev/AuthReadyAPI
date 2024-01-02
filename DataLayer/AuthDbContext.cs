@@ -31,6 +31,8 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<AuctionProductImageClass> AuctionProductImages { get; set; }
         public DbSet<BidClass> Bids { get; set; }
         public DbSet<ServicesClass> Services { get; set; }
+        public DbSet<ServicesCartClass> SerivceCarts { get; set; }
+        public DbSet<AppointmentClass> Appointments { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

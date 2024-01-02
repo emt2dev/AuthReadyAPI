@@ -188,7 +188,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PriceBeforeCoupon = 0.00,
                     CouponCodeId = 0,
                     UserId = Obj.UserId,
-                    Upsells = new List<UpsellItemClass>()
+                    Upsells = new List<ProductUpsellItemClass>()
                 };
 
                 await _context.AddAsync(New);
