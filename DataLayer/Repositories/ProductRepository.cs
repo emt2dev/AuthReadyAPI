@@ -39,7 +39,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
 
                     List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = Product, Styles = AssociatedStyles };
 
                     ProductList.Add(FullProduct);
                 }
@@ -63,7 +63,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
 
                     List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = Product, Styles = AssociatedStyles };
 
                     ProductList.Add(FullProduct);
                 }
@@ -87,7 +87,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
 
                     List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = Product, Styles = AssociatedStyles };
 
                     ProductList.Add(FullProduct);
                 }
@@ -111,7 +111,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
 
                     List<StyleDTO> AssociatedStyles = await _context.Styles.Where(x => x.IsAvailableForOrder == false && x.ProductId == Product.Id).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(Product, AssociatedStyles);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = Product, Styles = AssociatedStyles };
 
                     ProductList.Add(FullProduct);
                 }
@@ -221,7 +221,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                 }
             }            
 
-            ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
+            ProductWithStyleDTO Full = new ProductWithStyleDTO { Product = Product, Styles = Styles };
 
             return Full;
         }
@@ -370,7 +370,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             ProductDTO Product = await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
             if (Product is null) return null;
 
-            ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
+            ProductWithStyleDTO Full = new ProductWithStyleDTO { Product = Product, Styles = Styles };
 
             return Full;
         }

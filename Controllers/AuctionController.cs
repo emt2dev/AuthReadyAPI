@@ -18,8 +18,10 @@ namespace AuthReadyAPI.Controllers
             _auction = auction;
         }
 
+        // Note this functionality needs real-time communication (ie websocket, SignalR, or something similiar) to be successful
+
         [HttpGet]
-        [Route("accepting")]
+        [Route("active")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -29,7 +31,7 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
-        [Route("accepting")]
+        [Route("inactive")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]

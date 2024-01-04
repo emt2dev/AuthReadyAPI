@@ -60,7 +60,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
                     ProductDTO P = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
 
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(P, S);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = P, Styles = new List<StyleDTO> { S } };
 
                     bool fitsInBox = item.PackagedWeight <= Box.MaxWeight && Box.IsWeighed && item.PackagedDimensions <= remainingArea;
                     bool fitsInFlatRateBox = Box.IsFlatRate && item.PackagedDimensions <= remainingArea;
@@ -265,7 +265,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     _context.ChangeTracker.Clear();
                     ProductDTO P = await _context.Products.Where(x => x.Id == item.ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
 
-                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO(P, S);
+                    ProductWithStyleDTO FullProduct = new ProductWithStyleDTO { Product = P, Styles = new List<StyleDTO> { S } };
 
                     bool fitsInBox = item.PackagedWeight <= Box.MaxWeight && Box.IsWeighed && item.PackagedDimensions <= remainingArea;
                     bool fitsInFlatRateBox = Box.IsFlatRate && item.PackagedDimensions <= remainingArea;
