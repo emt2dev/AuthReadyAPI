@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AuthReadyAPI.DataLayer.Models.ProductInfo;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.Models.PII
@@ -13,28 +14,35 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         public double PaymentAmount { get; set; }
         public bool PaymentCompleted { get; set; }
         public bool PaymentRefunded { get; set; }
-        public string StripeOrderId { get; set; } // For reference
 
         // Fkeys
-        [ForeignKey(nameof(UserId))]
-        public int UserId { get; set; }
+        public string UserEmail { get; set; }
+
+        public string CartType { get; set; }
+
         [ForeignKey(nameof(ShoppingCartId))]
         public int ShoppingCartId { get; set; }
+
+        [ForeignKey(nameof(SingleProductCartClassId))]
+        public int SingleProductCartClassId { get; set; }
+
+        [ForeignKey(nameof(AuctionProductCartClassId))]
+        public int AuctionProductCartClassId { get; set; }
+
+        [ForeignKey(nameof(ServicesCartClassId))]
+        public int ServicesCartClassId { get; set; }
+
+
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
 
         // Shipping
-        /*
-        public bool ContainsShippedProduct { get; set; }
         public List<ShippingInfoClass> ShippingInfos { get; set; }
 
         // Digital Product
-        public bool DigitalProduct { get; set; }
         public List<DigitalOwnershipClass> DigitalOwnerships { get; set; }
-        */
 
 
-        // Order Types, uncomment per business requiremnets
         // Delivery Drivers
         /*
         public bool delivery { get; set; }

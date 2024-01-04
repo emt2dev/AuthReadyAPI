@@ -43,7 +43,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                 ItemDTOs.Add(J);
             }
 
-            List<ShippingInfoDTO> AvailableShipping = await _context.ShippingInfo.Where(x => !x.IsDigital).ProjectTo<ShippingInfoDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            List<ShippingInfoDTO> AvailableShipping = await _context.ShippingInfo.ProjectTo<ShippingInfoDTO>(_mapper.ConfigurationProvider).ToListAsync();
             List<ShippingInfoDTO> FlatRateOptions = new List<ShippingInfoDTO>();
             List<ShippingInfoDTO> WeightedOptions = new List<ShippingInfoDTO>();
             List<ShippingInfoDTO> GeneratedOptions = new List<ShippingInfoDTO>();
@@ -90,6 +90,16 @@ namespace AuthReadyAPI.DataLayer.Repositories
             }
 
             ShoppingCartDTO OutgoingDTO = new ShoppingCartDTO(Cart, ItemDTOs, GeneratedOptions, PackageCount, ShippingCost);
+            List<ShippingInfoClass> GeneratedList = new List<ShippingInfoClass>();
+
+            foreach (var item in GeneratedOptions)
+            {
+                GeneratedList.Add(_mapper.Map<ShippingInfoClass>(item));
+            }
+
+            _context.ChangeTracker.Clear();
+            await _context.GeneratedShipping.AddRangeAsync(GeneratedList);
+            await _context.SaveChangesAsync();
 
             return OutgoingDTO;
         }
@@ -354,6 +364,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             return CartList;
         }
+
         public async Task<bool> AddSingleProductCart(NewSingleProductDTO IncomingDTO)
         {
             SingleProductClass New = new SingleProductClass(IncomingDTO);
@@ -390,5 +401,40 @@ namespace AuthReadyAPI.DataLayer.Repositories
             return true;
         }
 
+        public async Task<bool> AddAuctionProductCart(NewAuctionProductDTO IncomingDTO)
+        {
+            AuctionProductClass New = new AuctionProductClass(IncomingDTO);
+            await _context.AuctionProducts.AddAsync(New);
+            await _context.SaveChangesAsync();
+
+            _context.ChangeTracker.Clear();
+
+            List<AuctionProductImageClass> ImageList = new List<AuctionProductImageClass>();
+
+            foreach (var item in IncomingDTO.Images)
+            {
+                var UploadPhoto = await _mediaService.AddPhotoAsync(item);
+                AuctionProductImageClass Image = new AuctionProductImageClass
+                {
+                    Id = 0,
+                    ImageUrl = UploadPhoto.Url.ToString(),
+                    CompanyId = New.CompanyId,
+                    AuctionProductId = New.Id
+                };
+
+                await _context.AuctionProductImages.AddAsync(Image);
+                await _context.SaveChangesAsync();
+
+                ImageList.Add(Image);
+            }
+
+            _context.ChangeTracker.Clear();
+
+            New.AddImages(ImageList);
+            _context.AuctionProducts.Update(New);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

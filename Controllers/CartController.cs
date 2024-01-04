@@ -1,8 +1,11 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
 using AuthReadyAPI.DataLayer.DTOs.Product;
+using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 
 namespace AuthReadyAPI.Controllers
 {
@@ -11,9 +14,12 @@ namespace AuthReadyAPI.Controllers
     public class CartController : ControllerBase
     {
         private readonly ICartRepository _cart;
-        public CartController(ICartRepository cart)
+        private readonly IServicesRepository _services;
+        public CartController(ICartRepository cart, IServicesRepository services)
         {
             _cart = cart;
+            _services = services;
+
         }
 
         [HttpGet]
@@ -47,13 +53,46 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpPost]
-        [Route("new")]
+        [Route("new/product")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ShoppingCartDTO> GetNewCart(int CartId)
         {
             return await _cart.IssueNewCart(CartId);
+        }
+
+        // We return the cart in this endpoint for a better user experience.
+        [HttpPost]
+        [Route("appointment/schedule")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ServicesCartDTO> NewAppointment([FromForm] NewAppointmentDTO DTO)
+        {
+            List<AppointmentClass> List = await _services.ScheduleAppointment(DTO);
+
+            return await _services.IssueNewServiceCart(List);
+        }
+
+        [HttpPost]
+        [Route("new/single")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<bool> AddNewSingleCart(NewSingleProductDTO DTO)
+        {
+            return await _cart.AddSingleProductCart(DTO);
+        }
+
+        [HttpPost]
+        [Route("new/auction")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<bool> GetNewAuctionCart(NewAuctionProductDTO DTO)
+        {
+            return await _cart.AddAuctionProductCart(DTO);
         }
 
         [HttpPost]

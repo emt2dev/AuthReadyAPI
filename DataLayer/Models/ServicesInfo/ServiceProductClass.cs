@@ -12,5 +12,6 @@ namespace AuthReadyAPI.DataLayer.Models.ServicesInfo
         public string Description { get; set; }
         public int Quantity { get; set; }
         public double Cost { get; set; }
+        public string TaxCode { get; set; }
     }
 }

@@ -24,6 +24,7 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<OrderClass> Orders { get; set; }
         public DbSet<ServicesCartClass> ServiceCarts { get; set; }
         public DbSet<ShippingInfoClass> ShippingInfo { get; set; }
+        public DbSet<ShippingInfoClass> GeneratedShipping { get; set; }
         public DbSet<ShoppingCartClass> ShoppingCarts { get; set; }
         public DbSet<SingleProductCartClass> SingleProductCarts { get; set; }
 
@@ -39,6 +40,7 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<SingleProductClass> SingleProducts { get; set; }
         public DbSet<SingleProductImageClass> SingleProductImages { get; set; }
         public DbSet<StyleClass> Styles { get; set; }
+        public DbSet<PreparedCartClass> PreparedCarts { get; set; }
 
         // Services Info
         public DbSet<ServicesClass> Services { get; set; }

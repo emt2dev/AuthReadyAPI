@@ -12,6 +12,7 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public string ImageUrl { get; set; }
         public double Price { get; set; }
         public int Count { get; set; }
+        public string TaxCode { get; set; }
 
         // Shipping
         public double PackagedWeight { get; set; }

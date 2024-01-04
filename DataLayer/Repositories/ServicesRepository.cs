@@ -7,6 +7,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -62,65 +63,76 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
 
         // Workflow
-        public async Task<AppointmentClass> ScheduleAppointment(NewAppointmentDTO DTO)
+        public async Task<List<AppointmentClass>> ScheduleAppointment(NewAppointmentDTO DTO)
         {
-            AppointmentClass Obj = new AppointmentClass(DTO);
+            List<AppointmentClass> OutgoingList = new List<AppointmentClass>();
 
-            foreach (var item in DTO.ServicesClassIds)
+            foreach (var item in DTO.Specifics)
             {
-                ServicesClass Svc = await _context.Services.Where(x => x.Id == item).FirstOrDefaultAsync();
-                Obj.AddService(Svc);
+                AppointmentClass Obj = new AppointmentClass(DTO, item);
+
+                foreach (var item1 in Obj.Services)
+                {
+                    ServicesClass Svc = await _context.Services.Where(x => x.Id == item1.Id).FirstOrDefaultAsync();
+                    Obj.AddService(Svc);
+                }
+
+                _context.ChangeTracker.Clear();
+
+                foreach (var Prod in Obj.Products)
+                {
+                    ServiceProductClass Product = await _context.ServiceProducts.Where(x => x.Id == Prod.Id).FirstOrDefaultAsync();
+                    Obj.AddProduct(Product);
+                }
+
+                _context.ChangeTracker.Clear();
+
+                await _context.Appointments.AddAsync(Obj);
+                await _context.SaveChangesAsync();
+
+                OutgoingList.Add(Obj);
             }
-
-            _context.ChangeTracker.Clear();
-
-            foreach (var Prod in DTO.ServicesProductIds)
-            {
-                ServiceProductClass Product = await _context.ServiceProducts.Where(x => x.Id == Prod).FirstOrDefaultAsync();
-                Obj.AddProduct(Product);
-            }
-
-            _context.ChangeTracker.Clear();
-
-            await _context.Appointments.AddAsync(Obj);
-            await _context.SaveChangesAsync();
-
-            return Obj;
+            
+            return OutgoingList;
         }
 
-        public async Task<ServicesCartDTO> IssueNewServiceCart(AppointmentClass Class)
+        public async Task<ServicesCartDTO> IssueNewServiceCart(List<AppointmentClass> List)
         {
-            List<ServicesCartClass> Carts = await _context.ServiceCarts.Where(x => x.UserEmail == Class.CustomerEmail && !x.Submitted || x.UserEmail == Class.CustomerEmail && x.Abandoned).ToListAsync();
+            List<ServicesCartClass> Carts = await _context.ServiceCarts.Where(x => x.UserEmail == List[1].CustomerEmail && !x.Submitted && x.CompanyId == List[1] .CompanyId || x.UserEmail == List[1].CustomerEmail && x.Abandoned && x.CompanyId == List[1].CompanyId).ToListAsync();
             foreach (var item in Carts)
             {
                 _context.ServiceCarts.Remove(item);
                 await _context.SaveChangesAsync();
             }
 
-            List<ServiceProductClass> ProductList = Class.Products;
-            Class.Products.Clear();
-
             ServicesCartClass New = new ServicesCartClass
             {
                 Id = 0,
-                Appointments = new List<AppointmentClass> { Class },
-                Products = ProductList,
+                Appointments = List,
                 Submitted = false,
                 Abandoned = false,
                 CouponApplied = false,
                 PriceAfterCoupon = 0.00,
                 PriceBeforeCoupon = 0.00,
                 CouponCodeId = 0,
-                CompanyId = Class.CompanyId,
-                UserEmail = Class.CustomerEmail,
+                CompanyId = List[1].CompanyId,
+                UserEmail = List[1].CustomerEmail,
             };
 
-            foreach (var item in ProductList)
+            foreach (var Appt in List)
             {
-                New.PriceBeforeCoupon += item.Cost * item.Quantity;
+                foreach (var prod in Appt.Products)
+                {
+                    New.PriceBeforeCoupon += prod.Cost * prod.Quantity;
+                }
+
+                foreach (var svc in Appt.Services)
+                {
+                    New.PriceBeforeCoupon += svc.CurrentPrice * svc.Quantity;
+                }
             }
 
-            return null;
+            return _mapper.Map<ServicesCartDTO>(New);
         }
 
         public async Task<bool> CustomerArrived(AppointmentShowDTO DTO)

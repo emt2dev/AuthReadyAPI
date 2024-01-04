@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.DTOs.Product
 {
-    [NotMapped]
     public class ProductWithStyleDTO
     {
         

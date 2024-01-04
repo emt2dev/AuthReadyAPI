@@ -11,9 +11,9 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<bool> AddService(NewServicesDTO DTO);
         public Task<bool> UpdateService(ServicesDTO DTO);
         public Task<bool> DeleteService(int ServiceId);
-        public Task<bool> ScheduleAppointment(NewAppointmentDTO DTO); // this should be called after submitting payment
+        public Task<List<AppointmentClass>> ScheduleAppointment(NewAppointmentDTO DTO); // this should be called after submitting payment
         public Task<bool> CustomerArrived(AppointmentShowDTO DTO);
         public string SubmitServicesOrder(AppointmentClass Obj);
-        public Task<ServicesCartDTO> IssueNewServiceCart(string CustomerEmail);
+        public Task<ServicesCartDTO> IssueNewServiceCart(List<AppointmentClass> List);
     }
 }

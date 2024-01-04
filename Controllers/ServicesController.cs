@@ -1,6 +1,8 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Product;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
+using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
@@ -67,16 +69,6 @@ namespace AuthReadyAPI.Controllers
         public async Task<bool> DeleteOffering([FromForm] int ServiceId)
         {
             return await _services.DeleteService(ServiceId);
-        }
-
-        [HttpPost]
-        [Route("appointment/schedule")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> NewAppointment([FromForm] NewAppointmentDTO DTO)
-        {
-            return await _services.ScheduleAppointment(DTO);
         }
     }
 }

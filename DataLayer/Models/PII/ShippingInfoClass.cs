@@ -20,11 +20,14 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         public bool IsDigital { get; set; }
         public string DeliveryExpectation { get; set; }
         public string TrackingNumber { get; set; }
-        public List<ProductWithStyleDTO> PackingList { get; set; }
+        public List<ProductWithStyleClass> PackingList { get; set; }
 
         // Fkeys
         [ForeignKey(nameof(OrderId))]
         public int OrderId { get; set; }
+
+        [ForeignKey(nameof(CartId))]
+        public int CartId { get; set; }
 
         public ShippingInfoClass()
         {

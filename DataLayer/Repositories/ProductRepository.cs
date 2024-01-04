@@ -5,6 +5,7 @@ using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
@@ -16,12 +17,14 @@ namespace AuthReadyAPI.DataLayer.Repositories
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
         private readonly IMediaService _mediaService;
+        private readonly UserManager<APIUserClass> _userManager;
 
-        public ProductRepository(AuthDbContext context, IMapper mapper, IMediaService mediaService)
+        public ProductRepository(AuthDbContext context, IMapper mapper, IMediaService mediaService, UserManager<APIUserClass> userManager)
         {
-            this._mapper = mapper;
-            this._context = context;
+            _mapper = mapper;
+            _context = context;
             _mediaService = mediaService;
+            _userManager = userManager;
         }
 
         public async Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts()
@@ -201,8 +204,13 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<ProductWithStyleDTO> GetProduct(int ProductId)
         {
-            ProductDTO Product = await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
-            if (Product is null) return null;
+            ProductClass PClass = await _context.Products.Where(x => x.Id == ProductId).FirstOrDefaultAsync();
+            if (PClass is null) return null;
+            PClass.ViewCount++;
+            _context.Products.Update(PClass);
+            await _context.SaveChangesAsync();
+
+            ProductDTO Product = _mapper.Map<ProductDTO>(PClass);
 
             _context.ChangeTracker.Clear();
             ProductImageClass Image = await _context.ProductImages.Where(x => x.ProductId == Product.Id).FirstOrDefaultAsync();
@@ -212,6 +220,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             List<StyleDTO> Styles = await _context.Styles.Where(x => x.ProductId == ProductId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
             if (Styles.Count < 1) return null;
 
+            _context.ChangeTracker.Clear();
             foreach (var item in Styles)
             {
                 List<ProductImageClass> PIC = await _context.ProductImages.Where(x => x.StyleId == item.Id).ToListAsync();
@@ -222,7 +231,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             }            
 
             ProductWithStyleDTO Full = new ProductWithStyleDTO { Product = Product, Styles = Styles };
-
+            
             return Full;
         }
 
@@ -376,9 +385,10 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
         public async Task<List<SingleProductCartDTO>> GetUserSingles(string UserId)
         {
-            // APIUser User = await _userManager.FindById(UserId);
-            //return await _context.SingleProducts.Where(x => x.UserEmail == User.Email && !x.Submitted && !x.Abandonded).ToListAsync();
-            return null;
+            APIUserClass User = await _userManager.FindByIdAsync(UserId);
+            if (User is null) return null;
+
+            return await _context.SingleProductCarts.Where(x => x.UserId == UserId && !x.Submitted && !x.Abandoned).ProjectTo<SingleProductCartDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }
         public async Task<List<SingleProductCartDTO>> GetCompanySingles(int CompanyId)
         {

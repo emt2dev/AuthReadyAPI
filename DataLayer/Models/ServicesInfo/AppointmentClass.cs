@@ -23,10 +23,10 @@ namespace AuthReadyAPI.DataLayer.Models.ServicesInfo
             
         }
 
-        public AppointmentClass(NewAppointmentDTO DTO)
+        public AppointmentClass(NewAppointmentDTO DTO, AppointmentSpecificsDTO Specs)
         {
             Id = 0;
-            DateOfAppointment = DateTime.ParseExact(DTO.AppointmentDateTime, "yyyy-MM-ddTHH:mm:ss", null);
+            DateOfAppointment = DateTime.ParseExact(Specs.AppointmentDateTime, "yyyy-MM-ddTHH:mm:ss", null);
             CustomerShowed = false;
             CustomerPhone = DTO.CustomerPhone;
             CustomerName = DTO.CustomerName;

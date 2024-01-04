@@ -40,6 +40,7 @@ namespace AuthReadyAPI.Configurations
             CreateMap<AppointmentClass, AppointmentDTO>().ReverseMap();
             CreateMap<ServicesCartClass, ServicesCartDTO>().ReverseMap();
             CreateMap<ServiceProductClass, ServiceProductDTO>().ReverseMap();
+            CreateMap<ProductWithStyleClass, ProductWithStyleDTO>().ReverseMap();
 
 
         }

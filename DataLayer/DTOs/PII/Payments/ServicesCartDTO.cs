@@ -8,7 +8,6 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
     {
         public int Id { get; set; }
         public List<AppointmentDTO> Appointments { get; set; }
-        public List<ServiceProductDTO> Products { get; set; }
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
         public bool CouponApplied { get; set; }

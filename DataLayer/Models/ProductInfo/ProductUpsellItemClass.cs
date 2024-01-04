@@ -12,8 +12,9 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
         public int Quantity { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string CostWithShipping { get; set; }
+        public double CostWithShipping { get; set; }
         public bool DigitalOnly { get; set; }
         public string ImageUrl { get; set; }
+        public string TaxCode { get; set; }
     }
 }

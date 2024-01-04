@@ -9,7 +9,6 @@ namespace AuthReadyAPI.DataLayer.Models.PII
     {
         public int Id { get; set; }
         public List<AppointmentClass> Appointments { get; set; }
-        public List<ServiceProductClass> Products { get; set; }
         public bool Submitted { get; set; }
         public bool Abandoned { get; set; }
         public bool CouponApplied { get; set; }
