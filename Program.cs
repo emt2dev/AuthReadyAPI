@@ -27,7 +27,7 @@ var builder = WebApplication.CreateBuilder(args);
  */
 
 // DATABASE, MSSQL
-var CONNECTION_STRING = builder.Configuration.GetConnectionString("SASNM_ConnectionString"); // replace with your own connection string
+var CONNECTION_STRING = builder.Configuration.GetConnectionString("AuthReadyApi_ConnectionString"); // replace with your own connection string
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
@@ -113,18 +113,21 @@ builder.Services.AddIdentityCore<APIUserClass>()
     .AddDefaultTokenProviders();
 
 /* IAuthManager */
-//builder.Services.AddScoped<IAuthManager, AuthManager>();
+builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
 /* User */
-//builder.Services.AddScoped<IUser, UserRepository>();
 /* Company*/
-builder.Services.AddScoped<ICompany, CompanyRepository>();
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 /* Product */
-builder.Services.AddScoped<IProduct, ProductRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 /* shoppingCart */
-//builder.Services.AddScoped<IShoppingCart, ShoppingCartRepository>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
 /* Order */
-//builder.Services.AddScoped<IOrder, OrderRepository>();
+builder.Services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
+/* Auction */
+builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
+/* Services */
+builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
 
 /* IMediaService */
 builder.Services.AddScoped<IMediaService, MediaService>();

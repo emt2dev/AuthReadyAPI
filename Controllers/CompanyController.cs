@@ -10,10 +10,10 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class CompanyController : ControllerBase
     {
-        private readonly ICompany _company;
-        private readonly IProduct _product;
+        private readonly ICompanyRepository _company;
+        private readonly IProductRepository _product;
 
-        public CompanyController(ICompany company, IProduct product)
+        public CompanyController(ICompanyRepository company, IProductRepository product)
         {
             _company = company;
             _product = product;

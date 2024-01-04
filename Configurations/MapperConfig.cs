@@ -21,6 +21,7 @@ namespace AuthReadyAPI.Configurations
             CreateMap<StyleClass, StyleDTO>().ReverseMap();
             CreateMap<StyleClass, NewStyleDTO>().ReverseMap();
             CreateMap<APIUserClass, APIUserDTO>().ReverseMap();
+            CreateMap<APIUserClass, NewUserDTO>().ReverseMap();
             CreateMap<CompanyClass, CompanyDTO>().ReverseMap();
             CreateMap<CompanyClass, NewCompanyDTO>().ReverseMap();
             CreateMap<PointOfContactClass, PointOfContactDTO>().ReverseMap();
@@ -35,6 +36,9 @@ namespace AuthReadyAPI.Configurations
             CreateMap<BidClass, BidDTO>().ReverseMap();
             CreateMap<AuctionProductCartClass, AuctionProductCartDTO>().ReverseMap();
             CreateMap<ServicesClass, ServicesDTO>().ReverseMap();
+            CreateMap<ProductUpsellItemClass, ProductUpsellItemDTO>().ReverseMap();
+
+            
         }
 
     }

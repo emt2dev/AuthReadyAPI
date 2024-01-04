@@ -4,7 +4,7 @@ using AuthReadyAPI.DataLayer.Models.PII;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface ICart
+    public interface ICartRepository
     {
         public Task<ShoppingCartDTO> GetUserCart(string UserId);
         public Task<bool> AddItem(AddProductToCartDTO IncomingDTO);

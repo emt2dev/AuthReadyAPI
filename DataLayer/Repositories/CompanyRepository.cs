@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class CompanyRepository : ICompany
+    public class CompanyRepository : ICompanyRepository
     {
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;

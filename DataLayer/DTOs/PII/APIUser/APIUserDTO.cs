@@ -9,7 +9,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.APIUser
         // Info
         [Required]
         public string Name { get; set; }
-        public string ShippingAddress { get; set; }
+        public string BillingAddress { get; set; }
         public string MailingAddress { get; set; }
 
         // Metrics

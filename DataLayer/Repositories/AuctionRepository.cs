@@ -14,7 +14,7 @@ using System.ComponentModel.Design;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class AuctionRepository
+    public class AuctionRepository : IAuctionRepository
     {
         private readonly AuthDbContext _context;
         private readonly IMediaService _mediaService;
@@ -27,6 +27,11 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
 
         public async Task<List<AuctionProductDTO>> GetActiveAuctionProducts()
+        {
+            return await _context.AuctionProducts.Where(x => x.AuctionEnd > DateTime.Now).ProjectTo<AuctionProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
+
+        public async Task<List<AuctionProductDTO>> GetInactiveAuctionProducts()
         {
             return await _context.AuctionProducts.Where(x => x.AuctionEnd < DateTime.Now).ProjectTo<AuctionProductDTO>(_mapper.ConfigurationProvider).ToListAsync();
         }

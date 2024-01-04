@@ -8,6 +8,7 @@ namespace AuthReadyAPI.DataLayer.Models.PII
     public class ShoppingCartClass
     {
         public int Id { get; set; }
+
         public List<CartItemClass> Items { get; set; }
         public List<ProductUpsellItemClass> Upsells { get; set; }
         public bool Submitted { get; set; }
@@ -22,6 +23,9 @@ namespace AuthReadyAPI.DataLayer.Models.PII
 
         [ForeignKey(nameof(UserId))]
         public string UserId { get; set; }
+
+        [ForeignKey(nameof(CompanyId))]
+        public int CompanyId { get; set; }
 
         public ShoppingCartClass()
         {

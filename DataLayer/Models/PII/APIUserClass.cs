@@ -9,16 +9,13 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         // Customer Info
         [Required]
         public string Name { get; set; }
-        public string ShippingAddress { get; set; }
+        public string BillingAddress { get; set; }
         public string MailingAddress { get; set; }
+        public string FullName { get; set; }
 
         // Metrics
-        public double LifetimeSpent { get; set; } // how much they've purchased throughout their account history
+        public double LifetimeSpent { get; set; } // how much they've purchased throughout their account history within the authready ecosystem
         public int OrderCount { get; set; }
-
-        // Fkeys
-        [ForeignKey(nameof(CompanyId))]
-        public int CompanyId { get; set; }
         public APIUserClass()
         {
             

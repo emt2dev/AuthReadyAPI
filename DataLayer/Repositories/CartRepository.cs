@@ -12,7 +12,7 @@ using System.Collections.Generic;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class CartRepository : ICart
+    public class CartRepository : ICartRepository
     {
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
@@ -188,6 +188,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PriceBeforeCoupon = 0.00,
                     CouponCodeId = 0,
                     UserId = Obj.UserId,
+                    CompanyId = Obj.CompanyId,
                     Upsells = new List<ProductUpsellItemClass>()
                 };
 
@@ -212,6 +213,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PriceAfterCoupon = 0.00,
                     PriceBeforeCoupon = 0.00,
                     CouponCodeId = 0,
+                    CompanyId = Obj.CompanyId,
                     UserId = Obj.UserId,
                 };
 

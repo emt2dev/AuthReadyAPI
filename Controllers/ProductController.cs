@@ -9,9 +9,9 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly IProduct _product;
+        private readonly IProductRepository _product;
 
-        public ProductController(IProduct product)
+        public ProductController(IProductRepository product)
         {
             _product = product;
         }
@@ -218,15 +218,5 @@ namespace AuthReadyAPI.Controllers
             return await _product.GetAllUnavailableCompanyProducts(CompanyId);
         }
 
-        [HttpPost]
-        [Route("custom/product")]
-
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ProductWithStyleDTO> CreateCustomProduct([FromForm] NewCouponDTO IncomingDTO)
-        {
-            return await _product.AddCustomSale(IncomingDTO);
-        }
     }
 }

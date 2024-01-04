@@ -11,14 +11,17 @@ using System.Runtime.InteropServices;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class ProductRepository : IProduct
+    public class ProductRepository : IProductRepository
     {
         private readonly AuthDbContext _context;
         private readonly IMapper _mapper;
-        public ProductRepository(AuthDbContext context, IMapper mapper)
+        private readonly IMediaService _mediaService;
+
+        public ProductRepository(AuthDbContext context, IMapper mapper, IMediaService mediaService)
         {
             this._mapper = mapper;
             this._context = context;
+            _mediaService = mediaService;
         }
 
         public async Task<List<ProductWithStyleDTO>> GetAllunavailableAPIProducts()
@@ -198,17 +201,31 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
         public async Task<ProductWithStyleDTO> GetProduct(int ProductId)
         {
-            List<StyleDTO> Styles = await _context.Styles.Where(x => x.ProductId == ProductId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
-            _context.ChangeTracker.Clear();
-            if (Styles.Count < 1) return null;
-
             ProductDTO Product = await _context.Products.Where(x => x.Id == ProductId).ProjectTo<ProductDTO>(_mapper.ConfigurationProvider).FirstOrDefaultAsync();
             if (Product is null) return null;
+
+            _context.ChangeTracker.Clear();
+            ProductImageClass Image = await _context.ProductImages.Where(x => x.ProductId == Product.Id).FirstOrDefaultAsync();
+            Product.MainImageUrl = Image.ImageUrl;
+
+            _context.ChangeTracker.Clear();
+            List<StyleDTO> Styles = await _context.Styles.Where(x => x.ProductId == ProductId).ProjectTo<StyleDTO>(_mapper.ConfigurationProvider).ToListAsync();
+            if (Styles.Count < 1) return null;
+
+            foreach (var item in Styles)
+            {
+                List<ProductImageClass> PIC = await _context.ProductImages.Where(x => x.StyleId == item.Id).ToListAsync();
+                foreach (var obj in PIC)
+                {
+                    item.ProductImageUrls.Add(obj.ImageUrl);
+                }
+            }            
 
             ProductWithStyleDTO Full = new ProductWithStyleDTO(Product, Styles);
 
             return Full;
         }
+
 
         public async Task<List<ProductDTO>> GetProductCartCount()
         {
@@ -382,7 +399,10 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             return OutgoingList;
         }
-
+        public async Task<List<ProductUpsellItemDTO>> GetAllUpsellItems()
+        {
+            return await _context.ProductUpsells.ProjectTo<ProductUpsellItemDTO>(_mapper.ConfigurationProvider).ToListAsync();
+        }
         // Add Rows
         public async Task<bool> NewCategory(NewCategoryDTO IncomingDTO)
         {
@@ -401,7 +421,9 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
         public async Task<bool> NewProduct(NewProductDTO IncomingDTO)
         {
-            ProductClass Obj = new ProductClass(IncomingDTO);
+            var Image = await _mediaService.AddPhotoAsync(IncomingDTO.ImageUrl);
+
+            ProductClass Obj = new ProductClass(IncomingDTO, Image.Url.ToString());
 
             await _context.Products.AddAsync(Obj);
             await _context.SaveChangesAsync();
@@ -410,14 +432,41 @@ namespace AuthReadyAPI.DataLayer.Repositories
         }
         public async Task<bool> NewStyle(NewStyleDTO IncomingDTO)
         {
+            ProductClass Exists = await _context.Products.Where(x => x.Id == IncomingDTO.ProductId).FirstOrDefaultAsync();
+
+            if (Exists is null) return false;
+
+            List<string> ImageUrls = new List<string>();
+
+            foreach (var image in IncomingDTO.Images)
+            {
+                var Image = await _mediaService.AddPhotoAsync(image);
+                ImageUrls.Add(Image.Url.ToString());
+            }
+
             StyleClass Obj = new StyleClass(IncomingDTO);
 
             await _context.Styles.AddAsync(Obj);
             await _context.SaveChangesAsync();
 
-            if (await _context.Styles.Where(x => x.Id == Obj.Id).FirstOrDefaultAsync() is not null) return true;
+            if (await _context.Styles.Where(x => x.Id == Obj.Id).FirstOrDefaultAsync() is null) return false;
 
-            return false;
+            _context.ChangeTracker.Clear();
+            foreach (var item in ImageUrls)
+            {
+                ProductImageClass PIObj = new ProductImageClass
+                {
+                    Id = 0,
+                    StyleId = Obj.Id,
+                    ProductId = Exists.Id,
+                    ImageUrl = item
+                };
+
+                await _context.ProductImages.AddAsync(PIObj);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
         }
         public async Task<bool> NewProductImage(NewProductImageDTO IncomingDTO)
         {

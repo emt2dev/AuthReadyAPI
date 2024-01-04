@@ -11,14 +11,14 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class ServicesController : ControllerBase
     {
-        private readonly IServices _services;
+        private readonly IServicesRepository _services;
 
-        public ServicesController(IServices services)
+        public ServicesController(IServicesRepository services)
         {
             _services = services;
         }
 
-        // This controller is for services rendered (non-phyiscal products)
+        // This controller is for service companies
         [HttpGet]
         [Route("list/all")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

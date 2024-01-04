@@ -6,6 +6,9 @@
         public string Description { get; set; }
         public double CurrentPrice { get; set; }
 
+        // Images
+        public List<IFormFile> Images { get; set; }
+
         // Urgency
         public double DiscountedPrice { get; set; }
         public bool UseDiscountPrice { get; set; }

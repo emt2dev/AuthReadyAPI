@@ -12,8 +12,8 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class AuctionController : ControllerBase
     {
-        private readonly IAuction _auction;
-        public AuctionController(IAuction auction)
+        private readonly IAuctionRepository _auction;
+        public AuctionController(IAuctionRepository auction)
         {
             _auction = auction;
         }
@@ -23,9 +23,19 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<AuctionProductDTO>> GetAuctionProduct()
+        public async Task<List<AuctionProductDTO>> GetActiveAuctionProducts()
         {
-            return await _auction.GetAuctionProducts();
+            return await _auction.GetActiveAuctionProducts();
+        }
+
+        [HttpGet]
+        [Route("accepting")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<List<AuctionProductDTO>> GetInactiveAuctionProducts()
+        {
+            return await _auction.GetInactiveAuctionProducts();
         }
 
         [HttpPost]
@@ -48,26 +58,5 @@ namespace AuthReadyAPI.Controllers
             return await _auction.AddBid(DTO);
         }
 
-        [HttpPost]
-        [Route("finished/company")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<AuctionProductDTO>> GetComnpanyCompleted()
-        {
-            // from jwt
-            return await _auction.GetFinishedAuctionsByCompanyId(1);
-        }
-
-        [HttpPost]
-        [Route("finished/user")]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<AuctionProductDTO>> GetUserCompleted()
-        {
-            // from jwt
-            return await _auction.GetFinishAuctionsByUserId("1");
-        }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface IProductOrder
+    public interface IProductOrderRepository
     {
         public Task<bool> SubmitBid(BidDTO DTO);
         public Task<bool> SubmitCartOrder(string UserId);

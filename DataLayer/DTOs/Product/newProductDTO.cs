@@ -5,7 +5,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Product
         // Information
         public string Name { get; set; }
         public string Description { get; set; }
-        public string ImageUrl { get; set; }
+        public IFormFile ImageUrl { get; set; }
 
         // FKeys
         public int CompanyId { get; set; }

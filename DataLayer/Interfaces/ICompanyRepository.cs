@@ -4,7 +4,7 @@ using AuthReadyAPI.DataLayer.Models.Companies;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
 {
-    public interface ICompany
+    public interface ICompanyRepository
     {
         public Task<bool> NewCompany(NewCompanyDTO IncomingDTO);
         public Task<bool> NewContact(NewPointOfContactDTO IncomingDTO);

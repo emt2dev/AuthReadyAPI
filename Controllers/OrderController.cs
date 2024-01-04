@@ -8,10 +8,10 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        private readonly ICart _cart;
-        private readonly IProductOrder _order;
+        private readonly ICartRepository _cart;
+        private readonly IProductOrderRepository _order;
 
-        public OrderController(ICart cart, IProductOrder order)
+        public OrderController(ICartRepository cart, IProductOrderRepository order)
         {
             _cart = cart;
             _order = order;

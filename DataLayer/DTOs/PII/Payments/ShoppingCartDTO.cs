@@ -18,6 +18,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
         // Fkeys
         public int CouponCodeId { get; set; }
         public string UserId { get; set; }
+        public int CompanyId { get; set; }
 
         // Shipping Options
         public int PackageCount { get; set; }
@@ -39,6 +40,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.Payments
             PriceAfterCoupon = Obj.PriceAfterCoupon;
             CouponCodeId = Obj.CouponCodeId;
             UserId = Obj.UserId;
+            CompanyId = Obj.CompanyId;
             this.PackageCount = PackageCount;
             Upsells = new List<ProductUpsellItemClass>();
 

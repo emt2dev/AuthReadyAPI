@@ -36,7 +36,7 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
             
         }
 
-        public ProductClass(NewProductDTO DTO)
+        public ProductClass(NewProductDTO DTO, string ImageUrl)
         {
             Id = 0;
             Name = DTO.Name;
@@ -44,7 +44,7 @@ namespace AuthReadyAPI.DataLayer.Models.ProductInfo
             CreatedOn = DateTime.Now;
             UpdatedOn = DateTime.Now;
             UpdatesMade = "New Product";
-            MainImageUrl = DTO.ImageUrl;
+            MainImageUrl = ImageUrl;
             Quantity = 1;
             ViewCount = 0;
             UpdatedBy = "";

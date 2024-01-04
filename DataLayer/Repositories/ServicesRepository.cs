@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
-    public class ServicesRepository : IServices
+    public class ServicesRepository : IServicesRepository
     {
         private readonly AuthDbContext _context;
         private readonly IMediaService _mediaService;
@@ -84,7 +84,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
             return false;
 
         }
-        public Task<string> SubmitServicesOrder(AppointmentClass Obj)
+        public string SubmitServicesOrder(AppointmentClass Obj)
         {
 
 

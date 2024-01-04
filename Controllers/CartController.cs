@@ -10,8 +10,8 @@ namespace AuthReadyAPI.Controllers
     [ApiController]
     public class CartController : ControllerBase
     {
-        private readonly ICart _cart;
-        public CartController(ICart cart)
+        private readonly ICartRepository _cart;
+        public CartController(ICartRepository cart)
         {
             _cart = cart;
         }
