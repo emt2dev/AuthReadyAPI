@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.Services;
+﻿using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
+using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 
 namespace AuthReadyAPI.DataLayer.Interfaces
@@ -13,5 +14,6 @@ namespace AuthReadyAPI.DataLayer.Interfaces
         public Task<bool> ScheduleAppointment(NewAppointmentDTO DTO); // this should be called after submitting payment
         public Task<bool> CustomerArrived(AppointmentShowDTO DTO);
         public string SubmitServicesOrder(AppointmentClass Obj);
+        public Task<ServicesCartDTO> IssueNewServiceCart(string CustomerEmail);
     }
 }

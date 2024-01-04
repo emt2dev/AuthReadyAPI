@@ -22,7 +22,7 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<AuctionProductCartClass> AuctionCarts { get; set; }
         public DbSet<BidClass> Bids { get; set; }
         public DbSet<OrderClass> Orders { get; set; }
-        public DbSet<ServicesCartClass> SerivceCarts { get; set; }
+        public DbSet<ServicesCartClass> ServiceCarts { get; set; }
         public DbSet<ShippingInfoClass> ShippingInfo { get; set; }
         public DbSet<ShoppingCartClass> ShoppingCarts { get; set; }
         public DbSet<SingleProductCartClass> SingleProductCarts { get; set; }

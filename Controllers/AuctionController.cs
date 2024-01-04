@@ -18,7 +18,12 @@ namespace AuthReadyAPI.Controllers
             _auction = auction;
         }
 
-        // Note this functionality needs real-time communication (ie websocket, SignalR, or something similiar) to be successful
+        // 
+        /// <summary>
+        /// Note this functionality needs real-time communication (ie websocket, SignalR, or something similiar) to be successful
+        /// This shows the basic concept
+        /// </summary>
+        /// <returns></returns>
 
         [HttpGet]
         [Route("active")]
