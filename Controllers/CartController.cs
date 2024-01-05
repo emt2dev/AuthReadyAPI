@@ -2,8 +2,12 @@
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ServicesInfo;
+using AuthReadyAPI.DataLayer.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 
@@ -15,20 +19,31 @@ namespace AuthReadyAPI.Controllers
     {
         private readonly ICartRepository _cart;
         private readonly IServicesRepository _services;
-        public CartController(ICartRepository cart, IServicesRepository services)
+        private readonly IAuthRepository _authRepository;
+        private readonly UserManager<APIUserClass> _userManager;
+        APIUserClass _user;
+        public CartController(ICartRepository cart, IServicesRepository services, UserManager<APIUserClass> userManager, IAuthRepository authRepository)
         {
             _cart = cart;
             _services = services;
-
+            _authRepository = authRepository;
+            _userManager = userManager;
         }
 
         [HttpGet]
         [Route("get")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ShoppingCartDTO> GetUserCart(string UserId)
         {
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return null;
+
             return await _cart.GetUserCart(UserId);
         }
 
@@ -77,64 +92,97 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPost]
         [Route("new/single")]
+        [Authorize(Roles = "Company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<bool> AddNewSingleCart(NewSingleProductDTO DTO)
         {
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return false;
+
             return await _cart.AddSingleProductCart(DTO);
         }
 
         [HttpPost]
         [Route("new/auction")]
+        [Authorize(Roles = "Company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<bool> GetNewAuctionCart(NewAuctionProductDTO DTO)
         {
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return false;
+
             return await _cart.AddAuctionProductCart(DTO);
         }
 
-        [HttpPost]
+        [HttpPut]
         [Route("update")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ShoppingCartDTO> UpdateItemQuantity(ShoppingCartDTO IncomingDTO)
+        public async Task<ShoppingCartDTO> UpdateCart(ShoppingCartDTO IncomingDTO)
         {
             return await _cart.UpdateCart(IncomingDTO);
         }
 
         [HttpGet]
         [Route("single/all")]
+        [Authorize(Roles = "Company,User")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<SingleProductCartDTO>> GetSingleProductsCart()
         {
-            // User ID from Jwt
-            return await _cart.GetSingleProductCarts("1");
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return null;
+
+            return await _cart.GetSingleProductCarts(_user.Id);
         }
 
         [HttpPost]
         [Route("single/new")]
+        [Authorize(Roles = "Company")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<bool> CreateSingleProduct(NewSingleProductDTO DTO)
         {
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return false;
+
             return await _cart.AddSingleProductCart(DTO);
         }
 
         [HttpGet]
         [Route("auction/all")]
+        [Authorize(Roles = "User")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<List<AuctionProductCartDTO>> GetAuctionCarts()
         {
-            // User ID from Jwt
-            return await _cart.GetAuctionProductCarts("1");
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return null;
+
+            return await _cart.GetAuctionProductCarts(_user.Id);
         }
     }
 }

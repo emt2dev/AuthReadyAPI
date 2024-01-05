@@ -157,7 +157,6 @@ namespace AuthReadyAPI.Controllers
 
         [HttpPost]
         [Route("company/count/income")]
-
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
