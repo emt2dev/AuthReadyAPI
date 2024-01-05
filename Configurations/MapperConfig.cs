@@ -1,10 +1,12 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.Company;
+using AuthReadyAPI.DataLayer.DTOs.Food;
 using AuthReadyAPI.DataLayer.DTOs.PII;
 using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
 using AuthReadyAPI.DataLayer.DTOs.Product;
 using AuthReadyAPI.DataLayer.DTOs.Services;
 using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.FoodInfo;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Models.ServicesInfo;
@@ -41,9 +43,9 @@ namespace AuthReadyAPI.Configurations
             CreateMap<ServicesCartClass, ServicesCartDTO>().ReverseMap();
             CreateMap<ServiceProductClass, ServiceProductDTO>().ReverseMap();
             CreateMap<ProductWithStyleClass, ProductWithStyleDTO>().ReverseMap();
-
-
+            CreateMap<FoodCartClass, FoodCartDTO>().ReverseMap();
+            CreateMap<RetailFoodClass, RetailFoodDTO>().ReverseMap();
+            CreateMap<ReadyFoodClass, ReadyFoodDTO>().ReverseMap();
         }
-
     }
 }

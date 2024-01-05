@@ -112,20 +112,28 @@ builder.Services.AddIdentityCore<APIUserClass>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
+
+/* Auction */
+builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
+
 /* IAuthManager */
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 
-/* User */
+/* Carts */
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+
 /* Company*/
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
-/* Product */
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-/* shoppingCart */
-builder.Services.AddScoped<ICartRepository, CartRepository>();
+
+/* Food */
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+
 /* Order */
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-/* Auction */
-builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
+
+/* Product */
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
 /* Services */
 builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
 
