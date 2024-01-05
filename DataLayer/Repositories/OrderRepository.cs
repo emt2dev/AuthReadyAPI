@@ -1,4 +1,5 @@
 ﻿using AuthReadyAPI.DataLayer.Interfaces;
+using AuthReadyAPI.DataLayer.Models.Companies;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Services;
@@ -19,13 +20,15 @@ namespace AuthReadyAPI.DataLayer.Repositories
         private readonly IMediaService _mediaService;
         private readonly UserManager<APIUserClass> _userManager;
         private APIUserClass _user;
+        private readonly ICartRepository _cart;
 
-        public OrderRepository(AuthDbContext context, IMapper mapper, IMediaService mediaService, UserManager<APIUserClass> userManager)
+        public OrderRepository(AuthDbContext context, IMapper mapper, IMediaService mediaService, UserManager<APIUserClass> userManager, ICartRepository cart)
         {
             _mapper = mapper;
             _context = context;
             _mediaService = mediaService;
             _userManager = userManager;
+            _cart = cart;
         }
 
         public async Task<bool> FinalizeSale(int PreparedCartId)
@@ -40,7 +43,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                 PaymentAmount = 0.00,
                 PaymentCompleted = true,
                 PaymentRefunded = false,
-                UserEmail = Cart.SessionCreateOptions.CustomerEmail,
+                UserEmail = "Email Not Available",
                 CartType = Cart.CartType,
                 SingleProductCartClassId = 0,
                 ShoppingCartId = 0,
@@ -55,7 +58,17 @@ namespace AuthReadyAPI.DataLayer.Repositories
             {
                 case "single":
                     SingleProductCartClass Scart = await _context.SingleProductCarts.Where(x => x.Id == Cart.CartId).FirstOrDefaultAsync();
-                    
+                    Scart.Submitted = true;
+                    Scart.Abandoned = false;
+                    _context.SingleProductCarts.Update(Scart);
+                    await _context.SaveChangesAsync();
+
+                    _context.ChangeTracker.Clear();
+                    _user = await _userManager.FindByIdAsync(Scart.UserId);
+
+                    if (_user is not null) NewOrder.UserEmail = _user.Email;
+                    _context.ChangeTracker.Clear();
+
                     NewOrder.SingleProductCartClassId = Scart.Id;
 
                     foreach (var item in Scart.Upsells)
@@ -91,10 +104,41 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
                     await _context.Orders.AddAsync(NewOrder);
                     await _context.SaveChangesAsync();
+
+                    CompanyTransactionClass STransaction = new CompanyTransactionClass
+                    {
+                        Id = 0,
+                        TimeOfTransaction = DateTime.Now,
+                        SaleGross = NewOrder.PaymentAmount,
+                        CompanyNet = NewOrder.PaymentAmount * .80,
+                        AuthReadyNet = NewOrder.PaymentAmount * .20,
+                        DepositedToCompany = false,
+                        DepositTime = DateTime.Now,
+                        TransactionType = NewOrder.CartType,
+                        TransactionTypeId = NewOrder.SingleProductCartClassId,
+                        UserEmail = NewOrder.UserEmail,
+                        CompanyId = NewOrder.CompanyId,
+                        OrderId = NewOrder.Id
+                    };
+
+                    _context.ChangeTracker.Clear();
+                    await _context.CompanyTransactions.AddAsync(STransaction);
+                    await _context.SaveChangesAsync();
+
                     return true;
 
                 case "auction":
                     AuctionProductCartClass Acart = await _context.AuctionCarts.Where(x => x.Id == Cart.CartId).FirstOrDefaultAsync();
+                    Acart.Submitted = true;
+                    Acart.Abandoned = false;
+                    _context.AuctionCarts.Update(Acart);
+                    await _context.SaveChangesAsync();
+
+                    _context.ChangeTracker.Clear();
+                    _user = await _userManager.FindByIdAsync(Acart.UserId);
+
+                    if (_user is not null) NewOrder.UserEmail = _user.Email;
+                    _context.ChangeTracker.Clear();
 
                     NewOrder.AuctionProductCartClassId = Acart.Id;
 
@@ -131,10 +175,44 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
                     await _context.Orders.AddAsync(NewOrder);
                     await _context.SaveChangesAsync();
+
+                    CompanyTransactionClass ATransaction = new CompanyTransactionClass
+                    {
+                        Id = 0,
+                        TimeOfTransaction = DateTime.Now,
+                        SaleGross = NewOrder.PaymentAmount,
+                        CompanyNet = NewOrder.PaymentAmount * .80,
+                        AuthReadyNet = NewOrder.PaymentAmount * .20,
+                        DepositedToCompany = false,
+                        DepositTime = DateTime.Now,
+                        TransactionType = NewOrder.CartType,
+                        TransactionTypeId = NewOrder.AuctionProductCartClassId,
+                        UserEmail = NewOrder.UserEmail,
+                        CompanyId = NewOrder.CompanyId,
+                        OrderId = NewOrder.Id
+                    };
+
+                    _context.ChangeTracker.Clear();
+                    await _context.CompanyTransactions.AddAsync(ATransaction);
+                    await _context.SaveChangesAsync();
+
                     return true;
 
                 case "shopping":
                     ShoppingCartClass FullCart = await _context.ShoppingCarts.Where(x => x.Id == Cart.CartId).FirstOrDefaultAsync();
+                    FullCart.Submitted = true;
+                    FullCart.Abandoned = false;
+                    _context.ShoppingCarts.Update(FullCart);
+                    await _context.SaveChangesAsync();
+
+                    _ = await _cart.IssueNewCart(FullCart.Id);
+
+                    _context.ChangeTracker.Clear();
+                    _user = await _userManager.FindByIdAsync(FullCart.UserId);
+
+                    if(_user is not null) NewOrder.UserEmail = _user.Email;
+
+                    _context.ChangeTracker.Clear();
 
                     NewOrder.ShoppingCartId = FullCart.Id;
                     NewOrder.PaymentAmount += FullCart.PriceAfterCoupon;
@@ -148,16 +226,70 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
                     await _context.Orders.AddAsync(NewOrder);
                     await _context.SaveChangesAsync();
+
+                    CompanyTransactionClass FTransaction = new CompanyTransactionClass
+                    {
+                        Id = 0,
+                        TimeOfTransaction = DateTime.Now,
+                        SaleGross = NewOrder.PaymentAmount,
+                        CompanyNet = NewOrder.PaymentAmount * .80,
+                        AuthReadyNet = NewOrder.PaymentAmount * .20,
+                        DepositedToCompany = false,
+                        DepositTime = DateTime.Now,
+                        TransactionType = NewOrder.CartType,
+                        TransactionTypeId = NewOrder.ShoppingCartId,
+                        UserEmail = NewOrder.UserEmail,
+                        CompanyId = NewOrder.CompanyId,
+                        OrderId = NewOrder.Id
+                    };
+
+                    _context.ChangeTracker.Clear();
+                    await _context.CompanyTransactions.AddAsync(FTransaction);
+                    await _context.SaveChangesAsync();
+
+
                     return true;
 
                 case "services":
                     ServicesCartClass SvcCart = await _context.ServiceCarts.Where(x => x.Id == Cart.CartId).FirstOrDefaultAsync();
+                    SvcCart.Submitted = true;
+                    SvcCart.Abandoned = false;
+                    _context.ServiceCarts.Update(SvcCart);
+                    await _context.SaveChangesAsync();
+
+                    _context.ChangeTracker.Clear();
+                    _user = await _userManager.FindByEmailAsync(SvcCart.UserEmail);
+
+                    if (_user is not null) NewOrder.UserEmail = _user.Email;
+                    _context.ChangeTracker.Clear();
+
                     NewOrder.ServicesCartClassId = SvcCart.Id;
                     NewOrder.PaymentAmount = SvcCart.PriceAfterCoupon;
 
                     _context.ChangeTracker.Clear();
                     await _context.Orders.AddAsync(NewOrder);
                     await _context.SaveChangesAsync();
+
+                    CompanyTransactionClass SvcTransaction = new CompanyTransactionClass
+                    {
+                        Id = 0,
+                        TimeOfTransaction = DateTime.Now,
+                        SaleGross = NewOrder.PaymentAmount,
+                        CompanyNet = NewOrder.PaymentAmount * .80,
+                        AuthReadyNet = NewOrder.PaymentAmount * .20,
+                        DepositedToCompany = false,
+                        DepositTime = DateTime.Now,
+                        TransactionType = NewOrder.CartType,
+                        TransactionTypeId = NewOrder.ServicesCartClassId,
+                        UserEmail = NewOrder.UserEmail,
+                        CompanyId = NewOrder.CompanyId,
+                        OrderId = NewOrder.Id
+                    };
+
+                    _context.ChangeTracker.Clear();
+                    await _context.CompanyTransactions.AddAsync(SvcTransaction);
+                    await _context.SaveChangesAsync();
+
                     return true;
 
                 default:
@@ -245,7 +377,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PreparedCartClass SPPrep = new PreparedCartClass
                     {
                         Id = 0,
-                        SessionCreateOptions = SPCartoptions,
                         CartId = SPCart.Id,
                         CartType = "single",
                         CompanyId = SPCart.CompanyId
@@ -338,7 +469,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PreparedCartClass ACPrep = new PreparedCartClass
                     {
                         Id = 0,
-                        SessionCreateOptions = ACartoptions,
                         CartId = ACart.Id,
                         CartType = "auction",
                         CompanyId = ACart.CompanyId
@@ -434,7 +564,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PreparedCartClass SCPrep = new PreparedCartClass
                     {
                         Id = 0,
-                        SessionCreateOptions = SCartoptions,
                         CartId = SCart.Id,
                         CartType = "shopping",
                         CompanyId = SCart.CompanyId
@@ -533,7 +662,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     PreparedCartClass SvcPrep = new PreparedCartClass
                     {
                         Id = 0,
-                        SessionCreateOptions = SvcCartoptions,
                         CartId = SvcCart.Id,
                         CartType = "services",
                         CompanyId = SvcCart.CompanyId

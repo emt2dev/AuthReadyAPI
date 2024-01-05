@@ -123,7 +123,7 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 /* shoppingCart */
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 /* Order */
-builder.Services.AddScoped<IProductOrderRepository, ProductOrderRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 /* Auction */
 builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
 /* Services */
