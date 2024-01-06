@@ -3,7 +3,7 @@
 namespace AuthReadyAPI.DataLayer.DTOs.Food
 {
     public class NewFoodProductDTO
-    {    {
+    {
         public int Id { get; set; }
 
         [ForeignKey(nameof(CompanyId))]

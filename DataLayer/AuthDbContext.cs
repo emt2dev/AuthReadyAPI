@@ -52,10 +52,7 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<FoodCartClass> FoodCarts { get; set; }
         public DbSet<FoodProductClass> FoodProducts { get; set; }
         public DbSet<FoodOrderClass> FoodOrders { get; set; }
-        public DbSet<FoodClass> FoodRetail { get; set; }
-        public DbSet<ReadyFoodClass> FoodReady { get; set; }
-        public DbSet<FoodImageClass> FoodRetailImages { get; set; }
-        public DbSet<ReadyFoodImageClass> FoodReadyImages { get; set; }
+        public DbSet<FoodImageClass> FoodImages{ get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

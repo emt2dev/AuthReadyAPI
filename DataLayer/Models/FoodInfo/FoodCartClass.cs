@@ -18,6 +18,9 @@ namespace AuthReadyAPI.DataLayer.Models.FoodInfo
 
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        public int UserId { get; set; }
         [ForeignKey(nameof(CouponCodeId))]
         public int CouponCodeId { get; set; }
     }
