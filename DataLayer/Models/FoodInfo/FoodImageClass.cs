@@ -2,12 +2,12 @@
 
 namespace AuthReadyAPI.DataLayer.Models.FoodInfo
 {
-    public class RetailFoodImageClass
+    public class FoodImageClass
     {
         public int Id { get; set; }
         public string ImageUrl { get; set; }
 
-        [ForeignKey(nameof(RetailFoodClassId))]
-        public int RetailFoodClassId { get; set; }
+        [ForeignKey(nameof(FoodProductClassId))]
+        public int FoodProductClassId { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.FoodInfo;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
@@ -46,6 +47,15 @@ namespace AuthReadyAPI.DataLayer
         public DbSet<ServicesClass> Services { get; set; }
         public DbSet<ServiceProductClass> ServiceProducts { get; set; }
         public DbSet<AppointmentClass> Appointments { get; set; }
+
+        // Food
+        public DbSet<FoodCartClass> FoodCarts { get; set; }
+        public DbSet<FoodProductClass> FoodProducts { get; set; }
+        public DbSet<FoodOrderClass> FoodOrders { get; set; }
+        public DbSet<FoodClass> FoodRetail { get; set; }
+        public DbSet<ReadyFoodClass> FoodReady { get; set; }
+        public DbSet<FoodImageClass> FoodRetailImages { get; set; }
+        public DbSet<ReadyFoodImageClass> FoodReadyImages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

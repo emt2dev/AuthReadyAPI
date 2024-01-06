@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.Models.ProductInfo;
+﻿using AuthReadyAPI.DataLayer.Models.FoodInfo;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,7 +18,6 @@ namespace AuthReadyAPI.DataLayer.Models.PII
 
         // Fkeys
         public string UserEmail { get; set; }
-
         public string CartType { get; set; }
 
         [ForeignKey(nameof(ShoppingCartId))]
@@ -32,6 +32,9 @@ namespace AuthReadyAPI.DataLayer.Models.PII
         [ForeignKey(nameof(ServicesCartClassId))]
         public int ServicesCartClassId { get; set; }
 
+        [ForeignKey(nameof(FoodCartClassId))]
+        public int FoodCartClassId { get; set; }
+
 
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
@@ -44,18 +47,8 @@ namespace AuthReadyAPI.DataLayer.Models.PII
 
 
         // Delivery Drivers
-        /*
-        public bool delivery { get; set; }
-        public DateTime Time__Submitted { get; set; }
-        public DateTime? Time__Touched { get; set; }
-        public DateTime? Time__Delivered { get; set; }
-        public string? delivery_driver_name { get; set; }
-        public string? delivery_driver_longitdte { get; set; }
-        public string? delivery_driver_latitude { get; set; }
-        public string? Destination_latitude { get; set; }
-        public string? Destination_longitude { get; set; }
-        public string? DestinationAddress { get; set; }
-        */
+        public bool IsDelivery { get; set; }
+        public FoodDeliveryClass? DeliveryInfo { get; set; }
 
         public OrderClass()
         {

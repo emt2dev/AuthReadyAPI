@@ -44,8 +44,9 @@ namespace AuthReadyAPI.Configurations
             CreateMap<ServiceProductClass, ServiceProductDTO>().ReverseMap();
             CreateMap<ProductWithStyleClass, ProductWithStyleDTO>().ReverseMap();
             CreateMap<FoodCartClass, FoodCartDTO>().ReverseMap();
-            CreateMap<RetailFoodClass, RetailFoodDTO>().ReverseMap();
+            CreateMap<FoodClass, RetailFoodDTO>().ReverseMap();
             CreateMap<ReadyFoodClass, ReadyFoodDTO>().ReverseMap();
+            CreateMap<FoodOrderClass, FoodOrderDTO>().ReverseMap();
         }
     }
 }

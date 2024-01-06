@@ -1,5 +1,6 @@
 ﻿using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.FoodInfo;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.ProductInfo;
 using AuthReadyAPI.DataLayer.Services;
@@ -49,9 +50,11 @@ namespace AuthReadyAPI.DataLayer.Repositories
                 ShoppingCartId = 0,
                 AuctionProductCartClassId = 0,
                 ServicesCartClassId = 0,
+                FoodCartClassId = 0,
                 CompanyId = Cart.CompanyId,
                 ShippingInfos = new List<ShippingInfoClass>(),
-                DigitalOwnerships = new List<DigitalOwnershipClass>()
+                DigitalOwnerships = new List<DigitalOwnershipClass>(),
+                DeliveryInfo = null,
             };
 
             switch (Cart.CartType.ToLower())
@@ -189,7 +192,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                         TransactionTypeId = NewOrder.AuctionProductCartClassId,
                         UserEmail = NewOrder.UserEmail,
                         CompanyId = NewOrder.CompanyId,
-                        OrderId = NewOrder.Id
+                        OrderId = NewOrder.Id,
                     };
 
                     _context.ChangeTracker.Clear();
@@ -247,6 +250,44 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     await _context.CompanyTransactions.AddAsync(FTransaction);
                     await _context.SaveChangesAsync();
 
+
+                    return true;
+                    
+                case "food":
+                    FoodCartClass FoodCart = await _context.FoodCarts.Where(x => x.Id == Cart.CartId).FirstOrDefaultAsync();
+                    FoodCart.Submitted = true;
+                    FoodCart.Abandoned = false;
+                    _context.FoodCarts.Update(FoodCart);
+                    await _context.SaveChangesAsync();
+
+                    _context.ChangeTracker.Clear();
+
+                    NewOrder.FoodCartClassId = FoodCart.Id;
+                    NewOrder.PaymentAmount = FoodCart.PriceAfterCoupon;
+
+                    _context.ChangeTracker.Clear();
+                    await _context.Orders.AddAsync(NewOrder);
+                    await _context.SaveChangesAsync();
+
+                    CompanyTransactionClass FoodTransaction = new CompanyTransactionClass
+                    {
+                        Id = 0,
+                        TimeOfTransaction = DateTime.Now,
+                        SaleGross = NewOrder.PaymentAmount,
+                        CompanyNet = NewOrder.PaymentAmount * .80,
+                        AuthReadyNet = NewOrder.PaymentAmount * .20,
+                        DepositedToCompany = false,
+                        DepositTime = DateTime.Now,
+                        TransactionType = NewOrder.CartType,
+                        TransactionTypeId = NewOrder.ServicesCartClassId,
+                        UserEmail = NewOrder.UserEmail,
+                        CompanyId = NewOrder.CompanyId,
+                        OrderId = NewOrder.Id
+                    };
+
+                    _context.ChangeTracker.Clear();
+                    await _context.CompanyTransactions.AddAsync(FoodTransaction);
+                    await _context.SaveChangesAsync();
 
                     return true;
 
@@ -368,7 +409,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                 },
                             },
 
-                            Quantity = 1
+                            Quantity = item.Quantity
                         };
 
                         SPCartoptions.LineItems.Add(UpsellACartsessionLineItem);
@@ -460,7 +501,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                 },
                             },
 
-                            Quantity = 1
+                            Quantity = item.Quantity
                         };
 
                         ACartoptions.LineItems.Add(UpsellACartsessionLineItem);
@@ -531,7 +572,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                 },
                             },
 
-                            Quantity = 1
+                            Quantity = item.Count
                         };
 
                         SCartoptions.LineItems.Add(SCartsessionLineItem);
@@ -555,7 +596,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                 },
                             },
 
-                            Quantity = 1
+                            Quantity = item.Quantity
                         };
 
                         SCartoptions.LineItems.Add(UpsellSCartsessionLineItem);
@@ -628,7 +669,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                     },
                                 },
 
-                                Quantity = 1
+                                Quantity = item.Quantity
                             };
 
                             SvcCartoptions.LineItems.Add(SvcCartsessionLineItem);
@@ -652,7 +693,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
                                     },
                                 },
 
-                                Quantity = 1
+                                Quantity = item.Quantity
                             };
 
                             SvcCartoptions.LineItems.Add(ServicesSvcCartsessionLineItem);
@@ -676,6 +717,72 @@ namespace AuthReadyAPI.DataLayer.Repositories
                     // Use the session service to create a Stripe API session
                     Session SvcCartsession = SvcCartservice.Create(SvcCartoptions);
                     Url.Append(SvcCartsession.Url);
+
+                    return Url.ToString();
+
+                case "food":
+                    FoodCartClass FoodCart = await _context.FoodCarts.Where(x => x.Id == CartId).FirstOrDefaultAsync();
+                    _context.ChangeTracker.Clear();
+
+                    // Begin Stripe Here using Stripe Checkout
+                    var FoodCartoptions = new SessionCreateOptions
+                    {
+                        PaymentMethodTypes = new List<string>
+                        {
+                            "card",
+                        },
+                        AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
+                        LineItems = new List<SessionLineItemOptions>(),
+                        Currency = "usd",
+                        Mode = "payment",
+                        SuccessUrl = "http://localhost:4200/success.html",
+                        CancelUrl = "http://localhost:4200/cancel.html",
+                        CustomerEmail = _user.Email,
+                        ClientReferenceId = FoodCart.Id.ToString(),
+                    };
+
+                    // Populate LineItems with detail from each ShoppingCart
+                    foreach (var FProd in FoodCart.FoodProducts)
+                    {
+                        SessionLineItemOptions FoodCartsessionLineItem = new SessionLineItemOptions
+                        {
+                            PriceData = new SessionLineItemPriceDataOptions
+                            {
+
+                                TaxBehavior = "inclusive",
+                                UnitAmount = (long)(FProd.Price * 100), //20.00 -> 2000
+                                Currency = "usd",
+                                ProductData = new SessionLineItemPriceDataProductDataOptions
+                                {
+                                    Description = FProd.Description,
+                                    Name = FProd.Name,
+                                    TaxCode = FProd.TaxCode,
+                                },
+                            },
+
+                            Quantity = FProd.Quantity
+                        };
+
+                        FoodCartoptions.LineItems.Add(FoodCartsessionLineItem);
+                    }
+
+                    PreparedCartClass FoodPrep = new PreparedCartClass
+                    {
+                        Id = 0,
+                        CartId = FoodCart.Id,
+                        CartType = "food",
+                        CompanyId = FoodCart.CompanyId
+                    };
+
+                    await _context.PreparedCarts.AddAsync(FoodPrep);
+                    await _context.SaveChangesAsync();
+
+                    // Create a Stripe API session service
+                    var FoodCartservice = new SessionService();
+
+                    // Use the session service to create a Stripe API session
+                    Session FoodCartsession = FoodCartservice.Create(FoodCartoptions);
+                    Url.Append(FoodCartsession.Url);
 
                     return Url.ToString();
 
