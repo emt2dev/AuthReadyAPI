@@ -209,6 +209,7 @@ using (var scope = app.Services.CreateScope())
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<APIUserClass>>();
     var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
     await APIUserSeeder.Seed(context, userManager);
+    // works
 }
 
     app.UseCors("AllowAll");
