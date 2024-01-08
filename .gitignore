@@ -370,3 +370,4 @@ FodyWeavers.xsd
 /Migrations/20240104032509_Expresso.cs
 /Migrations/20240104032509_Expresso.Designer.cs
 /Migrations/AuthDbContextModelSnapshot.cs
+/appsettings.json
