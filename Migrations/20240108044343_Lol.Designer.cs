@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240106055835_Tacos")]
-    partial class Tacos
+    [Migration("20240108044343_Lol")]
+    partial class Lol
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1424,19 +1424,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b5682ea4-e9c7-490d-968d-800779b5ad48",
+                            Id = "6fd8c242-df07-4720-bae7-507fe72daa39",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "db70e4d7-1ef1-4f31-a8e3-6a1b6ccaf8cb",
+                            Id = "4c769ab6-3fb5-47ff-bae8-52527d6d5de1",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "6d8795ea-5f2c-4e22-8c32-f5ec806deb07",
+                            Id = "fea2c221-32a3-4939-aa44-5cc82b3c25ee",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

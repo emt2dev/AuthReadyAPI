@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AuthReadyAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Tacos : Migration
+    public partial class Lol : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -896,9 +896,9 @@ namespace AuthReadyAPI.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "6d8795ea-5f2c-4e22-8c32-f5ec806deb07", null, "Admin", "ADMIN" },
-                    { "b5682ea4-e9c7-490d-968d-800779b5ad48", null, "Company", "COMPANY" },
-                    { "db70e4d7-1ef1-4f31-a8e3-6a1b6ccaf8cb", null, "User", "USER" }
+                    { "4c769ab6-3fb5-47ff-bae8-52527d6d5de1", null, "User", "USER" },
+                    { "6fd8c242-df07-4720-bae7-507fe72daa39", null, "Company", "COMPANY" },
+                    { "fea2c221-32a3-4939-aa44-5cc82b3c25ee", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

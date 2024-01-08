@@ -18,6 +18,7 @@ using System.Text;
 using System.Text.Json;
 using Stripe;
 using AuthReadyAPI.DataLayer.Models.PII;
+using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
 var builder = WebApplication.CreateBuilder(args);
 
 /*
