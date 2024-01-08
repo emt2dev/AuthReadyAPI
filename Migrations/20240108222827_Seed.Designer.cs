@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AuthReadyAPI.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240108044343_Lol")]
-    partial class Lol
+    [Migration("20240108222827_Seed")]
+    partial class Seed
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -66,6 +66,20 @@ namespace AuthReadyAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Active = true,
+                            Description = "Test company located in fake city.",
+                            Email = "hello@testcompany.com",
+                            MailingAddress = "123 Main Street, Any Town, EE, USA 11111",
+                            Name = "Test Company",
+                            PhoneNumber = "1 1234567890",
+                            PointOfContactId = 0,
+                            ShippingAddress = "123 Main Street, Any Town, EE, USA 11111"
+                        });
                 });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.Companies.CompanyImageClass", b =>
@@ -918,6 +932,20 @@ namespace AuthReadyAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CompanyId = 1,
+                            Name = "Toy"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CompanyId = 1,
+                            Name = "Shirt"
+                        });
                 });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.ProductInfo.DigitalOwnershipClass", b =>
@@ -1005,6 +1033,24 @@ namespace AuthReadyAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CategoryId = 1,
+                            CompanyId = 1,
+                            CreatedOn = new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(648),
+                            Description = "Signature collection of barbie dolls.",
+                            MainImageUrl = "https://creations.mattel.com/cdn/shop/products/ors1kicv0rkdf2teoqaf.png?v=1684560830",
+                            Name = "Barbie Signature Collection",
+                            Quantity = 1,
+                            TaxCode = "tst_0009",
+                            UpdatedBy = "0",
+                            UpdatedOn = new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(694),
+                            UpdatesMade = "System Generated",
+                            ViewCount = 0
+                        });
                 });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.ProductInfo.ProductImageClass", b =>
@@ -1028,6 +1074,22 @@ namespace AuthReadyAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("ProductImages");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ImageUrl = "https://www.ebay.com/itm/325914851835?chn=ps&norover=1&mkevt=1&mkrid=711-117182-37290-0&mkcid=2&mkscid=101&itemid=325914851835&targetid=1531876732278&device=c&mktype=pla&googleloc=9008533&poi=&campaignid=19851828444&mkgroupid=145880009014&rlsatarget=pla-1531876732278&abcId=9307249&merchantid=101491518&gclid=Cj0KCQiAkeSsBhDUARIsAK3tiefJewYtYyA-3-PuCb51Ogy66tVAz1RAXPLNkQBGFKr6BWTdqSarwPEaArz0EALw_wcB",
+                            ProductId = 1,
+                            StyleId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ImageUrl = "https://i.ebayimg.com/images/g/rrIAAOSwITZdZAJM/s-l960.jpg",
+                            ProductId = 1,
+                            StyleId = 1
+                        });
                 });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.ProductInfo.ProductUpsellItemClass", b =>
@@ -1270,6 +1332,31 @@ namespace AuthReadyAPI.Migrations
                     b.HasIndex("ProductWithStyleClassId");
 
                     b.ToTable("Styles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AvailableOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CartCount = 0,
+                            CompanyId = 1,
+                            CurrentPrice = 9.9900000000000002,
+                            Description = "Barbie Signature Rosa Parks Civil Rights Activist Inspiring Women Series",
+                            DigitalOnly = false,
+                            DigitalOwnerId = 0,
+                            DiscountedPrice = 8.9900000000000002,
+                            GrossIncome = 0.0,
+                            IsAvailableForOrder = true,
+                            IsComingSoon = false,
+                            IsLimitedTimeOnly = false,
+                            Name = "Rosa Parks",
+                            OrderCount = 0,
+                            PackagedDimensions = 99.0,
+                            PackagedWeight = 1.5,
+                            ProductId = 1,
+                            UnavailableOn = new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(792),
+                            UseDiscountPrice = false
+                        });
                 });
 
             modelBuilder.Entity("AuthReadyAPI.DataLayer.Models.ServicesInfo.AppointmentClass", b =>
@@ -1424,19 +1511,19 @@ namespace AuthReadyAPI.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "6fd8c242-df07-4720-bae7-507fe72daa39",
+                            Id = "d34e2822-6aa5-4548-ae25-6a1714c5f2b9",
                             Name = "Company",
                             NormalizedName = "COMPANY"
                         },
                         new
                         {
-                            Id = "4c769ab6-3fb5-47ff-bae8-52527d6d5de1",
+                            Id = "102829f7-8635-407c-ad4a-f3b78bed0100",
                             Name = "User",
                             NormalizedName = "USER"
                         },
                         new
                         {
-                            Id = "fea2c221-32a3-4939-aa44-5cc82b3c25ee",
+                            Id = "215338bc-c092-4687-9218-b65db1bfe1b2",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });

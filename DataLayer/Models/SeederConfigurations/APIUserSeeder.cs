@@ -1,79 +1,84 @@
-﻿using AuthReadyAPI.DataLayer.Models.PII;
+﻿using AuthReadyAPI.DataLayer.Models.Companies;
+using AuthReadyAPI.DataLayer.Models.PII;
+using AuthReadyAPI.DataLayer.Models.ProductInfo;
+using CloudinaryDotNet.Actions;
 using Humanizer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace AuthReadyAPI.DataLayer.Models.SeederConfigurations
 {
     public class APIUserSeeder
     {
-        public readonly UserManager<APIUserClass> userManager;
-
-        public APIUserSeeder(UserManager<APIUserClass> userManager)
+        public static async Task Seed(AuthDbContext context, UserManager<APIUserClass> userManager)
         {
-            this.userManager = userManager;
-        }
+            var Exists = await userManager.FindByEmailAsync("admin@test.com");
+            if (Exists is not null) return;
 
-        public async Task<bool> Seed()
-        {
-            APIUserClass TestUser = new APIUserClass
+            APIUserClass Admin = new APIUserClass
             {
-                Name = "Test User",
-                Email = "user@testcom",
-                NormalizedEmail = "USER@TEST.COM",
-                NormalizedUserName = "USER@TEST.COM",
-                UserName = "user@test.com",
-                FullName = "Test User",
-                BillingAddress = "1239 Main St, Lifetime, USA, 33009",
-                MailingAddress = "1239 Main St, Lifetime, USA, 33009",
-                LifetimeSpent = 0.00,
-                OrderCount = 0,
-            };
-
-            var Attempt = await userManager.CreateAsync(TestUser, "P@ssword1");
-            if (!Attempt.Succeeded) return false;
-
-            await userManager.AddToRoleAsync(TestUser, "User");
-
-            APIUserClass TestCompany = new APIUserClass
-            {
-                Name = "Test Company User",
-                Email = "company@testcom",
-                NormalizedEmail = "COMPANY@TEST.COM",
-                NormalizedUserName = "COMPANY@TEST.COM",
-                UserName = "company@test.com",
-                FullName = "Test Company User",
-                BillingAddress = "1239 Main St, Lifetime, USA, 33009",
-                MailingAddress = "1239 Main St, Lifetime, USA, 33009",
-                LifetimeSpent = 0.00,
-                OrderCount = 0,
-            };
-
-            Attempt = await userManager.CreateAsync(TestCompany, "P@ssword1");
-            if (!Attempt.Succeeded) return false;
-
-            await userManager.AddToRoleAsync(TestCompany, "Company");
-
-            APIUserClass TestAdmin = new APIUserClass
-            {
-                Name = "Test Admin User",
-                Email = "admin@testcom",
+                Id = "adminone",
+                Name = "admin",
                 NormalizedEmail = "ADMIN@TEST.COM",
-                NormalizedUserName = "ADMIN@TEST.COM",
+                Email = "admin@test.com",
                 UserName = "admin@test.com",
-                FullName = "Test Admin User",
-                BillingAddress = "1239 Main St, Lifetime, USA, 33009",
-                MailingAddress = "1239 Main St, Lifetime, USA, 33009",
+                NormalizedUserName = "ADMIN@TEST.COM",
+                BillingAddress = "123 Main St, Anytown, USA 09832",
+                MailingAddress = "123 Main St, Anytown, USA 09832",
+                FullName = "admin",
                 LifetimeSpent = 0.00,
                 OrderCount = 0,
             };
 
-            Attempt = await userManager.CreateAsync(TestCompany, "P@ssword1");
-            if (!Attempt.Succeeded) return false;
+            await userManager.CreateAsync(Admin, "P@ssword1");
+            await userManager.AddToRoleAsync(Admin, "Admin");
+            await userManager.UpdateAsync(Admin);
 
-            await userManager.AddToRoleAsync(TestCompany, "Admin");
+            context.ChangeTracker.Clear();
 
-            return true;
+            APIUserClass Company = new APIUserClass
+            {
+                Id = "coone",
+                Name = "company",
+                NormalizedEmail = "COMPANY@TEST.COM",
+                Email = "company@test.com",
+                UserName = "company@test.com",
+                NormalizedUserName = "COMPANY@TEST.COM",
+                BillingAddress = "123 Main St, Anytown, USA 09832",
+                MailingAddress = "123 Main St, Anytown, USA 09832",
+                FullName = "company",
+                LifetimeSpent = 0.00,
+                OrderCount = 0,
+            };
+
+
+            await userManager.CreateAsync(Company, "P@ssword1");
+            await userManager.AddToRoleAsync(Company, "Company");
+            await userManager.UpdateAsync(Company);
+
+            context.ChangeTracker.Clear();
+
+            APIUserClass User = new APIUserClass
+            {
+                Id = "userone",
+                Name = "user",
+                NormalizedEmail = "USER@TEST.COM",
+                Email = "user@test.com",
+                UserName = "user@test.com",
+                NormalizedUserName = "USER@TEST.COM",
+                BillingAddress = "123 Main St, Anytown, USA 09832",
+                MailingAddress = "123 Main St, Anytown, USA 09832",
+                FullName = "user",
+                LifetimeSpent = 0.00,
+                OrderCount = 0,
+            };
+
+            await userManager.CreateAsync(User, "P@ssword1");
+            await userManager.AddToRoleAsync(User, "User");
+            await userManager.UpdateAsync(User);
+
+            context.ChangeTracker.Clear();
         }
     }
 }

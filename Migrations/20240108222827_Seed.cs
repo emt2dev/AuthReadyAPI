@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AuthReadyAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class Lol : Migration
+    public partial class Seed : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -896,10 +896,43 @@ namespace AuthReadyAPI.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "4c769ab6-3fb5-47ff-bae8-52527d6d5de1", null, "User", "USER" },
-                    { "6fd8c242-df07-4720-bae7-507fe72daa39", null, "Company", "COMPANY" },
-                    { "fea2c221-32a3-4939-aa44-5cc82b3c25ee", null, "Admin", "ADMIN" }
+                    { "102829f7-8635-407c-ad4a-f3b78bed0100", null, "User", "USER" },
+                    { "215338bc-c092-4687-9218-b65db1bfe1b2", null, "Admin", "ADMIN" },
+                    { "d34e2822-6aa5-4548-ae25-6a1714c5f2b9", null, "Company", "COMPANY" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Categories",
+                columns: new[] { "Id", "CompanyId", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "Toy" },
+                    { 2, 1, "Shirt" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Companies",
+                columns: new[] { "Id", "Active", "Description", "Email", "MailingAddress", "Name", "PhoneNumber", "PointOfContactId", "ShippingAddress" },
+                values: new object[] { 1, true, "Test company located in fake city.", "hello@testcompany.com", "123 Main Street, Any Town, EE, USA 11111", "Test Company", "1 1234567890", 0, "123 Main Street, Any Town, EE, USA 11111" });
+
+            migrationBuilder.InsertData(
+                table: "ProductImages",
+                columns: new[] { "Id", "ImageUrl", "ProductId", "StyleId" },
+                values: new object[,]
+                {
+                    { 1, "https://www.ebay.com/itm/325914851835?chn=ps&norover=1&mkevt=1&mkrid=711-117182-37290-0&mkcid=2&mkscid=101&itemid=325914851835&targetid=1531876732278&device=c&mktype=pla&googleloc=9008533&poi=&campaignid=19851828444&mkgroupid=145880009014&rlsatarget=pla-1531876732278&abcId=9307249&merchantid=101491518&gclid=Cj0KCQiAkeSsBhDUARIsAK3tiefJewYtYyA-3-PuCb51Ogy66tVAz1RAXPLNkQBGFKr6BWTdqSarwPEaArz0EALw_wcB", 1, 1 },
+                    { 2, "https://i.ebayimg.com/images/g/rrIAAOSwITZdZAJM/s-l960.jpg", 1, 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Products",
+                columns: new[] { "Id", "CategoryId", "CompanyId", "CreatedOn", "Description", "MainImageUrl", "Name", "Quantity", "TaxCode", "UpdatedBy", "UpdatedOn", "UpdatesMade", "ViewCount" },
+                values: new object[] { 1, 1, 1, new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(648), "Signature collection of barbie dolls.", "https://creations.mattel.com/cdn/shop/products/ors1kicv0rkdf2teoqaf.png?v=1684560830", "Barbie Signature Collection", 1, "tst_0009", "0", new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(694), "System Generated", 0 });
+
+            migrationBuilder.InsertData(
+                table: "Styles",
+                columns: new[] { "Id", "AvailableOn", "CartCount", "CompanyId", "CurrentPrice", "Description", "DigitalOnly", "DigitalOwnerId", "DiscountedPrice", "GrossIncome", "IsAvailableForOrder", "IsComingSoon", "IsLimitedTimeOnly", "Name", "OrderCount", "PackagedDimensions", "PackagedWeight", "ProductId", "ProductWithStyleClassId", "UnavailableOn", "UseDiscountPrice" },
+                values: new object[] { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, 1, 9.9900000000000002, "Barbie Signature Rosa Parks Civil Rights Activist Inspiring Women Series", false, 0, 8.9900000000000002, 0.0, true, false, false, "Rosa Parks", 0, 99.0, 1.5, 1, null, new DateTime(2024, 1, 8, 17, 28, 25, 504, DateTimeKind.Local).AddTicks(792), false });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Appointments_ServicesCartClassId",

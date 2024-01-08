@@ -19,6 +19,7 @@ using System.Text.Json;
 using Stripe;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
+using Microsoft.Extensions.Configuration.UserSecrets;
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -202,8 +203,15 @@ builder.Services.AddHealthChecks()
     .AddDbContextCheck<AuthDbContext>(tags: new[] { "database" });
 
 var app = builder.Build();
+// seed users and roles
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<APIUserClass>>();
+    var context = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
+    await APIUserSeeder.Seed(context, userManager);
+}
 
-app.UseCors("AllowAll");
+    app.UseCors("AllowAll");
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
@@ -259,6 +267,7 @@ app.MapHealthChecks("/healthcheckdatabase", new HealthCheckOptions
     },
     ResponseWriter = WriteResponse
 });
+
 
 /* Health Check Log */
 static Task WriteResponse(HttpContext context, HealthReport HR)

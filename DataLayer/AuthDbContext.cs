@@ -6,6 +6,7 @@ using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
 using AuthReadyAPI.DataLayer.Models.ServicesInfo;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AuthReadyAPI.DataLayer
 {
@@ -60,6 +61,11 @@ namespace AuthReadyAPI.DataLayer
 
             /* Role and User Seeder */
             modelBuilder.ApplyConfiguration(new RoleSeeder()); // seeds the roles table
+            modelBuilder.ApplyConfiguration(new CompanySeeder()); // seeds the roles table
+            modelBuilder.ApplyConfiguration(new CategorySeeder()); // seeds the roles table
+            modelBuilder.ApplyConfiguration(new ProductSeeder()); // seeds the roles table
+            modelBuilder.ApplyConfiguration(new StyleSeeder()); // seeds the roles table
+            modelBuilder.ApplyConfiguration(new ProductImageSeeder()); // seeds the roles table
         }
     }
 }
