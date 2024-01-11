@@ -6,7 +6,7 @@ namespace AuthReadyAPI.DataLayer.DTOs.Company
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public List<IFormFile> Images { get; set; }
 
         // FKey
         [ForeignKey(nameof(CompanyId))]

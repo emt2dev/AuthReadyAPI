@@ -83,7 +83,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ServicesCartDTO> NewAppointment([FromForm] NewAppointmentDTO DTO)
+        public async Task<ServicesCartDTO> NewAppointment([FromBody] NewAppointmentDTO DTO)
         {
             List<AppointmentClass> List = await _services.ScheduleAppointment(DTO);
 

@@ -45,7 +45,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<List<ServicesDTO>> FindCompanyServices([FromForm] string Description, int CompanyId)
+        public async Task<List<ServicesDTO>> FindCompanyServices([FromBody] string Description, int CompanyId)
         {
             return await _services.FindCompanyServicesOffered(CompanyId, Description);
         }
@@ -56,7 +56,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> AddService([FromForm] NewServicesDTO DTO, int CompanyId)
+        public async Task<bool> AddService([FromBody] NewServicesDTO DTO, int CompanyId)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -73,7 +73,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> UpdateOffering([FromForm] ServicesDTO DTO)
+        public async Task<bool> UpdateOffering([FromBody] ServicesDTO DTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -89,7 +89,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> DeleteOffering([FromForm] int ServiceId)
+        public async Task<bool> DeleteOffering([FromBody] int ServiceId)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");

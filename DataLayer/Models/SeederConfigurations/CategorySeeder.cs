@@ -20,6 +20,12 @@ public class CategorySeeder : IEntityTypeConfiguration<CategoryClass>
                     Id = 2,
                     Name = "Shirt",
                     CompanyId = 1
+                },
+                new CategoryClass
+                {
+                    Id = 3,
+                    Name = "Candy",
+                    CompanyId = 1
                 }
             );
     }

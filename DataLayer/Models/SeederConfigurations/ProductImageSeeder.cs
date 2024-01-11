@@ -17,14 +17,26 @@ namespace AuthReadyAPI.DataLayer.Models.SeederConfigurations
                      Id = 1,
                      ProductId = 1,
                      StyleId = 1,
-                     ImageUrl = "https://www.ebay.com/itm/325914851835?chn=ps&norover=1&mkevt=1&mkrid=711-117182-37290-0&mkcid=2&mkscid=101&itemid=325914851835&targetid=1531876732278&device=c&mktype=pla&googleloc=9008533&poi=&campaignid=19851828444&mkgroupid=145880009014&rlsatarget=pla-1531876732278&abcId=9307249&merchantid=101491518&gclid=Cj0KCQiAkeSsBhDUARIsAK3tiefJewYtYyA-3-PuCb51Ogy66tVAz1RAXPLNkQBGFKr6BWTdqSarwPEaArz0EALw_wcB"
+                     ImageUrl = "https://wwd.com/wp-content/uploads/2023/06/MEGA989664_002.jpg"
                  }, new ProductImageClass
                  {
                      Id = 2,
                      ProductId = 1,
                      StyleId = 1,
-                     ImageUrl = "https://i.ebayimg.com/images/g/rrIAAOSwITZdZAJM/s-l960.jpg"
-                 }
+                     ImageUrl = "https://www.becauseofthemwecan.com/wp-content/uploads/2023/08/FC542588-1509-4082-88D1-4B83DD3FF7DE-1024x683.jpeg"
+                 }, new ProductImageClass
+                 {
+                     Id = 3,
+                     ProductId = 2,
+                     StyleId = 2,
+                     ImageUrl = "https://i.etsystatic.com/34524380/r/il/4cfc2c/5539591259/il_794xN.5539591259_6216.jpg"
+                 }, new ProductImageClass
+                 {
+                     Id = 4,
+                     ProductId = 2,
+                     StyleId = 3,
+                     ImageUrl = "https://i.etsystatic.com/34524380/r/il/623606/5573591921/il_794xN.5573591921_oio0.jpg"
+                 }                 
                 );
         }
     }

@@ -73,7 +73,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> CreateAuctionProduct([FromForm]  NewAuctionProductDTO DTO)
+        public async Task<bool> CreateAuctionProduct([FromBody]  NewAuctionProductDTO DTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");

@@ -34,7 +34,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewCompany([FromForm] NewCompanyDTO IncomingDTO)
+        public async Task<bool> NewCompany([FromBody] NewCompanyDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -51,7 +51,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewContact([FromForm] NewPointOfContactDTO IncomingDTO)
+        public async Task<bool> NewContact([FromBody] NewPointOfContactDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -87,7 +87,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewProductCategory([FromForm] NewCategoryDTO IncomingDTO)
+        public async Task<bool> NewProductCategory([FromBody] NewCategoryDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -104,7 +104,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewProduct([FromForm] NewProductDTO IncomingDTO)
+        public async Task<bool> NewProduct([FromBody] NewProductDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -121,7 +121,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewStyle([FromForm] NewStyleDTO IncomingDTO)
+        public async Task<bool> NewStyle([FromBody] NewStyleDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -138,7 +138,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> NewProductImage([FromForm] NewProductImageDTO IncomingDTO)
+        public async Task<bool> NewProductImage([FromBody] NewProductImageDTO IncomingDTO)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -155,7 +155,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> StyleIsAvailable([FromForm] int StyleId)
+        public async Task<bool> StyleIsAvailable([FromBody] int StyleId)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -172,7 +172,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
         [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
         [ProducesResponseType(StatusCodes.Status200OK)] // if okay
-        public async Task<bool> StyleNotAvailable([FromForm] int StyleId)
+        public async Task<bool> StyleNotAvailable([FromBody] int StyleId)
         {
             string Token = (string)HttpContext.Request.Headers["Authorization"];
             Token = Token.Replace("Bearer ", "");
@@ -181,6 +181,33 @@ namespace AuthReadyAPI.Controllers
             if (_user is null) return false;
 
             return await _product.SetStyleToUnavailable(StyleId);
+        }
+
+        [HttpPost]
+        [Route("images/{CompanyId}/new")]
+        [Authorize(Roles = ("Company"))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<bool> NewCompanyImage([FromBody] NewCompanyImageDTO DTO, [FromRoute] int CompanyId)
+        {
+            string Token = (string)HttpContext.Request.Headers["Authorization"];
+            Token = Token.Replace("Bearer ", "");
+
+            _user = await _userManager.FindByIdAsync(await _authRepository.ReadUserId(Token));
+            if (_user is null) return false;
+
+            return await _company.NewCompanyImage(DTO, CompanyId);
+        }
+
+        [HttpPost]
+        [Route("images/{CompanyId}/all")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // if validation fails, send this
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)] // If client issues
+        [ProducesResponseType(StatusCodes.Status200OK)] // if okay
+        public async Task<List<string>> GetCompanyImageAll([FromRoute] int CompanyId)
+        {
+            return await _company.GetCompanyImages(CompanyId);
         }
     }
 }

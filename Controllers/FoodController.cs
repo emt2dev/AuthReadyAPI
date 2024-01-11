@@ -50,7 +50,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> NewFoodProduct([FromForm] NewFoodProductDTO DTO)
+        public async Task<bool> NewFoodProduct([FromBody] NewFoodProductDTO DTO)
         {
             return await _food.NewFoodProduct(DTO);
         }
@@ -61,7 +61,7 @@ namespace AuthReadyAPI.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<bool> UpdateCart([FromForm] FoodCartDTO DTO)
+        public async Task<bool> UpdateCart([FromBody] FoodCartDTO DTO)
         {
             return await _food.UpdateFoodCart(DTO);
         }
