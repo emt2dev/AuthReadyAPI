@@ -2,8 +2,6 @@ using AuthReadyAPI.Configurations;
 using AuthReadyAPI.DataLayer;
 using AuthReadyAPI.DataLayer.Interfaces;
 using AuthReadyAPI.DataLayer.Repositories;
-using AuthReadyAPI.DataLayer.Services;
-using AuthReadyAPI.DataLayer.Services.Helpers;
 using AuthReadyAPI.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -29,17 +27,15 @@ var builder = WebApplication.CreateBuilder(args);
  */
 
 // DATABASE, MSSQL
-var CONNECTION_STRING = builder.Configuration.GetConnectionString("AuthReadyApi_ConnectionString"); // replace with your own connection string
+var CONNECTION_STRING = builder.Configuration.GetConnectionString("MySql_ConnectionString"); // replace with your own connection string
+var serverVersion = new MySqlServerVersion(new Version(8, 0, 31));
 
 StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
 
 builder.Services.AddDbContext<AuthDbContext>(DbOptions =>
 {
-    DbOptions.UseSqlServer(CONNECTION_STRING);
+    DbOptions.UseMySql(CONNECTION_STRING, serverVersion);
 });
-
-// add mysql
-// builder.Services.AddTransient<MySqlConnection>(_ => new MySqlConnection(CONNECTION_STRING));
 
 // asp.net controller
 builder.Services.AddControllers();
@@ -50,7 +46,7 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Hotel Listing API",
+        Title = "Auth Ready API",
         Version = "v1",
     });
 
@@ -114,34 +110,8 @@ builder.Services.AddIdentityCore<APIUserClass>()
     .AddEntityFrameworkStores<AuthDbContext>()
     .AddDefaultTokenProviders();
 
-
-/* Auction */
-builder.Services.AddScoped<IAuctionRepository, AuctionRepository>();
-
 /* IAuthManager */
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
-
-/* Carts */
-builder.Services.AddScoped<ICartRepository, CartRepository>();
-
-/* Company*/
-builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
-
-/* Food */
-builder.Services.AddScoped<IFoodRepository, FoodRepository>();
-
-/* Order */
-builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-
-/* Product */
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-
-/* Services */
-builder.Services.AddScoped<IServicesRepository, ServicesRepository>();
-
-/* IMediaService */
-builder.Services.AddScoped<IMediaService, MediaService>();
-builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection("CloudinarySettings"));
 
 /* Authentication plus JWT Bearer */
 builder.Services.AddAuthentication(options =>
