@@ -1,5 +1,4 @@
-﻿using AuthReadyAPI.DataLayer.Models;
-using AuthReadyAPI.DataLayer.Models.Middleware;
+﻿using AuthReadyAPI.DataLayer.Models.Middleware;
 using AuthReadyAPI.Exceptions;
 using Newtonsoft.Json;
 using System.Net;

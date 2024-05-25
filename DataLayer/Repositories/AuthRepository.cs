@@ -1,15 +1,10 @@
 ﻿using AuthReadyAPI.DataLayer.DTOs.PII.APIUser;
 using AuthReadyAPI.DataLayer.Interfaces;
-using AuthReadyAPI.DataLayer.Models.Companies;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
-using Humanizer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.IdentityModel.Tokens.Jwt;
-using System.Runtime.InteropServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -19,7 +14,6 @@ namespace AuthReadyAPI.DataLayer.Repositories
     {
         private readonly IMapper _mapper;
         private readonly IConfiguration _configs;
-        private readonly IAuthRepository _authRepository;
         private string _tokenProvider = "AuthReadyAPI";
         private string _refreshToken = "MadeByDavidDuron";
         private APIUserClass _user;
@@ -111,9 +105,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             _context.ChangeTracker.Clear();
 
-            CompanyClass CFound = await _context.Companies.Where(x => x.Id == Int32.Parse(CompanyId)).FirstOrDefaultAsync();
-
-            if (_user is null || CFound is null) return null;
+            if (_user is null) return null;
 
             var validatedRefreshToken = await _userManager.VerifyUserTokenAsync(_user, _tokenProvider, _refreshToken, DTO.RefreshToken);
             if (!validatedRefreshToken) return null;
@@ -136,9 +128,7 @@ namespace AuthReadyAPI.DataLayer.Repositories
 
             _context.ChangeTracker.Clear();
 
-            CompanyClass CFound = await _context.Companies.Where(x => x.Id == Int32.Parse(CompanyId)).FirstOrDefaultAsync();
-
-            return Int32.Parse(CompanyId);
+            return 1;
         }
         public async Task<string> ReadUserId(string Jwt)
         {

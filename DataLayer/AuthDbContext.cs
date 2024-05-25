@@ -1,4 +1,5 @@
-﻿using AuthReadyAPI.DataLayer.Models.PII;
+﻿using AuthReadyAPI.DataLayer.Models;
+using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,9 @@ namespace AuthReadyAPI.DataLayer
     public class AuthDbContext : IdentityDbContext<APIUserClass>
     {
         public AuthDbContext(DbContextOptions options) : base(options) { }
+
+        // Models
+        public DbSet<CacheDemoClass> demoClasses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
