@@ -6,5 +6,7 @@ namespace AuthReadyAPI.DataLayer.Interfaces
     {
         public Task<bool> CreateNewDemoClasses();
         public Task<List<CacheDemoClass>> ReturnFromDb();
+        public Task<bool> ReturnFromDBAsQueryable();
+        public Task<bool> ReturnFromDBAsList();
     }
 }

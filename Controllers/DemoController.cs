@@ -19,6 +19,28 @@ namespace AuthReadyAPI.Controllers
         }
 
         [HttpGet]
+        [Route("queryable")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<bool> GetQueryable()
+        {
+            var x = await _demoRepository.ReturnFromDBAsQueryable();
+            return true;
+        }
+
+        [HttpGet]
+        [Route("list")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<bool> GetList()
+        {
+            var x = await _demoRepository.ReturnFromDBAsList();
+            return true;
+        }
+
+        [HttpGet]
         [Route("seed")]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

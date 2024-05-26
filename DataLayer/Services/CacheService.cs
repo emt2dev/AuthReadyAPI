@@ -13,7 +13,7 @@ namespace AuthReadyAPI.DataLayer.Services
 
         public CacheService()
         {
-            var redis = ConnectionMultiplexer.Connect("localhost:6379"); // the endpoint to connect to redis
+            var redis = ConnectionMultiplexer.Connect("localhost:6377"); // the endpoint to connect to redis
             _cache = redis.GetDatabase();
         }
 

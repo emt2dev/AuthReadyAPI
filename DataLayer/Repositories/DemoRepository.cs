@@ -4,6 +4,7 @@ using AuthReadyAPI.DataLayer.Models.PII;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace AuthReadyAPI.DataLayer.Repositories
 {
@@ -17,6 +18,36 @@ namespace AuthReadyAPI.DataLayer.Repositories
             _context = context;
             _cache = cache;
 
+        }
+
+        public async Task<bool> ReturnFromDBAsQueryable()
+        {
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            IQueryable<CacheDemoClass> x = _context.demoClasses.Take(5000);
+
+            stopwatch.Stop();
+
+            await Console.Out.WriteAsync($"\nTime to query from DB: {stopwatch.Elapsed.ToString()}\n");
+
+            // .013 seconds
+            return true;
+        }
+
+        public async Task<bool> ReturnFromDBAsList()
+        {
+
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            List<CacheDemoClass> x = await _context.demoClasses.Take(5000).ToListAsync();
+
+            stopwatch.Stop();
+
+            // .215 seconds
+            await Console.Out.WriteAsync($"\nTime to list from DB: {stopwatch.Elapsed.ToString()}\n");
+
+            return true;
         }
 
         public async Task<bool> CreateNewDemoClasses()
