@@ -1,5 +1,4 @@
-﻿using AuthReadyAPI.DataLayer.DTOs.PII.Payments;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AuthReadyAPI.DataLayer.DTOs.PII.APIUser
@@ -17,7 +16,5 @@ namespace AuthReadyAPI.DataLayer.DTOs.PII.APIUser
         [Required]
         [ForeignKey(nameof(CompanyId))]
         public int CompanyId { get; set; }
-
-        public GuestCartDTO CartDTO { get; set; }
     }
 }

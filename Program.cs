@@ -18,6 +18,7 @@ using Stripe;
 using AuthReadyAPI.DataLayer.Models.PII;
 using AuthReadyAPI.DataLayer.Models.SeederConfigurations;
 using Microsoft.Extensions.Configuration.UserSecrets;
+using AuthReadyAPI.DataLayer.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 /*
@@ -100,6 +101,10 @@ builder.Host.UseSerilog((builderContext, loggerConfig) =>
  * 
  */
 
+/* IDemo, ICache */
+builder.Services.AddScoped<IDemoRepository, DemoRepository>();
+builder.Services.AddScoped<ICacheService, CacheService>();
+
 /* Adds AutoMapper Config */
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
@@ -152,13 +157,6 @@ builder.Services.AddVersionedApiExplorer(options =>
     options.SubstituteApiVersionInUrl = true;
 });
 
-/* Add Caching Part One */
-builder.Services.AddResponseCaching(options =>
-{
-    options.MaximumBodySize = 1024;
-    options.UseCaseSensitivePaths = true;
-});
-
 /* Health Checks, 
  * includes AspNetCore.HealthChecks.SqlServer
  * check to see if EFCore<DbContext> can connect via Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore
@@ -186,9 +184,7 @@ using (var scope = app.Services.CreateScope())
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseHttpsRedirection();
 
-/* Add Caching Part Two */
-app.UseResponseCaching();
-
+/*
 app.Use(async (context, next) =>
 {
     context.Response.GetTypedHeaders().CacheControl = new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
@@ -201,6 +197,7 @@ app.Use(async (context, next) =>
 
     await next();
 });
+*/
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
